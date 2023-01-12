@@ -28,6 +28,11 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  # Flyway 설정
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
 # SQL 로그 설정
 logging:
   level:
