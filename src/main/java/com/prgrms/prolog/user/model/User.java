@@ -97,4 +97,16 @@ public class User extends BaseEntity {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "User{" +
+			"id=" + id +
+			", email='" + email +
+			", nickName='" + nickName +
+			", introduce='" + introduce +
+			", prologName='" + prologName +
+			", provider='" + provider +
+			", oauthId='" + oauthId +
+			'}';
+	}
 }
