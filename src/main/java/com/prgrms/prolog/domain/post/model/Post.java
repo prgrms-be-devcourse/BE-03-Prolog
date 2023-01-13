@@ -3,13 +3,11 @@ package com.prgrms.prolog.domain.post.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 
@@ -31,7 +29,6 @@ public class Post {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "post_id")
 	private Long id;
 
 	private String title;
@@ -47,21 +44,17 @@ public class Post {
 
 	@Builder
 	public Post(String title, String content, boolean openStatus) {
-		validateTitle(title);
-		validateContent(content);
+		validateText(title);
+		checkOverLength(title);
+		validateText(content);
 
 		this.title = title;
 		this.content = content;
 		this.openStatus = openStatus;
 	}
 
-	private void validateContent(String content) {
-		Assert.hasText(content, "게시물 내용은 빈 값일 수 없다.");
-	}
-
-	private void validateTitle(String title) {
-		Assert.hasText(title, "게시물 제목은 빈 값일 수 없다.");
-		checkOverLength(title);
+	private void validateText(String text) {
+		Assert.hasText(text, "빈 값일 수 없는 데이터입니다.");
 	}
 
 	private void checkOverLength(String title) {

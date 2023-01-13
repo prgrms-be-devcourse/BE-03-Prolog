@@ -18,13 +18,12 @@ public class Comment {
 
 	@Id
 	@GeneratedValue
-	@Column(name = "comment_id")
 	private Long id;
 
 	@Size(max = 255)
 	private String content;
 
 	@ManyToOne
-	@JoinColumn(name = "post_id")
+	@JoinColumn(name = "id")
 	private Post post;
 }
