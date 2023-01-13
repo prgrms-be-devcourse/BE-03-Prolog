@@ -1,4 +1,4 @@
-package com.prgrms.prolog;
+package com.prgrms.prolog.global.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
