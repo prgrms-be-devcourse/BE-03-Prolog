@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.comment.model;
 
+import static javax.persistence.FetchType.*;
+
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -35,7 +37,7 @@ public class Comment extends BaseEntity {
 	@Size(max = 255)
 	private String content;
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "post_id")
 	private Post post;
 

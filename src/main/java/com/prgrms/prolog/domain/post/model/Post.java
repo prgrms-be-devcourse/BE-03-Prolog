@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.post.model;
 
+import static javax.persistence.FetchType.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +48,7 @@ public class Post {
 
 	private boolean openStatus;
 
-	@ManyToOne // 게시글과 유저 정보는 항상 같이 있어야 하지 않나요..?
+	@ManyToOne(fetch = EAGER)
 	@JoinColumn(name = "user_id")
 	private User user;
 
