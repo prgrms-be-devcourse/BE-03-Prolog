@@ -1,4 +1,4 @@
-package com.prgrms.prolog.user.model;
+package com.prgrms.prolog.domain.user.model;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
