@@ -1,5 +1,7 @@
-package com.prgrms.prolog.user.model;
+package com.prgrms.prolog.domain.user.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -7,11 +9,13 @@ import java.util.regex.Pattern;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 
+import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -39,26 +43,21 @@ public class User extends BaseEntity {
 
 	private static final Pattern emailPattern
 		= Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
-
+	@OneToMany(mappedBy = "user")
+	private final List<Post> posts = new ArrayList<>();
 	@Id
 	@GeneratedValue
 	private Long id;
-
 	@Size(max = 100)
 	private String email;
-
 	@Size(max = 100)
 	private String nickName;
-
 	@Size(max = 100)
 	private String introduce;
-
 	@Size(max = 100)
 	private String prologName;
-
 	@Size(max = 100)
 	private String provider;
-
 	@Size(max = 100)
 	private String oauthId;
 
