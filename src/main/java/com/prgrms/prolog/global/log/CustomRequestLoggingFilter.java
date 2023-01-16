@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -22,7 +23,6 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServletServerHttpRequest;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -31,7 +31,7 @@ import org.springframework.web.util.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Component
+@WebFilter("/*")
 public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 
 	private static final int MAX_PAYLOAD_LENGTH = 200;
