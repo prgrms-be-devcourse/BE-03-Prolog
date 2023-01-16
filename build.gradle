@@ -50,6 +50,10 @@ dependencies {
     // Flyway dependency
     // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
     implementation 'org.flywaydb:flyway-core:6.4.2'
+
+    // JWT dependency
+    // https://mvnrepository.com/artifact/com.auth0/java-jwt
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
 }
 
 dependencyManagement {
