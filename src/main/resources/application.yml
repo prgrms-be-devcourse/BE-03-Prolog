@@ -28,6 +28,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  # security 설정
+  profiles:
+    include: security
+
   # Flyway 설정
   flyway:
     enabled: true
