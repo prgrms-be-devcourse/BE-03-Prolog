@@ -1,7 +1,10 @@
 package com.prgrms.prolog.domain.comment.model;
 
+import static javax.persistence.FetchType.*;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,7 +26,7 @@ public class Comment {
 	@Size(max = 255)
 	private String content;
 
-	@ManyToOne
-	@JoinColumn(name = "id")
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "post_id")
 	private Post post;
 }

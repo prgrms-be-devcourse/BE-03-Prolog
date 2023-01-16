@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Post {
 
-	private final int TITLE_MAX_SIZE = 50;
+	private static final int TITLE_MAX_SIZE = 50;
 
 	@Id
 	@GeneratedValue
