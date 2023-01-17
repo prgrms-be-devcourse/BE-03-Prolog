@@ -1,15 +1,15 @@
 spring:
-  # 프로파일 설정
-  config:
-    activate:
-      on-profile: local
+#  # 프로파일 설정
+#  config:
+#    activate:
+#      on-profile: local
 
   # 연결 DB 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${db.datasource.url}
-    username: ${db.datasource.username}
-    password: ${db.datasource.password}
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: root
     # 커넥션 풀 설정
     hikari:
       minimum-idle: 1
