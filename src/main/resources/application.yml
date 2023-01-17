@@ -38,3 +38,11 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace # 파라미터 값
+
+# 예외 처리 응답 설정
+server:
+  error:
+    include-binding-errors: never
+    include-exception: false
+    include-message: never
+    include-stacktrace: never
