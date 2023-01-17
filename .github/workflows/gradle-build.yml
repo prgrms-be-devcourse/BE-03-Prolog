@@ -21,11 +21,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-#
-#      - uses: actions/checkout@v3
-#      - run: touch ./src/main/resources/db/db.properties
-#      - run: echo "${{ secrets.APP }}" > ./src/main/resources/db/db.properties
-#      - run: cat ./src/main/resources/db/db.properties
+
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/db/db.properties
+      - run: echo "${{ secrets.APP }}" > ./src/main/resources/db/db.properties
+      - run: cat ./src/main/resources/db/db.properties
 
       - name: Create mysql docker container
         run: sudo docker run -d -p 3306:3306 --env MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
