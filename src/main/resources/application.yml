@@ -1,8 +1,8 @@
 spring:
-  # 프로파일 설정
-  config:
-    activate:
-      on-profile: local
+#  # 프로파일 설정
+#  config:
+#    activate:
+#      on-profile: local
 
   # 연결 DB 설정
   datasource:
