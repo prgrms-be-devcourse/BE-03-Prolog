@@ -1,0 +1,5 @@
+# jwt 설정
+jwt:
+  issuer: prgrms
+  secret-key: ProgrammersDevCourseBackEndRTeamProlog
+  expiry-seconds: 60
