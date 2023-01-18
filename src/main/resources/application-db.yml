@@ -11,6 +11,9 @@ spring:
       minimum-idle: 1
       maximum-pool-size: 5
       pool-name: MYSQL_DB
+  sql:
+    init:
+      schema-locations: db/migration/V1__init.sql
 
   # JPA 설정
   jpa:
