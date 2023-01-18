@@ -29,5 +29,5 @@ public abstract class BaseEntity {
 	private LocalDateTime updatedAt;
 
 	@Column(name = "created_by")
-	private Long createdBy;
+	private String createdBy;
 }
