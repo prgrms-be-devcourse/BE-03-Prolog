@@ -11,8 +11,8 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id: { CLIENT_ID }
-            client-secret: { CLIENT_SECRET }
+            client-id: ${CLIENT_ID}
+            client-secret: ${CLIENT_SECRET}
             scope: profile_nickname, account_email
             redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
