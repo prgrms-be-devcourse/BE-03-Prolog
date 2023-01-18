@@ -37,6 +37,11 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
+  # 메시지 소스 설정
+  messages:
+    encoding: UTF-8
+    basename: messages/exceptions/exception, messages/logs/log-form
+
 # SQL 로그 설정
 logging:
   level:
