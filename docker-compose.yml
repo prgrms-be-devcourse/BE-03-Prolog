@@ -1,0 +1,30 @@
+version : "3"
+services:
+  db:
+    container_name: prolog-db
+    image: mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysqldata:/var/lib/mysql
+    restart: always
+  app:
+    build:
+      context: "."
+      dockerfile: "Dockerfile"
+    container_name: prolog-app
+    ports:
+      - "8080:8080"
+    working_dir: /app
+    depends_on:
+      - db
+    restart: always
+    environment:
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_DRIVERCLASSNAME: com.mysql.cj.jdbc.Driver
+
