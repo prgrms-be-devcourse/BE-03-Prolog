@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // OAuth2-Client dependency
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // RestDocs API SPEC
@@ -69,6 +70,7 @@ dependencies {
     // JWT dependency
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+
 }
 
 dependencyManagement {

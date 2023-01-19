@@ -1,6 +1,7 @@
 package com.prgrms.prolog.global.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.prgrms.prolog.global.jwt.JwtAuthenticationEntryPoint;
 import com.prgrms.prolog.global.jwt.JwtAuthenticationFilter;
+import com.prgrms.prolog.global.oauth.OAuthAuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,6 +22,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final OAuthAuthenticationSuccessHandler oauthAuthenticationSuccessHandler;
 
 	@Override
 	public void configure(WebSecurity web) {
@@ -41,9 +44,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.requestCache().disable()
 			.headers().disable()
+			.logout()
+			.and()
 			// 세션 설정 -> 사용 X
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			//OAuth 로그인
+			.oauth2Login()
+			.successHandler(oauthAuthenticationSuccessHandler)
 			.and()
 			// jwt 필터 추가
 			.exceptionHandling()
