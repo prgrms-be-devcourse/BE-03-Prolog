@@ -26,7 +26,7 @@ jobs:
         run: sudo docker run -d -p 3306:3306 --env MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
 
       - name: Create db config file
-      - run: echo "${{ secrets.APP }}" > ./src/main/resources/db/db.properties
+        run: echo "${{ secrets.APP }}" > ./src/main/resources/db/db.properties
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
