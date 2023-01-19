@@ -3,10 +3,10 @@ name: Docker Build and Push
 on:
   push:
     branches:
-      - main
+      - "**"
   pull_request:
     branches:
-      - main
+      - "**"
 
 permissions:
   contents: read
@@ -25,15 +25,13 @@ jobs:
       - name: Create mysql docker container
         run: sudo docker run -d -p 3306:3306 --env MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
 
-      - uses: actions/checkout@v3
-      - run: echo "${{ secrets.DOCKER }}" > ./.env
+      - name: Create db config file
       - run: echo "${{ secrets.APP }}" > ./src/main/resources/db/db.properties
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build Project
-        run: ./gradlew build
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: build
 
       - name: build and push
         run: |
@@ -41,16 +39,29 @@ jobs:
           docker build -t fortune00/prolog .
           docker push fortune00/prolog:latest
 
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v1
-#        with:
-#          username: ${{secrets.DOCKERHUB_USERNAME}}
-#          password: ${{secrets.DOCKERHUB_PASSWORD}}
-#
-#      - name: Build and Push
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: .
-#          file: Dockerfile
-#          push: true
-#          tags: fortune00/prolog:latest
+      #      - name: Login to DockerHub
+      #        uses: docker/login-action@v1
+      #        with:
+      #          username: ${{secrets.DOCKERHUB_USERNAME}}
+      #          password: ${{secrets.DOCKERHUB_PASSWORD}}
+      #
+      #      - name: Build and Push
+      #        uses: docker/build-push-action@v3
+      #        with:
+      #          context: .
+      #          file: Dockerfile
+      #          push: true
+      #          tags: fortune00/prolog:latest
+
+      - name: ssh commands and run app in aws
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_KEY }}
+          script: |
+            sudo docker-compose down
+            sudo docker pull fortune00/prolog
+            echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
+            echo "${{ secrets.DOCKER }}" > ./.env
+            sudo docker-compose up -d
