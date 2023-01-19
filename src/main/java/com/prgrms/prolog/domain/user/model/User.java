@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -46,7 +47,7 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private final List<Post> posts = new ArrayList<>();
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Size(max = 100)
 	private String email;
