@@ -24,6 +24,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
 --- # local
 spring.config.activate.on-profile: "db-local"
 
