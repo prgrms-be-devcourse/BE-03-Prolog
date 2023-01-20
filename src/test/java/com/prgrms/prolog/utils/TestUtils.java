@@ -31,7 +31,7 @@ public class TestUtils {
 	// JWT
 	public static final String ISSUER = "prgrms";
 	public static final String SECRET_KEY = "prgrmsbackenddevrteamprologkwonj";
-	public static final int EXPIRY_SECONDS = 60;
+	public static final int EXPIRY_SECONDS = 2;
 
 	public static final JwtTokenProvider JWT_TOKEN_PROVIDER
 		= new JwtTokenProvider(ISSUER, SECRET_KEY, EXPIRY_SECONDS);

@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 
+import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -46,6 +47,8 @@ public class User extends BaseEntity {
 		= Pattern.compile("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$");
 	@OneToMany(mappedBy = "user")
 	private final List<Post> posts = new ArrayList<>();
+	@OneToMany(mappedBy = "user")
+	private final List<Comment> comments = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -126,6 +129,10 @@ public class User extends BaseEntity {
 
 	public void changePrologName(String prologName) {
 		this.prologName = validatePrologName(prologName);
+	}
+
+	public boolean checkSameEmail(String email) {
+		return this.email.equals(email);
 	}
 
 	@Override
