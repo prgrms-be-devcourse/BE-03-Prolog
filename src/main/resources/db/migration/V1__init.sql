@@ -1,4 +1,6 @@
 -- V1__init.sql
+create database if not exists prolog;
+use prolog;
 DROP TABLE IF EXISTS social_account;
 DROP TABLE IF EXISTS comment;
 DROP TABLE IF EXISTS post;
