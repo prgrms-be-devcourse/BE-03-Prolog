@@ -14,13 +14,11 @@ import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.StringUtils;
@@ -31,12 +29,17 @@ import org.springframework.web.util.WebUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@WebFilter("/*")
+@Configuration
 public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 
 	private static final int MAX_PAYLOAD_LENGTH = 200;
 	private static final String MULTIPART_FORM_DATA = "multipart/form-data";
 	private static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+
+	@Override
+	protected boolean shouldLog(HttpServletRequest request) {
+		return log.isDebugEnabled();
+	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -84,14 +87,8 @@ public class CustomRequestLoggingFilter extends AbstractRequestLoggingFilter {
 		if (wrapper != null) {
 			byte[] buf = wrapper.getContentAsByteArray();
 			if (buf.length > 0) {
-				String payload = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf), UTF_8)).lines()
+				return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf), UTF_8)).lines()
 					.collect(Collectors.joining());
-				try {
-					return new JSONObject(payload).toString();
-				} catch (JSONException e) {
-					log.debug("LoggingFilter Error ---->", e);
-				}
-				return payload;
 			}
 		}
 		return null;

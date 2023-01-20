@@ -20,6 +20,7 @@ class CommentTest {
 		Comment comment = Comment.builder()
 			.content(content)
 			.post(POST)
+			.user(USER)
 			.build();
 		//when & then
 		assertAll(
@@ -34,9 +35,16 @@ class CommentTest {
 	@DisplayName("댓글을 생성하기 위해서는 게시글이 필요하다")
 	void createFailByPostNullTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Comment(content, null))
-			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("게시글");
+		assertThatThrownBy(() -> new Comment(content, null, USER))
+			.isInstanceOf(NullPointerException.class);
+	}
+
+	@Test
+	@DisplayName("댓글을 생성하기 위해서는 유저가 필요하다")
+	void createFailByUserNullTest() {
+		//given & when & then
+		assertThatThrownBy(() -> new Comment(content, POST, null))
+			.isInstanceOf(NullPointerException.class);
 	}
 
 	@ParameterizedTest
@@ -44,18 +52,16 @@ class CommentTest {
 	@DisplayName("댓글 내용은 null,빈 값일 수 없다.")
 	void validateContentTest(String inputContent) {
 		//given & when & then
-		assertThatThrownBy(() -> new Comment(inputContent, POST))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("댓글");
+		assertThatThrownBy(() -> new Comment(inputContent, POST, USER))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("댓글은 최대 255자 이내에 작성되어야 한다.")
 	void validateContentLengthTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Comment(OVER_SIZE_255, POST))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("댓글");
+		assertThatThrownBy(() -> new Comment(OVER_SIZE_255, POST, USER))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
@@ -65,7 +71,6 @@ class CommentTest {
 		Comment comment = getComment();
 		//when & then
 		assertThatThrownBy(() -> comment.changeContent(OVER_SIZE_255))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("댓글");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

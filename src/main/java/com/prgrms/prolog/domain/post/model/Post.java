@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.post.model;
 
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Post extends BaseEntity {
 	private static final String OVER_LENGTH_MESSAGE = "입력할 수 있는 범위를 초과하였습니다.";
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	private String title;
@@ -62,7 +63,7 @@ public class Post extends BaseEntity {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
-		this.user = Objects.requireNonNull(user, USER_INFO_NEED_MESSAGE);
+		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
 	}
 
 	public void setUser(User user) {
@@ -107,12 +108,12 @@ public class Post extends BaseEntity {
 	}
 
 	private void checkText(String text) {
-		Assert.hasText(text, NOT_NULL_DATA_MESSAGE);
+		Assert.hasText(text, "exception.comment.text");
 	}
 
 	private void checkOverLength(String text, int length) {
 		if (text.length() > length) {
-			throw new IllegalArgumentException(OVER_LENGTH_MESSAGE);
+			throw new IllegalArgumentException("exception.post.text.overLength");
 		}
 	}
 }
