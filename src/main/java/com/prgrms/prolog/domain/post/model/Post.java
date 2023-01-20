@@ -9,17 +9,19 @@ import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Size;
 
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
+import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.user.model.User;
+import com.prgrms.prolog.global.common.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,29 +31,32 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post {
+public class Post extends BaseEntity {
 
 	private static final int TITLE_MAX_SIZE = 50;
 	private static final int CONTENT_MAX_SIZE = 65535;
 
-	@OneToMany(mappedBy = "post")
-	private final List<Comment> comments = new ArrayList<>();
+	private static final String USER_INFO_NEED_MESSAGE = "게시글은 작성자 정보가 필요합니다.";
+	private static final String NOT_NULL_DATA_MESSAGE = "빈 값일 수 없는 데이터입니다.";
+	private static final String OVER_LENGTH_MESSAGE = "입력할 수 있는 범위를 초과하였습니다.";
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
-	@Size(max = TITLE_MAX_SIZE)
 	private String title;
 
 	@Lob
 	private String content;
 
-	private boolean openStatus;
+	private boolean openStatus = true;
 
-	@ManyToOne(fetch = EAGER)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	@OneToMany(mappedBy = "post")
+	private final List<Comment> comments = new ArrayList<>();
 
 	@Builder
 	public Post(String title, String content, boolean openStatus, User user) {
@@ -79,6 +84,15 @@ public class Post {
 
 	public void changeOpenStatus(boolean openStatus) {
 		this.openStatus = openStatus;
+	}
+
+	public void changePost(UpdateRequest updateRequest) {
+		validateTitle(updateRequest.title());
+		validateContent(updateRequest.content());
+
+		this.title = updateRequest.title();
+		this.content = updateRequest.content();
+		this.openStatus = updateRequest.openStatus();
 	}
 
 	private String validateTitle(String title) {

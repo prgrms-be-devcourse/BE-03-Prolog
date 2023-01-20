@@ -1,7 +1,7 @@
 # jwt 설정
 jwt:
-  issuer: prgrms
-  secret-key: ProgrammersDevCourseBackEndRTeamProlog
+  issuer: ${JWT_ISSUER}
+  secret-key: ${JWT_SECRET_KEY}
   expiry-seconds: 60
 
 spring:
