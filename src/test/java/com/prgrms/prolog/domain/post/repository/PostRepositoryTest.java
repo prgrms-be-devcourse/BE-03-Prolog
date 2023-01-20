@@ -22,7 +22,7 @@ import com.prgrms.prolog.global.config.DatabaseConfig;
 import com.prgrms.prolog.global.config.JpaConfig;
 
 @DataJpaTest
-@Import({DatabaseConfig.class, JpaConfig.class})
+@Import({JpaConfig.class})
 @AutoConfigureTestDatabase(replace = Replace.NONE)
 class PostRepositoryTest {
 

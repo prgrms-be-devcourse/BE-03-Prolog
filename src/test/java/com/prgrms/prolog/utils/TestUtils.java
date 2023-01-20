@@ -64,6 +64,7 @@ public class TestUtils {
 		return Comment.builder()
 			.content("내용")
 			.post(POST)
+			.user(USER)
 			.build();
 	}
 

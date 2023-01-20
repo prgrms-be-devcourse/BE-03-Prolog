@@ -21,7 +21,7 @@ import com.prgrms.prolog.global.config.JpaConfig;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
-@Import({DatabaseConfig.class, JpaConfig.class})
+@Import({JpaConfig.class})
 class CommentRepositoryTest {
 
 	@Autowired

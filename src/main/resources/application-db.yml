@@ -25,6 +25,10 @@ spring:
   flyway:
     enabled: false
 
+  messages:
+    encoding: UTF-8
+    basename: messages/exceptions/exception, messages/logs/log-form
+
 --- # local
 spring:
   config.activate.on-profile: "db-local"
