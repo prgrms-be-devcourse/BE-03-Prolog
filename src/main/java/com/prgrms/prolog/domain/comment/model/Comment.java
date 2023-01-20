@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.comment.model;
 
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
 
 import java.util.Objects;
 
@@ -14,24 +15,27 @@ import javax.validation.constraints.Size;
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Getter
 public class Comment extends BaseEntity {
 
-	private static final String CONTENT_OVER_LENGTH_MESSAGE = "댓글 내용의 최대 글자 수를 초과하였습나다.";
-	private static final String CONTENT_EMPTY_VALUE_MESSAGE = "댓글 내용은 빈 값일 수 없습니다.";
+	private static final String CONTENT_OVER_LENGTH_MESSAGE = "exception.comment.content.overLength";
+	private static final String CONTENT_EMPTY_VALUE_MESSAGE = "exception.comment.content.empty";
 	private static final int CONTENT_MAX_SIZE = 255;
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@Size(max = 255)
@@ -41,10 +45,15 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "post_id")
 	private Post post;
 
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "user_id")
+	private User user;
+
 	@Builder
-	public Comment(String content, Post post) {
+	public Comment(String content, Post post, User user) {
 		this.content = validateContent(content);
-		this.post = Objects.requireNonNull(post, "해당 하는 게시글이 필요합니다");
+		this.post = Objects.requireNonNull(post, "exception.post.require");
+		this.user = Objects.requireNonNull(user, "exception.user.require");
 	}
 
 	public void changeContent(String content) {
@@ -63,6 +72,11 @@ public class Comment extends BaseEntity {
 		}
 		this.post = post;
 		post.getComments().add(this);
+	}
+
+	public boolean checkUserEmail(String email) {
+		Assert.notNull(user, "exception.user.notExists");
+		return this.user.checkSameEmail(email);
 	}
 }
 
