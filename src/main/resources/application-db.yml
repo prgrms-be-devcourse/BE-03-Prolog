@@ -24,6 +24,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  messages:
+    encoding: UTF-8
+    basename: messages/exceptions/exception, messages/logs/log-form
+
 --- # local
 spring.config.activate.on-profile: "db-local"
 
