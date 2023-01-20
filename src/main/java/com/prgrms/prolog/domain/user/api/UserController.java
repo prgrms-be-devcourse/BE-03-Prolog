@@ -14,7 +14,7 @@ import com.prgrms.prolog.global.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping(name = "/api/v1/users")
+@RequestMapping(value = "/api/v1/users")
 @RestController
 public class UserController {
 

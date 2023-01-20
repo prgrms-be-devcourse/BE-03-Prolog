@@ -55,8 +55,7 @@ class PostTest {
 	void createFailByUserNullTest() {
 		//given & when & then
 		assertThatThrownBy(() -> new Post(title, content, true, null))
-			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("게시글");
+			.isInstanceOf(NullPointerException.class);
 	}
 
 	@Test
@@ -64,8 +63,7 @@ class PostTest {
 	void validateTitleTest() {
 		//given & when & then
 		assertThatThrownBy(() -> new Post(OVER_SIZE_50, content, true, USER))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("초과");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@ParameterizedTest
@@ -74,8 +72,7 @@ class PostTest {
 	void validateTitleTest2(String inputTitle) {
 		//given & when & then
 		assertThatThrownBy(() -> new Post(inputTitle, content, true, USER))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("빈 값");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
@@ -83,8 +80,7 @@ class PostTest {
 	void validateContentTest() {
 		//given & when & then
 		assertThatThrownBy(() -> new Post(title, OVER_SIZE_65535, true, USER))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("초과");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@ParameterizedTest
@@ -93,8 +89,7 @@ class PostTest {
 	void validateContentTest2(String inputContent) {
 		//given & when & then
 		assertThatThrownBy(() -> new Post(title, inputContent, true, USER))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("빈 값");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test

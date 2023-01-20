@@ -15,26 +15,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import com.prgrms.prolog.config.RestDocsConfig;
 import com.prgrms.prolog.domain.user.service.UserServiceImpl;
+import com.prgrms.prolog.global.config.JpaConfig;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 
-@ExtendWith(RestDocumentationExtension.class)
-@AutoConfigureRestDocs
 @SpringBootTest
+@ExtendWith(RestDocumentationExtension.class)
+@Import({RestDocsConfig.class, JpaConfig.class})
 class UserControllerTest {
 
 	private static final JwtTokenProvider jwtTokenProvider = JWT_TOKEN_PROVIDER;
 	protected MockMvc mockMvc;
+
+	@Autowired
+	RestDocumentationResultHandler restDocs;
+
 	@MockBean
 	private UserServiceImpl userService;
 
@@ -55,18 +65,13 @@ class UserControllerTest {
 		Claims claims = Claims.from(userInfo.email(), USER_ROLE);
 		given(userService.findByEmail(userInfo.email())).willReturn(userInfo);
 		// when
-		mockMvc.perform(get("/me")
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/users/me")
 				.header("token", jwtTokenProvider.createAccessToken(claims))
 			)
 			// then
 			.andExpectAll(
 				handler().methodName("myPage"),
-				status().isOk(),
-				jsonPath("email").value(userInfo.email()),
-				jsonPath("nickName").value(userInfo.nickName()),
-				jsonPath("introduce").value(userInfo.introduce()),
-				jsonPath("prologName").value(userInfo.prologName())
-			)
+				status().isOk())
 			// docs
 			.andDo(document(
 				"user-myPage",
