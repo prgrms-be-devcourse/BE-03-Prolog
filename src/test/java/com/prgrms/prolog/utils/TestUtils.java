@@ -30,7 +30,7 @@ public class TestUtils {
 	public static final String OVER_SIZE_65535 = "012345" + "1234567890".repeat(6553);
 	// JWT
 	public static final String ISSUER = "prgrms";
-	public static final String SECRET_KEY = "ProgrammersDevCourseBackEndRTeamProlog";
+	public static final String SECRET_KEY = "prgrmsbackenddevrteamprologkwonj";
 	public static final int EXPIRY_SECONDS = 60;
 
 	public static final JwtTokenProvider JWT_TOKEN_PROVIDER
