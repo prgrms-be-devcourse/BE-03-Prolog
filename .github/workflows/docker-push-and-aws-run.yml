@@ -3,10 +3,7 @@ name: Docker Build and Push & Run AWS
 on:
   push:
     branches:
-      - develop
-  pull_request:
-    branches:
-      - develop
+      - main
 
 permissions:
   contents: read
@@ -23,10 +20,10 @@ jobs:
           distribution: 'temurin'
 
       - name: Create mysql docker container
-        run: sudo docker run -d -p 3306:3306 --env MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" --env MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
+        run: sudo docker run -d -p 3306:3306 -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
 
       - name: Create db config file
-        run: echo "${{ secrets.DB_PROPERTIES }}" > ./src/main/resources/db/db.properties
+        run: echo "${{ secrets.DB_PROPERTIES }}" > ./.env
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
@@ -39,20 +36,6 @@ jobs:
           docker build -t fortune00/prolog .
           docker push fortune00/prolog:latest
 
-      #      - name: Login to DockerHub
-      #        uses: docker/login-action@v1
-      #        with:
-      #          username: ${{secrets.DOCKERHUB_USERNAME}}
-      #          password: ${{secrets.DOCKERHUB_PASSWORD}}
-      #
-      #      - name: Build and Push
-      #        uses: docker/build-push-action@v3
-      #        with:
-      #          context: .
-      #          file: Dockerfile
-      #          push: true
-      #          tags: fortune00/prolog:latest
-
       - name: Access aws server and run the app
         uses: appleboy/ssh-action@master
         with:
@@ -61,6 +44,7 @@ jobs:
           key: ${{ secrets.AWS_KEY }}
           script: |
             sudo docker-compose down
+            sudo docker rmi fortune00/prolog
             sudo docker pull fortune00/prolog
             echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
             echo "${{ secrets.DOCKER_COMPOSE_ENV }}" > ./.env
