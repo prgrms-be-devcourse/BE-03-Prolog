@@ -50,9 +50,6 @@ class UserControllerTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private UserRepository userRepository;
-
 	@BeforeEach
 	void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
