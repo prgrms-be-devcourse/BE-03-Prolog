@@ -1,5 +1,7 @@
 package com.prgrms.prolog.global.oauth;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,10 +11,13 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -22,25 +27,27 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 	private static final String SLASH = "/";
 
 	private final OAuthService oauthService;
+	private final ObjectMapper objectMapper;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-		Authentication authentication) {
+		Authentication authentication) throws IOException {
 		String providerName = extractProviderName(request);
 		Object principal = authentication.getPrincipal();
 
 		if (principal instanceof OAuth2User oauth2User) {
 			UserProfile userProfile = OAuthProvider.toUserProfile(oauth2User, providerName);
 			String accessToken = oauthService.login(userProfile);
-			setResponse(response, accessToken);
+			setResponse(response, accessToken); // TODO: 헤더에 넣기
 		}
 	}
 
-	private void setResponse(HttpServletResponse response, String accessToken) {
+	private void setResponse(HttpServletResponse response, String accessToken) throws IOException {
 		response.setStatus(HttpStatus.OK.value());
 		response.setContentType(CONTENT_TYPE);
 		response.setCharacterEncoding(CHARACTER_ENCODING);
-		response.setHeader("token", accessToken);
+		log.debug(accessToken);
+		response.getWriter().write(objectMapper.writeValueAsString(accessToken));
 	}
 
 	private String extractProviderName(HttpServletRequest request) {
