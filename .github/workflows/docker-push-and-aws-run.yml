@@ -20,7 +20,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Create mysql docker container
-        run: sudo docker run -d -p 3306:3306 -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
+        run: sudo docker run -d -p 3306:3306 -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
 
       - name: Create db config file
         run: echo "${{ secrets.DB_PROPERTIES }}" > ./.env
