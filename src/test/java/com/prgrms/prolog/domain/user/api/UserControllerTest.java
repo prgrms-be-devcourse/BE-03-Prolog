@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -63,7 +62,8 @@ class UserControllerTest {
 		given(userService.findByEmail(userInfo.email())).willReturn(userInfo);
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/users/me")
-				.header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtTokenProvider.createAccessToken(claims))
+					.header("token", jwtTokenProvider.createAccessToken(claims))
+				// .header(HttpHeaders.AUTHORIZATION, "token" + jwtTokenProvider.createAccessToken(claims))
 			)
 			// then
 			.andExpectAll(
