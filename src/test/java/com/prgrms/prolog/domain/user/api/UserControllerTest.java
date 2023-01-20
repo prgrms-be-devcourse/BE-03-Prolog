@@ -28,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.prgrms.prolog.config.RestDocsConfig;
+import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.domain.user.service.UserServiceImpl;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 
@@ -42,6 +43,8 @@ class UserControllerTest {
 	RestDocumentationResultHandler restDocs;
 	@MockBean
 	private UserServiceImpl userService;
+	@Autowired
+	private UserRepository userRepository;
 
 	@BeforeEach
 	void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
@@ -58,8 +61,9 @@ class UserControllerTest {
 	void userPage() throws Exception {
 		// given
 		UserInfo userInfo = getUserInfo();
-		Claims claims = Claims.from(userInfo.email(), USER_ROLE);
-		given(userService.findByEmail(userInfo.email())).willReturn(userInfo);
+		userRepository.save(USER);
+		Claims claims = Claims.from(USER_EMAIL, USER_ROLE);
+		given(userService.findByEmail(USER_EMAIL)).willReturn(userInfo);
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/users/me")
 					.header("token", jwtTokenProvider.createAccessToken(claims))
