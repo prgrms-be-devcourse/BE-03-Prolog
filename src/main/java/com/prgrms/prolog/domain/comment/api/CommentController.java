@@ -27,7 +27,7 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping("/{post_id}/comments")
-	public ResponseEntity save(
+	public ResponseEntity<Void> save(
 		@PathVariable(name = "post_id") Long postId,
 		@Valid @RequestBody CreateCommentRequest request,
 		@AuthenticationPrincipal JwtAuthentication jwt
@@ -38,7 +38,7 @@ public class CommentController {
 	}
 
 	@PatchMapping("/{post_id}/comments/{id}")
-	public ResponseEntity update(
+	public ResponseEntity<Void> update(
 		@PathVariable(name = "post_id") Long postId,
 		@PathVariable(name = "id") Long commentId,
 		@Valid @RequestBody UpdateCommentRequest request,
