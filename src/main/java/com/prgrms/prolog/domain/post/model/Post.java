@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.post.model;
 
 import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Post {
 	private final List<Comment> comments = new ArrayList<>();
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	@Size(max = TITLE_MAX_SIZE)
@@ -57,7 +58,7 @@ public class Post {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
-		this.user = Objects.requireNonNull(user, "게시글은 작성자 정보가 필요합니다.");
+		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
 	}
 
 	public void setUser(User user) {
@@ -93,12 +94,12 @@ public class Post {
 	}
 
 	private void checkText(String text) {
-		Assert.hasText(text, "빈 값일 수 없는 데이터입니다.");
+		Assert.hasText(text, "exception.comment.text");
 	}
 
 	private void checkOverLength(String text, int length) {
 		if (text.length() > length) {
-			throw new IllegalArgumentException("입력할 수 있는 범위를 초과하였습니다.");
+			throw new IllegalArgumentException("exception.post.text.overLength");
 		}
 	}
 }
