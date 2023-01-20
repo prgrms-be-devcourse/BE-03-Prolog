@@ -42,7 +42,7 @@ CREATE TABLE post
     updated_at  datetime     NOT NULL DEFAULT now(),
     deleted_at  datetime,
     user_id     bigint       NOT NULL,
-    series_id   bigint       NOT NULL,
+    series_id   bigint       NULL,
     FOREIGN KEY fk_post_user_id (user_id) REFERENCES users (id),
     FOREIGN KEY fk_post_series_id (series_id) REFERENCES series (id)
 );
