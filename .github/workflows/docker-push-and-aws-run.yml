@@ -3,7 +3,7 @@ name: Docker Build and Push & Run AWS
 on:
   push:
     branches:
-      - "**"
+      - main
 
 permissions:
   contents: read
