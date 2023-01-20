@@ -8,35 +8,43 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import com.prgrms.prolog.config.RestDocsConfig;
+import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.domain.user.service.UserServiceImpl;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 
 @ExtendWith(RestDocumentationExtension.class)
-@AutoConfigureRestDocs
+@Import(RestDocsConfig.class)
 @SpringBootTest
 class UserControllerTest {
 
 	private static final JwtTokenProvider jwtTokenProvider = JWT_TOKEN_PROVIDER;
 	protected MockMvc mockMvc;
+	@Autowired
+	RestDocumentationResultHandler restDocs;
 	@MockBean
 	private UserServiceImpl userService;
+	@Autowired
+	private UserRepository userRepository;
 
 	@BeforeEach
 	void setUp(WebApplicationContext context, RestDocumentationContextProvider provider) {
@@ -44,6 +52,7 @@ class UserControllerTest {
 			.addFilter(new CharacterEncodingFilter("UTF-8", true))
 			.apply(documentationConfiguration(provider))
 			.apply(springSecurity())
+			.alwaysDo(restDocs)
 			.build();
 	}
 
@@ -52,11 +61,13 @@ class UserControllerTest {
 	void userPage() throws Exception {
 		// given
 		UserInfo userInfo = getUserInfo();
-		Claims claims = Claims.from(userInfo.email(), USER_ROLE);
-		given(userService.findByEmail(userInfo.email())).willReturn(userInfo);
+		userRepository.save(USER);
+		Claims claims = Claims.from(USER_EMAIL, USER_ROLE);
+		given(userService.findByEmail(USER_EMAIL)).willReturn(userInfo);
 		// when
-		mockMvc.perform(get("/me")
-				.header("token", jwtTokenProvider.createAccessToken(claims))
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/users/me")
+					.header("token", jwtTokenProvider.createAccessToken(claims))
+				// .header(HttpHeaders.AUTHORIZATION, "token" + jwtTokenProvider.createAccessToken(claims))
 			)
 			// then
 			.andExpectAll(
@@ -68,8 +79,7 @@ class UserControllerTest {
 				jsonPath("prologName").value(userInfo.prologName())
 			)
 			// docs
-			.andDo(document(
-				"user-myPage",
+			.andDo(restDocs.document(
 				responseFields(
 					fieldWithPath("email").type(STRING).description("이메일"),
 					fieldWithPath("nickName").type(STRING).description("닉네임"),
