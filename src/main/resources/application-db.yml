@@ -1,11 +1,9 @@
 # default
 spring:
-  # 연결 DB 설정
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/prolog
-    username: ${MYSQL_DATABASE}
-    password: ${MYSQL_ROOT_PASSWORD}
+
     # 커넥션 풀 설정
     hikari:
       minimum-idle: 1
@@ -24,18 +22,34 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+  flyway:
+    enabled: false
+
 --- # local
-spring.config.activate.on-profile: "db-local"
+spring:
+  config.activate.on-profile: "db-local"
+
+  datasource:
+    url: ${db.datasource.url}
+    username: ${db.datasource.username}
+    password: ${db.datasource.password}
 
 # SQL 로그 설정
 logging:
   level:
     org.hibernate.SQL: debug
-    org.hibernate.type: info # 파라미터 값
+    org.hibernate.type: trace # 파라미터 값
 
 --- # prod
 spring:
-  config.activate.on-profile: "db-prod"
+  config:
+    activate.on-profile: "db-prod"
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_ROOT_PASSWORD}
 
   # Flyway 설정
   flyway:
