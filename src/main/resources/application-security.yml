@@ -14,7 +14,7 @@ spring:
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
             scope: profile_nickname, account_email
-            redirect-uri: "http://localhost:8080/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://43.200.173.123:8080/login/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-authentication-method: POST
         provider:
