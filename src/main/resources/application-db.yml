@@ -31,12 +31,9 @@ spring:
 
 --- # local
 spring:
-  config.activate.on-profile: "db-local"
-
-  datasource:
-    url: ${db.datasource.url}
-    username: ${db.datasource.username}
-    password: ${db.datasource.password}
+  config:
+    activate.on-profile: "db-local"
+    import: optional:file:.env[.properties]
 
 # SQL 로그 설정
 logging:

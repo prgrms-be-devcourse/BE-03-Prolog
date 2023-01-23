@@ -28,7 +28,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.prgrms.prolog.config.RestDocsConfig;
-
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.domain.user.service.UserServiceImpl;
 import com.prgrms.prolog.global.config.JpaConfig;
@@ -68,7 +67,7 @@ class UserControllerTest {
 		Claims claims = Claims.from(USER_EMAIL, USER_ROLE);
 		given(userService.findByEmail(USER_EMAIL)).willReturn(userInfo);
 		// when
-		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/users/me")
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/user/me")
 					.header("token", jwtTokenProvider.createAccessToken(claims))
 				// .header(HttpHeaders.AUTHORIZATION, "token" + jwtTokenProvider.createAccessToken(claims))
 			)

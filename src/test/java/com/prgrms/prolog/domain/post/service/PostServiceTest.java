@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.prgrms.prolog.config.TestContainerConfig;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
@@ -23,12 +24,12 @@ import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.config.DatabaseConfig;
 
 @Import(DatabaseConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest
 @Transactional
+@Import(TestContainerConfig.class)
 class PostServiceTest {
 
 	@Autowired

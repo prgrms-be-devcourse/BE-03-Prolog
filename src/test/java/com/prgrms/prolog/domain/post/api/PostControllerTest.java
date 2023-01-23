@@ -10,30 +10,40 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.prolog.config.RestDocsConfig;
+import com.prgrms.prolog.config.TestContainerConfig;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
-@AutoConfigureRestDocs
+@ExtendWith(RestDocumentationExtension.class)
+@Import({RestDocsConfig.class, TestContainerConfig.class})
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
 class PostControllerTest {
 
-	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	RestDocumentationResultHandler restDocs;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
@@ -49,6 +59,11 @@ class PostControllerTest {
 		userRepository.save(USER);
 		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", false);
 		postId = postService.save(createRequest, USER_EMAIL);
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+			.apply(documentationConfiguration(restDocumentation))
+			.alwaysDo(restDocs)
+			.apply(springSecurity())
+			.build();
 	}
 
 	@Test
