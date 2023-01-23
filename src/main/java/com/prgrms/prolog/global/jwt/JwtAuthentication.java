@@ -7,6 +7,7 @@ public record JwtAuthentication(String token, String userEmail) {
 	public JwtAuthentication {
 		validateToken(token);
 		validateUserEmail(userEmail);
+
 	}
 
 	private void validateToken(String token) {

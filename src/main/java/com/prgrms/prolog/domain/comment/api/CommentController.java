@@ -30,9 +30,9 @@ public class CommentController {
 	public ResponseEntity<Void> save(
 		@PathVariable(name = "post_id") Long postId,
 		@Valid @RequestBody CreateCommentRequest request,
-		@AuthenticationPrincipal JwtAuthentication jwt
+		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		String userEmail = jwt.userEmail();
+		String userEmail = user.userEmail();
 		commentService.save(request, userEmail, postId);
 		return ResponseEntity.status(CREATED).build();
 	}
@@ -42,9 +42,9 @@ public class CommentController {
 		@PathVariable(name = "post_id") Long postId,
 		@PathVariable(name = "id") Long commentId,
 		@Valid @RequestBody UpdateCommentRequest request,
-		@AuthenticationPrincipal JwtAuthentication jwt
+		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		String userEmail = jwt.userEmail();
+		String userEmail = user.userEmail();
 		commentService.update(request, userEmail, commentId);
 		return ResponseEntity.ok().build();
 	}

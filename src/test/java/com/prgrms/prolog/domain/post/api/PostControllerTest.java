@@ -3,7 +3,7 @@ package com.prgrms.prolog.domain.post.api;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -55,7 +55,8 @@ class PostControllerTest {
 	Long postId;
 
 	@BeforeEach
-	void setUp() {
+	void setUp(WebApplicationContext webApplicationContext,
+		RestDocumentationContextProvider restDocumentation) {
 		userRepository.save(USER);
 		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", false);
 		postId = postService.save(createRequest, USER_EMAIL);

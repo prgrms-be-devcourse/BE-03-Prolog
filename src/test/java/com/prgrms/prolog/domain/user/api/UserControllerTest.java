@@ -1,9 +1,7 @@
 package com.prgrms.prolog.domain.user.api;
 
-import static com.prgrms.prolog.domain.user.dto.UserDto.*;
 import static com.prgrms.prolog.global.jwt.JwtTokenProvider.*;
 import static com.prgrms.prolog.utils.TestUtils.*;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -16,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -43,7 +40,7 @@ class UserControllerTest {
 
 	@Autowired
 	RestDocumentationResultHandler restDocs;
-	@MockBean
+	@Autowired
 	private UserServiceImpl userService;
 	@Autowired
 	private UserRepository userRepository;
@@ -62,10 +59,8 @@ class UserControllerTest {
 	@DisplayName("사용자는 자신의 프로필 정보를 확인할 수 있다")
 	void userPage() throws Exception {
 		// given
-		UserInfo userInfo = getUserInfo();
 		userRepository.save(USER);
 		Claims claims = Claims.from(USER_EMAIL, USER_ROLE);
-		given(userService.findByEmail(USER_EMAIL)).willReturn(userInfo);
 		// when
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/user/me")
 					.header("token", jwtTokenProvider.createAccessToken(claims))

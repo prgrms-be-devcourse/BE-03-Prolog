@@ -2,11 +2,11 @@ package com.prgrms.prolog.domain.user.Repository;
 
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,18 +28,17 @@ class UserRepositoryTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Test
-	@DisplayName("정상적으로 DB에 저장이 된다.")
-	void saveTest() {
-		// given & when & then
-		assertDoesNotThrow(() -> userRepository.save(getUser()));
+	private User savedUser;
+
+	@BeforeEach
+	void setUp() {
+		savedUser = userRepository.save(getUser());
 	}
 
 	@Test
 	@DisplayName("저장된 유저 정보를 유저ID로 찾아 가져올 수 있다.")
 	void saveAndFindByIdTest() {
 		// given
-		User savedUser = userRepository.save(getUser());
 		// when
 		Optional<User> foundUser = userRepository.findById(savedUser.getId());
 		// then
@@ -47,14 +46,12 @@ class UserRepositoryTest {
 		assertThat(foundUser.get())
 			.usingRecursiveComparison()
 			.isEqualTo(savedUser);
-
 	}
 
 	@Test
 	@DisplayName("이메일로 저장된 유저 정보를 조회할 수 있다.")
 	void findEmailTest() {
 		// given
-		User savedUser = userRepository.save(getUser());
 		// when
 		Optional<User> foundUser = userRepository.findByEmail(savedUser.getEmail());
 		// then
@@ -68,9 +65,8 @@ class UserRepositoryTest {
 	@DisplayName("저장되지 않은 유저는 조회할 수 없다.")
 	void findFailTest() {
 		// given
-		User notSavedUser = getUser();
 		// when
-		Optional<User> foundUser = userRepository.findByEmail(notSavedUser.getEmail());
+		Optional<User> foundUser = userRepository.findByEmail("unsavedUserEmail@test.com");
 		// then
 		assertThat(foundUser).isNotPresent();
 	}

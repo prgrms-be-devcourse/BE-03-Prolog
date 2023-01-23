@@ -10,7 +10,7 @@ import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 public class TestUtils {
 
 	// User Data
-	public static final String USER_EMAIL = "Dev@programmers.com";
+	public static final String USER_EMAIL = "dev@programmers.com";
 	public static final String USER_NICK_NAME = "머쓱이";
 	public static final String USER_INTRODUCE = "머쓱이에욤";
 	public static final String USER_PROLOG_NAME = "머쓱이의 prolog";
