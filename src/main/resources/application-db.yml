@@ -25,9 +25,6 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
-  flyway:
-    enabled: false
-
   messages:
     encoding: UTF-8
     basename: messages/exceptions/exception, messages/logs/log-form
@@ -44,16 +41,14 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace # 파라미터 값
 
+  flyway:
+    enabled: false
+
 --- # prod
 spring:
   config:
     activate.on-profile: "db-prod"
     import: optional:file:.env[.properties]
-
-  datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_ROOT_PASSWORD}
 
   # Flyway 설정
   flyway:
