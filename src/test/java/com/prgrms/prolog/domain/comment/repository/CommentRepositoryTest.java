@@ -16,7 +16,6 @@ import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.config.DatabaseConfig;
 import com.prgrms.prolog.global.config.JpaConfig;
 
 @DataJpaTest

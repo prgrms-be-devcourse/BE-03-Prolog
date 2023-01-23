@@ -14,14 +14,16 @@ import com.prgrms.prolog.global.jwt.JwtAuthentication;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/user")
 @RestController
 public class UserController {
 
 	private final UserService userService;
 
 	@GetMapping("/me")
-	ResponseEntity<UserInfo> myPage(@AuthenticationPrincipal JwtAuthentication user) {
+	ResponseEntity<UserInfo> myPage(
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
 		return ResponseEntity.ok(userService.findByEmail(user.userEmail()));
 	}
 

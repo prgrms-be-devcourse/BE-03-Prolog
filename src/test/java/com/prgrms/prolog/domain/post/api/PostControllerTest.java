@@ -3,37 +3,47 @@ package com.prgrms.prolog.domain.post.api;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.prgrms.prolog.config.RestDocsConfig;
+import com.prgrms.prolog.config.TestContainerConfig;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
-@AutoConfigureRestDocs
+@ExtendWith(RestDocumentationExtension.class)
+@Import({RestDocsConfig.class, TestContainerConfig.class})
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
 class PostControllerTest {
 
-	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	RestDocumentationResultHandler restDocs;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
@@ -45,10 +55,16 @@ class PostControllerTest {
 	Long postId;
 
 	@BeforeEach
-	void setUp() {
+	void setUp(WebApplicationContext webApplicationContext,
+		RestDocumentationContextProvider restDocumentation) {
 		userRepository.save(USER);
 		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", false);
 		postId = postService.save(createRequest, USER_EMAIL);
+		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+			.apply(documentationConfiguration(restDocumentation))
+			.alwaysDo(restDocs)
+			.apply(springSecurity())
+			.build();
 	}
 
 	@Test
@@ -56,12 +72,12 @@ class PostControllerTest {
 	void save() throws Exception {
 		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", true);
 
-		mockMvc.perform(post("/api/v1/posts")
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			).andExpect(status().isCreated())
-			.andDo(document("post-save",
+			.andDo(restDocs.document(
 				requestFields(
 					fieldWithPath("title").type(JsonFieldType.STRING).description("title"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("content"),
@@ -74,14 +90,14 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물을 전체 조회할 수 있다.")
 	void findAll() throws Exception {
-		mockMvc.perform(get("/api/v1/posts")
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts")
 				.param("page", "0")
 				.param("size", "10")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims)))
 			.andExpect(status().isOk())
 			.andDo(print())
-			.andDo(document("post-findAll",
+			.andDo(restDocs.document(
 				responseFields(
 					fieldWithPath("[].title").type(JsonFieldType.STRING).description("title"),
 					fieldWithPath("[].content").type(JsonFieldType.STRING).description("content"),
@@ -99,11 +115,11 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 단건 조회할 수 있다.")
 	void findById() throws Exception {
-		mockMvc.perform(get("/api/v1/posts/{id}", postId)
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts/{id}", postId)
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims)))
 			.andExpect(status().isOk())
-			.andDo(document("post-findById",
+			.andDo(restDocs.document(
 				responseFields(
 					fieldWithPath("title").type(JsonFieldType.STRING).description("title"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("content"),
@@ -123,12 +139,12 @@ class PostControllerTest {
 	void update() throws Exception {
 		UpdateRequest request = new UpdateRequest("수정된 테스트 제목", "수정된 테스트 내용", true);
 
-		mockMvc.perform(patch("/api/v1/posts/{id}", postId)
+		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			).andExpect(status().isOk())
-			.andDo(document("post-update",
+			.andDo(restDocs.document(
 				requestFields(
 					fieldWithPath("title").type(JsonFieldType.STRING).description("title"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("content"),
@@ -152,7 +168,7 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 삭제할 수 있다.")
 	void remove() throws Exception {
-		mockMvc.perform(delete("/api/v1/posts/{id}", postId)
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", postId)
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 			).andExpect(status().isNoContent())
@@ -166,7 +182,7 @@ class PostControllerTest {
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
-		mockMvc.perform(post("/api/v1/posts")
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
@@ -180,7 +196,7 @@ class PostControllerTest {
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
-		mockMvc.perform(post("/api/v1/posts")
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
@@ -197,7 +213,7 @@ class PostControllerTest {
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
-		mockMvc.perform(post("/api/v1/posts")
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
