@@ -5,6 +5,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
     id 'jacoco'
@@ -15,6 +16,7 @@ version = '1.0.0'
 sourceCompatibility = '17'
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -31,6 +33,7 @@ swaggerSources {
 }
 
 ext {
+    set('snippetsDir', file("build/generated-snippets"))
     set('testcontainersVersion', "1.17.6")
 }
 
@@ -88,12 +91,17 @@ openapi3 {
 }
 
 tasks.named('test') {
+    outputs.dir snippetsDir
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
 tasks.withType(GenerateSwaggerUI).configureEach {
     dependsOn 'openapi3'
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
 }
 
 tasks.register('copySwaggerUI', Copy) {
@@ -103,6 +111,12 @@ tasks.register('copySwaggerUI', Copy) {
 
     from("${generateSwaggerUISampleTask.outputDir}")
     into("${project.buildDir}/resources/main/static/docs")
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
 }
 
 tasks.withType(BootJar).configureEach {
