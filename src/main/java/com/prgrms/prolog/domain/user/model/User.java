@@ -69,13 +69,14 @@ public class User extends BaseEntity {
 
 	@Builder
 	public User(String email, String nickName, String introduce,
-		String prologName, String provider, String oauthId) {
+		String prologName, String provider, String oauthId, String profileImgUrl) {
 		this.email = validateEmail(email);
 		this.nickName = validateNickName(nickName);
 		this.introduce = validateIntroduce(introduce);
 		this.prologName = validatePrologName(prologName);
 		this.provider = Objects.requireNonNull(provider, "provider" + NULL_VALUE_MESSAGE);
 		this.oauthId = Objects.requireNonNull(oauthId, "oauthId" + NULL_VALUE_MESSAGE);
+		this.profileImgUrl = profileImgUrl;
 	}
 
 	private String validatePrologName(String prologName) {
