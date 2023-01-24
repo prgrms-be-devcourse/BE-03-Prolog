@@ -152,7 +152,8 @@ jacocoTestCoverageVerification {
 
             excludes = [
                     '*.global*',
-                    '*.service*',
+                    '*.series*',
+                    '*.comment*',
                     '*.dto*'
             ]
 
