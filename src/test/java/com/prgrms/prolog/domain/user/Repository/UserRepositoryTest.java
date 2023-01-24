@@ -38,22 +38,8 @@ class UserRepositoryTest {
 	@Test
 	@DisplayName("저장된 유저 정보를 유저ID로 찾아 가져올 수 있다.")
 	void saveAndFindByIdTest() {
-		// given
-		// when
+		// given & when
 		Optional<User> foundUser = userRepository.findById(savedUser.getId());
-		// then
-		assertThat(foundUser).isPresent();
-		assertThat(foundUser.get())
-			.usingRecursiveComparison()
-			.isEqualTo(savedUser);
-	}
-
-	@Test
-	@DisplayName("이메일로 저장된 유저 정보를 조회할 수 있다.")
-	void findEmailTest() {
-		// given
-		// when
-		Optional<User> foundUser = userRepository.findByEmail(savedUser.getEmail());
 		// then
 		assertThat(foundUser).isPresent();
 		assertThat(foundUser.get())
@@ -65,8 +51,9 @@ class UserRepositoryTest {
 	@DisplayName("저장되지 않은 유저는 조회할 수 없다.")
 	void findFailTest() {
 		// given
+		Long unsavedUserId = 0L;
 		// when
-		Optional<User> foundUser = userRepository.findByEmail("unsavedUserEmail@test.com");
+		Optional<User> foundUser = userRepository.findById(unsavedUserId);
 		// then
 		assertThat(foundUser).isNotPresent();
 	}
