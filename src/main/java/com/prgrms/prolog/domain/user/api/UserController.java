@@ -21,10 +21,12 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping("/me")
-	ResponseEntity<UserInfo> myPage(
+	ResponseEntity<UserProfile> getMyProfile(
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		return ResponseEntity.ok(userService.findByEmail(user.userEmail()));
+		return ResponseEntity.ok(
+			userService.findUserProfileByUserId(user.id())
+		);
 	}
 
 }

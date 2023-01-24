@@ -4,11 +4,11 @@ import static com.prgrms.prolog.domain.user.dto.UserDto.*;
 
 public interface UserService {
 
-	/* 사용자 로그인 */
-	UserInfo login(UserProfile userProfile);
+	/* 사용자 회원 가입 */
+	IdResponse signUp(UserInfo userInfo);
 
-	/* 이메일로 사용자 조회 */
-	UserInfo findByEmail(String email);
+	/* 사용자 조회 */
+	UserProfile findUserProfileByUserId(Long userId);
 
 }
 

@@ -16,6 +16,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Component
 public final class JwtTokenProvider {
@@ -46,7 +47,7 @@ public final class JwtTokenProvider {
 			.withIssuer(issuer)
 			.withIssuedAt(now)
 			.withExpiresAt(new Date(now.getTime() + expirySeconds * 1_000L))
-			.withClaim("email", claims.getEmail())
+			.withClaim("userId", claims.getUserId())
 			.withClaim("role", claims.getRole())
 			.sign(algorithm);
 	}
@@ -55,19 +56,20 @@ public final class JwtTokenProvider {
 		return new Claims(jwtVerifier.verify(token));
 	}
 
+	@ToString
 	@Getter
 	@NoArgsConstructor(access = AccessLevel.PRIVATE)
 	public static class Claims {
 
-		private String email;
+		private Long userId;
 		private String role;
 		private Date iat;
 		private Date exp;
 
 		protected Claims(DecodedJWT decodedJwt) {
-			Claim email = decodedJwt.getClaim("email");
-			if (!email.isNull()) {
-				this.email = email.asString();
+			Claim id = decodedJwt.getClaim("userId");
+			if (!id.isNull()) {
+				this.userId = id.asLong();
 			}
 			Claim role = decodedJwt.getClaim("role");
 			if (!role.isNull()) {
@@ -77,21 +79,11 @@ public final class JwtTokenProvider {
 			this.exp = decodedJwt.getExpiresAt();
 		}
 
-		public static Claims from(String email, String role) {
+		public static Claims from(Long userId, String role) {
 			Claims claims = new Claims();
-			claims.email = email;
+			claims.userId = userId;
 			claims.role = role;
 			return claims;
-		}
-
-		@Override
-		public String toString() {
-			return "Claims{"
-				+ "email='" + email + '\''
-				+ ", role='" + role + '\''
-				+ ", iat=" + iat
-				+ ", exp=" + exp
-				+ '}';
 		}
 	}
 }

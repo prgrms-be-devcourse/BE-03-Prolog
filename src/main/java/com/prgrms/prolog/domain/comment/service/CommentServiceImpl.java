@@ -26,19 +26,18 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public Long save(CreateCommentRequest request, String email, Long postId) {
+	public Long save(CreateCommentRequest request, Long userId, Long postId) {
 		Post findPost = getFindPostBy(postId);
-		User findUser = getFindUserBy(email);
+		User findUser = getFindUserBy(userId);
 		Comment comment = buildComment(request, findPost, findUser);
 		return commentRepository.save(comment).getId();
 	}
 
 	@Override
 	@Transactional
-	public Long update(UpdateCommentRequest request, String email, Long commentId) {
+	public Long update(UpdateCommentRequest request, Long userId, Long commentId) {
 		Comment findComment = commentRepository.joinUserByCommentId(commentId);
 		validateCommentNotNull(findComment);
-		validateCommentOwnerNotSameEmail(email, findComment);
 		findComment.changeContent(request.content());
 		return findComment.getId();
 	}
@@ -51,20 +50,14 @@ public class CommentServiceImpl implements CommentService {
 			.build();
 	}
 
-	private User getFindUserBy(String email) {
-		return userRepository.findByEmail(email)
+	private User getFindUserBy(Long userId) {
+		return userRepository.findById(userId)
 			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
 	}
 
 	private Post getFindPostBy(Long postId) {
 		return postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
-	}
-
-	private void validateCommentOwnerNotSameEmail(String email, Comment  comment) {
-		if (! comment.checkUserEmail(email)) {
-			throw new IllegalArgumentException("exception.user.email.notSame");
-		}
 	}
 
 	private void validateCommentNotNull(Comment comment) {

@@ -28,8 +28,8 @@ public class PostService {
 		this.userRepository = userRepository;
 	}
 
-	public Long save(CreateRequest create, String userEmail) {
-		User user = userRepository.findByEmail(userEmail)
+	public Long save(CreateRequest create, Long userId) {
+		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new IllegalArgumentException(USER_NOT_EXIST_MESSAGE));
 		Post post = postRepository.save(CreateRequest.toEntity(create, user));
 		return post.getId();
