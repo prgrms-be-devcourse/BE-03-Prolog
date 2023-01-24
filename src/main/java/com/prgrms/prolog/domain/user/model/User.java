@@ -54,6 +54,8 @@ public class User extends BaseEntity {
 	private Long id;
 	@Size(max = 100)
 	private String email;
+	@Size(max = 255)
+	private String profileImgUrl;
 	@Size(max = 100)
 	private String nickName;
 	@Size(max = 100)
