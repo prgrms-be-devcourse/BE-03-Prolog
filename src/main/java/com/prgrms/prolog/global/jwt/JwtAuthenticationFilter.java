@@ -1,5 +1,7 @@
 package com.prgrms.prolog.global.jwt;
 
+import static org.springframework.http.HttpHeaders.*;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -19,25 +21,27 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-	private static final String headerKey = "token";
+	private static final String BEARER_TYPE = "Bearer";
 
 	private final JwtTokenProvider jwtTokenProvider;
 
 	@Override
-	protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
-		throws ServletException, IOException {
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+		FilterChain filterChain) throws ServletException, IOException {
 
-		String token = getToken(req);
+		String token = getToken(request);
 		if (token != null) {
 			JwtAuthenticationToken authentication = createAuthentication(token);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		}
-		filterChain.doFilter(req, res);
+		filterChain.doFilter(request, response);
 	}
 
 	@Override
@@ -47,21 +51,31 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	private String getToken(HttpServletRequest request) {
-		String token = request.getHeader(headerKey);
+		String token = extractToken(request);
 		if (token != null) {
 			return URLDecoder.decode(token, StandardCharsets.UTF_8);
 		}
 		return null;
 	}
 
+	private String extractToken(HttpServletRequest request) {
+		String headerValue = request.getHeader(AUTHORIZATION);
+		if (headerValue != null) {
+			return headerValue.split(BEARER_TYPE)[1].trim();
+		}
+		return null;
+	}
+
 	private JwtAuthenticationToken createAuthentication(String token) {
 		Claims claims = jwtTokenProvider.getClaims(token);
-		return new JwtAuthenticationToken(
-			new JwtAuthentication(token, claims.getEmail()), getAuthorities(claims.getRole())
-		);
+		JwtAuthentication principal
+			= new JwtAuthentication(token, claims.getUserId());
+
+		return new JwtAuthenticationToken(principal, getAuthorities(claims.getRole()));
 	}
 
 	private List<GrantedAuthority> getAuthorities(String role) {
 		return List.of(new SimpleGrantedAuthority(role));
 	}
+
 }
