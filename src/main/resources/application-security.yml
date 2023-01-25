@@ -13,7 +13,7 @@ spring:
             client-name: kakao
             client-id: ${CLIENT_ID}
             client-secret: ${CLIENT_SECRET}
-            scope: profile_nickname, account_email
+            scope: profile_nickname,profile_image,account_email
             redirect-uri: ${REDIRECT_URI}
             authorization-grant-type: authorization_code
             client-authentication-method: POST
