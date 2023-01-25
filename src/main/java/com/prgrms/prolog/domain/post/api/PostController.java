@@ -22,16 +22,16 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
-import com.prgrms.prolog.domain.post.service.PostService;
+import com.prgrms.prolog.domain.post.service.PostServiceImpl;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
-	private final PostService postService;
+	private final PostServiceImpl postService;
 
-	public PostController(PostService postService) {
+	public PostController(PostServiceImpl postService) {
 		this.postService = postService;
 	}
 
@@ -58,9 +58,11 @@ public class PostController {
 	}
 
 	@PatchMapping("/{id}")
-	public ResponseEntity<PostResponse> update(@PathVariable Long id,
+	public ResponseEntity<PostResponse> update(
+		@PathVariable Long id,
+		@AuthenticationPrincipal JwtAuthentication user,
 		@Valid @RequestBody UpdateRequest postRequest) {
-		PostResponse update = postService.update(id, postRequest);
+		PostResponse update = postService.update(postRequest, user.id(), id);
 		return ResponseEntity.ok(update);
 	}
 
