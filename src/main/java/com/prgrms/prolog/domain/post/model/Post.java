@@ -1,6 +1,5 @@
 package com.prgrms.prolog.domain.post.model;
 
-import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
@@ -61,7 +60,7 @@ public class Post extends BaseEntity {
 	@OneToMany(mappedBy = "post")
 	private final List<Comment> comments = new ArrayList<>();
 
-	@OneToMany(mappedBy = "post", cascade = ALL)
+	@OneToMany(mappedBy = "post")
 	private final Set<PostTag> postTags = new HashSet<>();
 
 	@Builder
@@ -101,7 +100,7 @@ public class Post extends BaseEntity {
 		this.openStatus = updateRequest.openStatus();
 	}
 
-	public void addPostTagsFrom(List<PostTag> postTags) {
+	public void addPostTagsFrom(Set<PostTag> postTags) {
 		this.postTags.addAll(postTags);
 	}
 
