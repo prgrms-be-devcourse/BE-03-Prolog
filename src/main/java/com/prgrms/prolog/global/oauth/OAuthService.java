@@ -20,8 +20,9 @@ public class OAuthService {
 	private final UserService userService;
 
 	@Transactional
-	public String login(UserProfile userProfile) {
-		UserInfo user = userService.login(userProfile);
-		return jwtTokenProvider.createAccessToken(Claims.from(user.email(), "ROLE_USER"));
+	public String login(UserInfo userInfo) {
+		Long userId = userService.signUp(userInfo).id();
+		return jwtTokenProvider.createAccessToken(
+			Claims.from(userId,"ROLE_USER"));
 	}
 }

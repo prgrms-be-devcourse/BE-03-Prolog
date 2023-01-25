@@ -25,4 +25,4 @@ spring:
 jwt:
   issuer: prgrms
   secret-key: prgrmsbackenddevrteamprologkwonj
-  expiry-seconds: 60
+  expiry-seconds: 3

@@ -24,9 +24,9 @@ class CommentServiceImplTest {
 	@DisplayName("댓글 저장에 성공한다.")
 	void saveTest() {
 		// given
-		when(commentService.save(any(), anyString(), anyLong())).thenReturn(1L);
+		when(commentService.save(any(), anyLong(), anyLong())).thenReturn(1L);
 		// when
-		Long commentId = commentService.save(CREATE_COMMENT_REQUEST, USER.getEmail(), 1L);
+		Long commentId = commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 1L);
 		// then
 		assertThat(commentId).isEqualTo(1L);
 	}
@@ -34,8 +34,8 @@ class CommentServiceImplTest {
 	@Test
 	@DisplayName("댓글 수정에 성공한다.")
 	void updateTest() {
-		when(commentService.update(any(), anyString(), anyLong())).thenReturn(1L);
-		Long commentId = commentService.update(UPDATE_COMMENT_REQUEST, USER.getEmail(), 1L);
+		when(commentService.update(any(), anyLong(), anyLong())).thenReturn(1L);
+		Long commentId = commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 1L);
 		assertThat(commentId).isEqualTo(1L);
 	}
 
@@ -43,10 +43,10 @@ class CommentServiceImplTest {
 	@DisplayName("존재하지 않는 댓글을 수정하면 예외가 발생한다.")
 	void updateNotExistsCommentThrowExceptionTest() {
 		// given
-		when(commentService.update(UPDATE_COMMENT_REQUEST, USER.getEmail(), 0L)).thenThrow(
+		when(commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 0L)).thenThrow(
 			new IllegalArgumentException());
 		// when & then
-		assertThatThrownBy(() -> commentService.update(UPDATE_COMMENT_REQUEST, USER.getEmail(), 0L)).isInstanceOf(
+		assertThatThrownBy(() -> commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 0L)).isInstanceOf(
 			IllegalArgumentException.class);
 	}
 
@@ -54,11 +54,12 @@ class CommentServiceImplTest {
 	@DisplayName("존재하지 않는 회원이 댓글을 저장하면 예외가 발생한다.")
 	void updateCommentByNotExistsUserThrowExceptionTest() {
 		// given
+
 		final UpdateCommentRequest updateCommentRequest = new UpdateCommentRequest("댓글 내용");
-		when(commentService.update(updateCommentRequest, "존재하지않는이메일@test.com", 1L)).thenThrow(
+		when(commentService.update(updateCommentRequest, UNSAVED_USER_ID, 1L)).thenThrow(
 			new IllegalArgumentException());
 		// when & then
-		assertThatThrownBy(() -> commentService.update(updateCommentRequest, "존재하지않는이메일@test.com", 1L)).isInstanceOf(
+		assertThatThrownBy(() -> commentService.update(updateCommentRequest, UNSAVED_USER_ID, 1L)).isInstanceOf(
 			IllegalArgumentException.class);
 	}
 
@@ -66,10 +67,10 @@ class CommentServiceImplTest {
 	@DisplayName("존재하지 않는 게시글에 댓글을 저장하면 예외가 발생한다.")
 	void saveCommentNotExistsPostThrowExceptionTest() {
 		// given
-		when(commentService.save(CREATE_COMMENT_REQUEST, USER.getEmail(), 0L)).thenThrow(
+		when(commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 0L)).thenThrow(
 			new IllegalArgumentException());
 		// when & then
-		assertThatThrownBy(() -> commentService.save(CREATE_COMMENT_REQUEST, USER.getEmail(), 0L)).isInstanceOf(
+		assertThatThrownBy(() -> commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 0L)).isInstanceOf(
 			IllegalArgumentException.class);
 	}
 

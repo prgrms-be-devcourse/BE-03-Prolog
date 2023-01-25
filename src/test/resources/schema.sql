@@ -11,6 +11,7 @@ CREATE TABLE users
 (
     id          bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     email       varchar(100) NOT NULL UNIQUE,
+    profile_img_url varchar(255) NULL,
     nick_name   varchar(100) NULL UNIQUE,
     introduce   varchar(100) NULL,
     prolog_name varchar(100) NOT NULL UNIQUE,

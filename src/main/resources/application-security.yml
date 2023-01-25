@@ -2,7 +2,7 @@
 jwt:
   issuer: ${JWT_ISSUER}
   secret-key: ${JWT_SECRET_KEY}
-  expiry-seconds: 60
+  expiry-seconds: 1200
 
 spring:
   security:

@@ -59,7 +59,7 @@ class PostServiceTest {
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
 		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", true);
-		Long savePostId = postService.save(postRequest, USER_EMAIL);
+		Long savePostId = postService.save(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
 	}
 
@@ -70,7 +70,7 @@ class PostServiceTest {
 
 		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", true);
 
-		assertThatThrownBy(() -> postService.save(postRequest, notExistEmail))
+		assertThatThrownBy(() -> postService.save(postRequest, USER_ID))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

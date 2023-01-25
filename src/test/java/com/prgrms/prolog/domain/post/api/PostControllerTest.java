@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -32,6 +33,7 @@ import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
+import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -43,6 +45,9 @@ class PostControllerTest {
 	private MockMvc mockMvc;
 
 	@Autowired
+	private JwtTokenProvider jwtTokenProvider;
+
+	@Autowired
 	RestDocumentationResultHandler restDocs;
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -50,16 +55,20 @@ class PostControllerTest {
 	private PostService postService;
 	@Autowired
 	private UserRepository userRepository;
-
-	static Claims claims = Claims.from(USER_EMAIL, "ROLE_USER");
 	Long postId;
+	Long userId;
+	Claims claims;
+
 
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
-		userRepository.save(USER);
+
+		userId = userRepository.save(USER).getId();
+		claims = Claims.from(userId, "ROLE_USER");
 		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", false);
-		postId = postService.save(createRequest, USER_EMAIL);
+		postId = postService.save(createRequest, userId);
+
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.apply(documentationConfiguration(restDocumentation))
 			.alwaysDo(restDocs)
@@ -73,7 +82,7 @@ class PostControllerTest {
 		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", true);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			).andExpect(status().isCreated())
@@ -94,7 +103,7 @@ class PostControllerTest {
 				.param("page", "0")
 				.param("size", "10")
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims)))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims)))
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(restDocs.document(
@@ -107,6 +116,7 @@ class PostControllerTest {
 					fieldWithPath("[].user.nickName").type(JsonFieldType.STRING).description("nickName"),
 					fieldWithPath("[].user.introduce").type(JsonFieldType.STRING).description("introduce"),
 					fieldWithPath("[].user.prologName").type(JsonFieldType.STRING).description("prologName"),
+					fieldWithPath("[].user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("[].comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("[].commentCount").type(JsonFieldType.NUMBER).description("commentCount")
 				)));
@@ -117,7 +127,7 @@ class PostControllerTest {
 	void findById() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts/{id}", postId)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims)))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims)))
 			.andExpect(status().isOk())
 			.andDo(restDocs.document(
 				responseFields(
@@ -129,6 +139,7 @@ class PostControllerTest {
 					fieldWithPath("user.nickName").type(JsonFieldType.STRING).description("nickName"),
 					fieldWithPath("user.introduce").type(JsonFieldType.STRING).description("introduce"),
 					fieldWithPath("user.prologName").type(JsonFieldType.STRING).description("prologName"),
+					fieldWithPath("user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount")
 				)));
@@ -140,7 +151,7 @@ class PostControllerTest {
 		UpdateRequest request = new UpdateRequest("수정된 테스트 제목", "수정된 테스트 내용", true);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			).andExpect(status().isOk())
@@ -159,6 +170,7 @@ class PostControllerTest {
 					fieldWithPath("user.nickName").type(JsonFieldType.STRING).description("nickName"),
 					fieldWithPath("user.introduce").type(JsonFieldType.STRING).description("introduce"),
 					fieldWithPath("user.prologName").type(JsonFieldType.STRING).description("prologName"),
+					fieldWithPath("user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount")
 				)
@@ -169,7 +181,7 @@ class PostControllerTest {
 	@DisplayName("게시물 아이디로 게시물을 삭제할 수 있다.")
 	void remove() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", postId)
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 			).andExpect(status().isNoContent())
 			.andDo(document("post-delete"));
@@ -183,7 +195,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());
@@ -197,7 +209,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());
@@ -214,7 +226,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header("token", JWT_TOKEN_PROVIDER.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());

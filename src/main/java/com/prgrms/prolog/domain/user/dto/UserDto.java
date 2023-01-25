@@ -7,30 +7,37 @@ import lombok.Builder;
 public class UserDto {
 
 	@Builder
-	public record UserInfo(
+	public record UserProfile(
+		Long id,
 		String email,
 		String nickName,
 		String introduce,
-		String prologName
+		String prologName,
+		String profileImgUrl
 	) {
-		public UserInfo(User user) {
-			this(
+		public static UserProfile toUserProfile(User user) {
+			return new UserProfile(
+				user.getId(),
 				user.getEmail(),
 				user.getNickName(),
 				user.getIntroduce(),
-				user.getPrologName()
+				user.getPrologName(),
+				user.getProfileImgUrl()
 			);
 		}
 	}
 
 	@Builder
-	public record UserProfile(
+	public record UserInfo(
 		String email,
 		String nickName,
 		String provider,
-		String oauthId
+		String oauthId,
+		String profileImgUrl
 	) {
 
 	}
 
+	public record IdResponse(Long id) {
+	}
 }

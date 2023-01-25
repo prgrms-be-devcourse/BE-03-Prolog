@@ -38,16 +38,15 @@ public class PostController {
 	@PostMapping()
 	public ResponseEntity<Void> save(
 		@Valid @RequestBody CreateRequest create,
-		@AuthenticationPrincipal JwtAuthentication jwt
+		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		String userEmail = jwt.userEmail();
-		Long savePostId = postService.save(create, userEmail);
+		Long savePostId = postService.save(create, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + savePostId).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> findById(@PathVariable Long id) {
+	public ResponseEntity<PostResponse> findById(@PathVariable Long id) { // 비공개 처리는?
 		PostResponse findPost = postService.findById(id);
 		return ResponseEntity.ok(findPost);
 	}
