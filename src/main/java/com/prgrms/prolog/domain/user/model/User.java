@@ -1,8 +1,12 @@
 package com.prgrms.prolog.domain.user.model;
 
+import static javax.persistence.CascadeType.*;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +22,7 @@ import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.usertag.model.UserTag;
 import com.prgrms.prolog.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -49,6 +54,8 @@ public class User extends BaseEntity {
 	private final List<Post> posts = new ArrayList<>();
 	@OneToMany(mappedBy = "user")
 	private final List<Comment> comments = new ArrayList<>();
+	@OneToMany(mappedBy = "user", cascade = ALL)
+	private final Set<UserTag> userTags = new HashSet<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -136,6 +143,14 @@ public class User extends BaseEntity {
 
 	public boolean checkSameEmail(String email) {
 		return this.email.equals(email);
+	}
+
+	public void removeUserTag(UserTag userTag) {
+		this.userTags.remove(userTag);
+	}
+
+	public boolean checkSameUserId(Long userId) {
+		return Objects.equals(this.id, userId);
 	}
 
 	@Override

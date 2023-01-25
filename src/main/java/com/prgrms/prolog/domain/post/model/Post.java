@@ -1,15 +1,17 @@
 package com.prgrms.prolog.domain.post.model;
 
+import static javax.persistence.CascadeType.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -20,6 +22,7 @@ import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
+import com.prgrms.prolog.domain.posttag.model.PostTag;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -58,6 +61,9 @@ public class Post extends BaseEntity {
 	@OneToMany(mappedBy = "post")
 	private final List<Comment> comments = new ArrayList<>();
 
+	@OneToMany(mappedBy = "post", cascade = ALL)
+	private final Set<PostTag> postTags = new HashSet<>();
+
 	@Builder
 	public Post(String title, String content, boolean openStatus, User user) {
 		this.title = validateTitle(title);
@@ -93,6 +99,10 @@ public class Post extends BaseEntity {
 		this.title = updateRequest.title();
 		this.content = updateRequest.content();
 		this.openStatus = updateRequest.openStatus();
+	}
+
+	public void addPostTagsFrom(List<PostTag> postTags) {
+		this.postTags.addAll(postTags);
 	}
 
 	private String validateTitle(String title) {
