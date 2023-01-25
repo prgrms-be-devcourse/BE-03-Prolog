@@ -2,8 +2,10 @@ package com.prgrms.prolog.utils;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
-import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
+import com.prgrms.prolog.domain.posttag.model.PostTag;
+import com.prgrms.prolog.domain.roottag.model.RootTag;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserInfo;
+import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 import com.prgrms.prolog.domain.user.model.User;
 
 public class TestUtils {
@@ -27,6 +29,11 @@ public class TestUtils {
 	public static final String TITLE = "제목을 입력해주세요";
 	public static final String CONTENT = "내용을 입력해주세요";
 	public static final String USER_ROLE = "ROLE_USER";
+	// RootTag & PostTag Data
+	public static final String ROOT_TAG_NAME = "머쓱 태그";
+	public static final Integer POST_TAG_COUNT = 0;
+	public static final RootTag ROOT_TAG = getRootTag();
+	public static final PostTag POST_TAG = getPostTag();
 	// Over Size String Dummy
 	public static final String OVER_SIZE_50 = "0" + "1234567890".repeat(5);
 	public static final String OVER_SIZE_100 = "0" + "1234567890".repeat(10);
@@ -86,6 +93,19 @@ public class TestUtils {
 			.prologName(USER_PROLOG_NAME)
 			.introduce(USER_INTRODUCE)
 			.profileImgUrl(USER_PROFILE_IMG_URL)
+			.build();
+	}
+
+	public static RootTag getRootTag() {
+		return RootTag.builder()
+			.name(ROOT_TAG_NAME)
+			.build();
+	}
+
+	public static PostTag getPostTag() {
+		return PostTag.builder()
+			.rootTag(ROOT_TAG)
+			.post(POST)
 			.build();
 	}
 

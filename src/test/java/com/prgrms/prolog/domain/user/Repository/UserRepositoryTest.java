@@ -57,4 +57,13 @@ class UserRepositoryTest {
 		// then
 		assertThat(foundUser).isNotPresent();
 	}
+
+	@Test
+	@DisplayName("유저와 유저 태그를 조인하여 조회할 수 있다.")
+	void joinUserTagFindByEmailTest() {
+		// given & when
+		User findUser = userRepository.joinUserTagFindByUserId(savedUser.getId());
+		// then
+		assertThat(findUser).isNotNull();
+	}
 }

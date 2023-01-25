@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class CommentServiceImplTest {
 
 	@Mock
-	CommentService commentService;
+	CommentServiceImpl commentService;
 
 	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT.getContent());
 	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT.getContent() + "updated");
