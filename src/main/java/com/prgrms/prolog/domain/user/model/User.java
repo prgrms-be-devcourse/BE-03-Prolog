@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.usertag.model.UserTag;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -54,6 +55,8 @@ public class User extends BaseEntity {
 	private final List<Comment> comments = new ArrayList<>();
 	@OneToMany(mappedBy = "user")
 	private final Set<UserTag> userTags = new HashSet<>();
+	@OneToMany(mappedBy = "user")
+	private List<Series> series = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -145,6 +148,10 @@ public class User extends BaseEntity {
 
 	public boolean checkSameUserId(Long userId) {
 		return Objects.equals(this.id, userId);
+	}
+
+	public void changeProfileImgUrl(String profileImgUrl) {
+		Objects.requireNonNull(profileImgUrl, "profileImgUrl" + NULL_VALUE_MESSAGE);
 	}
 
 	@Override
