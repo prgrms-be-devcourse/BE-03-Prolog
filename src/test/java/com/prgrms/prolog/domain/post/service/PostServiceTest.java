@@ -31,7 +31,7 @@ import com.prgrms.prolog.domain.user.repository.UserRepository;
 class PostServiceTest {
 
 	@Autowired
-	PostServiceImpl postService;
+	PostService postService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -105,6 +105,7 @@ class PostServiceTest {
 		Set<String> findTags = findPostResponse.tags();
 
 		// then
+		System.out.println(findTags);
 		assertThat(findTags)
 			.containsExactlyInAnyOrderElementsOf(expectedTags);
 	}
@@ -157,13 +158,16 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#수정된 태그", true);
+		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true);
+		Long savedPost = postService.save(createRequest, user.getId());
 
-		PostResponse update = postService.update(updateRequest, user.getId(), post.getId());
+		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);
+		PostResponse updatedPostResponse = postService.update(updateRequest, user.getId(), savedPost);
 
-		assertThat(update)
+		assertThat(updatedPostResponse)
 			.hasFieldOrPropertyWithValue("title", updateRequest.title())
-			.hasFieldOrPropertyWithValue("content", updateRequest.content());
+			.hasFieldOrPropertyWithValue("content", updateRequest.content())
+			.hasFieldOrPropertyWithValue("tags", Set.of("테스트", "수정된 태그"));
 	}
 
 	@Test
