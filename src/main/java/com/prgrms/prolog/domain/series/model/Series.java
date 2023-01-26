@@ -47,6 +47,13 @@ public class Series {
 	public Series(String title, User user, Post post) {
 		this.title = validateTitle(title);
 		setUser(Objects.requireNonNull(user, "exception.comment.user.require"));
+		addPost(post);
+	}
+
+	private void addPost(Post post) {
+		if (post == null) {
+			return;
+		}
 		post.setSeries(this);
 	}
 

@@ -25,7 +25,7 @@ public class SeriesServiceImpl implements SeriesService {
 
 	@Override
 	@Transactional
-	public IdResponse save(@Valid CreateSeriesRequest request, Long userId) {
+	public IdResponse create(@Valid CreateSeriesRequest request, Long userId) {
 		User findUser = getFindUserBy(userId);
 		Series series = buildSeries(request.title(), findUser);
 		return new IdResponse(seriesRepository.save(series).getId());

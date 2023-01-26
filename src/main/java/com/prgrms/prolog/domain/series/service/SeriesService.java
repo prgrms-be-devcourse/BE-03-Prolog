@@ -8,7 +8,7 @@ import com.prgrms.prolog.global.common.IdResponse;
 
 public interface SeriesService {
 
-	IdResponse save(@Valid CreateSeriesRequest request, Long userId);
+	IdResponse create(@Valid CreateSeriesRequest request, Long userId);
 
 	SeriesResponse findByTitle(Long userId, String title);
 
