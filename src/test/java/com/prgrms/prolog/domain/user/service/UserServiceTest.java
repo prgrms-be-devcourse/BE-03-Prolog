@@ -30,7 +30,7 @@ class UserServiceTest {
 	private User userMock;
 
 	@InjectMocks
-	private UserServiceImpl userService; // 빈으로 등록해서 주입 받고 싶으면 어떻게 해야하나요? 구현체말고 인터페이스를 주입 받고 싶습니다!
+	private UserServiceImpl userService;
 
 	@Nested
 	@DisplayName("사용자 조회 #10")

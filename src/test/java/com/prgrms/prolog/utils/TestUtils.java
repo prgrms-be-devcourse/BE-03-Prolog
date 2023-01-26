@@ -4,6 +4,7 @@ import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
 import com.prgrms.prolog.domain.roottag.model.RootTag;
+import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserInfo;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 import com.prgrms.prolog.domain.user.model.User;
@@ -25,9 +26,14 @@ public class TestUtils {
 	public static final UserInfo USER_INFO = getUserInfo();
 	public static final UserProfile USER_PROFILE = getUserProfile();
 	public static final Comment COMMENT = getComment();
+	public static final Series SERIES = getSeries();
 	// Post & Comment Data
 	public static final String TITLE = "제목을 입력해주세요";
 	public static final String CONTENT = "내용을 입력해주세요";
+	public static final String COMMENT_CONTENT = "댓글 내용";
+	public static final String POST_TITLE = "게시글 제목";
+	public static final String POST_CONTENT = "게시글 내용";
+	public static final String SERIES_TITLE = "시리즈 제목";
 	public static final String USER_ROLE = "ROLE_USER";
 	// RootTag & PostTag Data
 	public static final String ROOT_TAG_NAME = "머쓱 태그";
@@ -41,6 +47,7 @@ public class TestUtils {
 	public static final String OVER_SIZE_65535 = "012345" + "1234567890".repeat(6553);
 	// Authentication
 	public static final String BEARER_TYPE = "Bearer ";
+
 
 	private TestUtils() {
 		/* no-op */
@@ -60,8 +67,8 @@ public class TestUtils {
 
 	public static Post getPost() {
 		return Post.builder()
-			.title("제목")
-			.content("내용")
+			.title(POST_TITLE)
+			.content(POST_CONTENT)
 			.openStatus(true)
 			.user(USER)
 			.build();
@@ -69,7 +76,7 @@ public class TestUtils {
 
 	public static Comment getComment() {
 		return Comment.builder()
-			.content("내용")
+			.content(COMMENT_CONTENT)
 			.post(POST)
 			.user(USER)
 			.build();
@@ -105,6 +112,14 @@ public class TestUtils {
 	public static PostTag getPostTag() {
 		return PostTag.builder()
 			.rootTag(ROOT_TAG)
+			.post(POST)
+			.build();
+	}
+
+	public static Series getSeries() {
+		return Series.builder()
+			.title(SERIES_TITLE)
+			.user(USER)
 			.post(POST)
 			.build();
 	}
