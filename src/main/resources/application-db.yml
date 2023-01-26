@@ -1,6 +1,7 @@
 # default
 spring:
 
+  # database 설정
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -25,15 +26,15 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+    # flyway 설정
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+  # 커넥션 풀 설정
   messages:
     encoding: UTF-8
     basename: messages/exceptions/exception, messages/logs/log-form
-
---- # local
-spring:
-  config:
-    activate.on-profile: "db-local"
-    import: optional:file:.env[.properties]
 
 # SQL 로그 설정
 logging:
@@ -41,8 +42,16 @@ logging:
     org.hibernate.SQL: debug
     org.hibernate.type: trace # 파라미터 값
 
-  flyway:
-    enabled: false
+--- # local
+spring:
+  config:
+    activate.on-profile: "db-local"
+    import: optional:file:.env[.properties]
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace # 파라미터 값
 
 --- # prod
 spring:
@@ -50,7 +59,6 @@ spring:
     activate.on-profile: "db-prod"
     import: optional:file:.env[.properties]
 
-  # Flyway 설정
   flyway:
     enabled: true
     baseline-on-migrate: true
