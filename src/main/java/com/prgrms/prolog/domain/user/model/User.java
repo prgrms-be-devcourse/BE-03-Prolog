@@ -1,7 +1,5 @@
 package com.prgrms.prolog.domain.user.model;
 
-import static javax.persistence.CascadeType.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -54,7 +52,7 @@ public class User extends BaseEntity {
 	private final List<Post> posts = new ArrayList<>();
 	@OneToMany(mappedBy = "user")
 	private final List<Comment> comments = new ArrayList<>();
-	@OneToMany(mappedBy = "user", cascade = ALL)
+	@OneToMany(mappedBy = "user")
 	private final Set<UserTag> userTags = new HashSet<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -143,10 +141,6 @@ public class User extends BaseEntity {
 
 	public boolean checkSameEmail(String email) {
 		return this.email.equals(email);
-	}
-
-	public void removeUserTag(UserTag userTag) {
-		this.userTags.remove(userTag);
 	}
 
 	public boolean checkSameUserId(Long userId) {

@@ -60,9 +60,6 @@ public class UserTag {
 	public void decreaseCount(int count) {
 		Assert.isTrue(count >= 0, "exception.userTag.count.positive");
 		this.count -= count;
-		if (count == 0) {
-			this.user.removeUserTag(this);
-		}
 	}
 
 	private RootTag validateRootTag(RootTag rootTag) {
@@ -78,5 +75,9 @@ public class UserTag {
 	private Integer validateCount(Integer count) {
 		Assert.isTrue(count >= 0, "exception.userTag.count.positiveOrZero");
 		return count;
+	}
+
+	public boolean isCountZero() {
+		return this.count == 0;
 	}
 }

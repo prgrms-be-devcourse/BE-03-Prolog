@@ -57,7 +57,7 @@ public class PostServiceImpl implements PostService {
 	public PostResponse findById(Long postId) {
 		Post post = postRepository.joinCommentFindById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
-		List<PostTag> findPostTags = postTagRepository.joinPostTagFindByPostId(postId);
+		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
 		post.addPostTagsFrom(findPostTags);
 		return PostResponse.toPostResponse(post);
 	}
@@ -73,20 +73,23 @@ public class PostServiceImpl implements PostService {
 	public PostResponse update(UpdateRequest update, Long userId, Long postId) {
 		Post findPost = postRepository.joinUserFindById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
-		
+
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalArgumentException("exception.post.not.owner"); 
+			throw new IllegalArgumentException("exception.post.not.owner");
 		}
 
 		findPost.changePost(update);
 		updatePostAndUserIfTagChanged(update.tagText(), findPost);
+
+		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(findPost.getId());
+		findPost.addPostTagsFrom(findPostTags);
 		return PostResponse.toPostResponse(findPost);
 	}
 
 	@Override
 	@Transactional
-	public void delete(Long id) {
-		Post findPost = postRepository.findById(id)
+	public void delete(Long postId) {
+		Post findPost = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
 		postRepository.delete(findPost);
 	}
@@ -95,12 +98,13 @@ public class PostServiceImpl implements PostService {
 		Set<String> tagNames = TagConverter.convertFrom(tagText);
 		Set<RootTag> currentRootTags = rootTagRepository.findByTagNamesIn(tagNames);
 		Set<String> newTagNames = distinguishNewTagNames(tagNames, currentRootTags);
-		Set<RootTag> oldRootTags = distinguishOldRootTags(tagNames, findPost.getPostTags());
 		Set<RootTag> savedNewRootTags = saveNewRootTags(newTagNames);
-		currentRootTags.addAll(savedNewRootTags);
-
-		removeOldPostTags(findPost, oldRootTags);
 		saveNewPostTags(findPost, savedNewRootTags);
+		saveOrIncreaseUserTags(findPost.getUser(), savedNewRootTags);
+
+		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(findPost.getId());
+		Set<RootTag> oldRootTags = distinguishOldRootTags(tagNames, findPostTags);
+		removeOldPostTags(findPost, oldRootTags);
 		removeOrDecreaseUserTags(findPost.getUser(), oldRootTags);
 	}
 
@@ -108,17 +112,23 @@ public class PostServiceImpl implements PostService {
 		if (oldRootTags.isEmpty()) {
 			return;
 		}
-		List<Long> rootTagIds = oldRootTags.stream()
+		Set<Long> rootTagIds = oldRootTags.stream()
 			.map(RootTag::getId)
-			.toList();
+			.collect(Collectors.toSet());
 		postTagRepository.deleteByPostIdAndRootTagIds(post.getId(), rootTagIds);
 	}
 
 	private void removeOrDecreaseUserTags(User user, Set<RootTag> oldRootTags) {
 		Map<Long, UserTag> userTagMap = getFindUserTagMap(user, oldRootTags);
 		for (RootTag rootTag : oldRootTags) {
-			if (userTagMap.containsKey(rootTag.getId())) {
-				userTagMap.get(rootTag.getId()).decreaseCount(1);
+			if (!userTagMap.containsKey(rootTag.getId())) {
+				continue;
+			}
+
+			UserTag currentUserTag = userTagMap.get(rootTag.getId());
+			currentUserTag.decreaseCount(1);
+			if (currentUserTag.isCountZero()) {
+				userTagRepository.deleteById(currentUserTag.getId());
 			}
 		}
 	}
@@ -183,7 +193,8 @@ public class PostServiceImpl implements PostService {
 				.build()));
 	}
 
-	private Set<String> distinguishNewTagNames(Set<String> newTagNames, Set<RootTag> rootTags) {
+	private Set<String> distinguishNewTagNames(Set<String> tagNames, Set<RootTag> rootTags) {
+		Set<String> newTagNames = new HashSet<>(tagNames);
 		for (RootTag rootTag : rootTags) {
 			newTagNames.remove(rootTag.getName());
 		}
