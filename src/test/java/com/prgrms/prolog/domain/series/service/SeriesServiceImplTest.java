@@ -81,7 +81,7 @@ class SeriesServiceImplTest {
 		then(seriesRepository).should().findByIdAndTitle(any(Long.class),any(String.class));
 		assertThat(seriesResponse)
 			.hasFieldOrPropertyWithValue("title", SERIES_TITLE)
-			.hasFieldOrPropertyWithValue("posts", List.of(new PostInfo(POST_TITLE,POST_CONTENT)))
+			.hasFieldOrPropertyWithValue("posts", List.of(new PostInfo(1L,POST_CONTENT)))
 			.hasFieldOrPropertyWithValue("count",1);
 		assertThat(seriesResponse.posts()).isNotEmpty();
 	}

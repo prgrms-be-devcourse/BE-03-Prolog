@@ -57,7 +57,7 @@ class PostServiceTest {
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
-		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true);
+		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, null);
 		Long savePostId = postService.save(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
 	}
@@ -66,7 +66,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그 없이 등록할 수 있다.")
 	void savePostAndWithOutAnyTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, null);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -81,7 +81,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그가 공백이거나 빈 칸이라면 태그는 무시된다.")
 	void savePostWithBlankTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, null);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -96,7 +96,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 복수의 태그를 등록할 수 있다.")
 	void savePostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true, null);
 		final List<String> expectedTags = List.of("테스트", "test", "test1", "테 스트");
 
 		// when
@@ -113,7 +113,7 @@ class PostServiceTest {
 	@DisplayName("게시물과 태그를 조회할 수 있다.")
 	void findPostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, null);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -130,7 +130,7 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 사용자(비회원)의 이메일로 게시물을 등록할 수 없다.")
 	void save_fail() {
-		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true);
+		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, null);
 
 		assertThatThrownBy(() -> postService.save(postRequest, UNSAVED_USER_ID))
 			.isInstanceOf(NullPointerException.class);
@@ -157,7 +157,7 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true);
+		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,null);
 		Long savedPost = postService.save(createRequest, user.getId());
 
 		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);

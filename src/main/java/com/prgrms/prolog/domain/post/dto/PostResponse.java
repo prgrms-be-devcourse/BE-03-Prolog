@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.series.dto.SeriesResponse;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 
 public record PostResponse(String title,
@@ -15,6 +16,7 @@ public record PostResponse(String title,
 						   boolean openStatus,
 						   UserProfile user,
 						   Set<String> tags,
+						   SeriesResponse seriesResponse,
 						   List<Comment> comment,
 						   int commentCount) {
 
@@ -24,6 +26,7 @@ public record PostResponse(String title,
 			post.isOpenStatus(),
 			toUserProfile(post.getUser()),
 			PostTagsResponse.from(post.getPostTags()).tagNames(),
+			SeriesResponse.toSeriesResponse(post.getSeries()),
 			post.getComments(),
 			post.getComments().size());
 	}
