@@ -69,11 +69,12 @@ public class Post extends BaseEntity {
 	private Series series;
 
 	@Builder
-	public Post(String title, String content, boolean openStatus, User user) {
+	public Post(String title, String content, boolean openStatus, User user, Series series) {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
 		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
+		this.series = series;
 	}
 
 	public void setUser(User user) {

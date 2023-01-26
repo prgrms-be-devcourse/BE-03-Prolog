@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.prgrms.prolog.domain.post.dto.PostInfo;
+import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.series.dto.CreateSeriesRequest;
 import com.prgrms.prolog.domain.series.dto.SeriesResponse;
 import com.prgrms.prolog.domain.series.model.Series;
@@ -33,6 +34,9 @@ class SeriesServiceImplTest {
 
 	@Mock
 	private Series series;
+
+	@Mock
+	private Post post;
 
 	@InjectMocks
 	private SeriesServiceImpl seriesService;
@@ -74,14 +78,16 @@ class SeriesServiceImplTest {
 		given(seriesRepository.findByIdAndTitle(any(Long.class),any(String.class)))
 			.willReturn(Optional.of(series));
 		given(series.getTitle()).willReturn(SERIES_TITLE);
-		given(series.getPosts()).willReturn((List.of(POST)));
+		given(series.getPosts()).willReturn((List.of(post)));
+		given(post.getId()).willReturn(1L);
+		given(post.getTitle()).willReturn(POST_TITLE);
 		// when
 		SeriesResponse seriesResponse = seriesService.findByTitle(USER_ID, SERIES_TITLE);
 		// then
 		then(seriesRepository).should().findByIdAndTitle(any(Long.class),any(String.class));
 		assertThat(seriesResponse)
 			.hasFieldOrPropertyWithValue("title", SERIES_TITLE)
-			.hasFieldOrPropertyWithValue("posts", List.of(new PostInfo(1L,POST_CONTENT)))
+			.hasFieldOrPropertyWithValue("posts", List.of(new PostInfo(1L,POST_TITLE)))
 			.hasFieldOrPropertyWithValue("count",1);
 		assertThat(seriesResponse.posts()).isNotEmpty();
 	}

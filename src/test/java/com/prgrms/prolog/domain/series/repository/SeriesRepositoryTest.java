@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.model.User;
@@ -24,7 +23,6 @@ import com.prgrms.prolog.global.config.JpaConfig;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Import({JpaConfig.class})
-@Transactional
 public class SeriesRepositoryTest {
 
 	@Autowired

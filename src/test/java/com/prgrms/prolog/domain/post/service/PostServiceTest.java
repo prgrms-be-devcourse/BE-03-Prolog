@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.post.service;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesResponse.*;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -22,6 +23,8 @@ import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
+import com.prgrms.prolog.domain.series.model.Series;
+import com.prgrms.prolog.domain.series.repository.SeriesRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 
@@ -39,25 +42,32 @@ class PostServiceTest {
 	@Autowired
 	PostRepository postRepository;
 
+	@Autowired
+	SeriesRepository seriesRepository;
+
 	User user;
 	Post post;
+	Series savedSeries;
 
 	@BeforeEach
 	void setData() {
 		user = userRepository.save(USER);
+		Series series = Series.builder().title(SERIES_TITLE).user(user).build();
+		savedSeries = seriesRepository.save(series);
 		post = Post.builder()
 			.title("테스트 게시물")
 			.content("테스트 내용")
 			.openStatus(true)
 			.user(user)
 			.build();
+		post.setSeries(savedSeries);
 		postRepository.save(post);
 	}
 
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
-		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, null);
+		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
 		Long savePostId = postService.save(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
 	}
@@ -66,7 +76,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그 없이 등록할 수 있다.")
 	void savePostAndWithOutAnyTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, null);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, SERIES_TITLE);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -81,7 +91,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그가 공백이거나 빈 칸이라면 태그는 무시된다.")
 	void savePostWithBlankTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, null);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, SERIES_TITLE);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -96,7 +106,7 @@ class PostServiceTest {
 	@DisplayName("게시글에 복수의 태그를 등록할 수 있다.")
 	void savePostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true, null);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true, SERIES_TITLE);
 		final List<String> expectedTags = List.of("테스트", "test", "test1", "테 스트");
 
 		// when
@@ -113,7 +123,7 @@ class PostServiceTest {
 	@DisplayName("게시물과 태그를 조회할 수 있다.")
 	void findPostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, null);
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
 		// when
 		Long savedPostId = postService.save(request, user.getId());
@@ -124,13 +134,14 @@ class PostServiceTest {
 			.hasFieldOrPropertyWithValue("title", request.title())
 			.hasFieldOrPropertyWithValue("content", request.content())
 			.hasFieldOrPropertyWithValue("openStatus", request.openStatus())
-			.hasFieldOrPropertyWithValue("tags", Set.of("테스트"));
+			.hasFieldOrPropertyWithValue("tags", Set.of("테스트"))
+			.hasFieldOrPropertyWithValue("seriesResponse", toSeriesResponse(savedSeries));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 사용자(비회원)의 이메일로 게시물을 등록할 수 없다.")
 	void save_fail() {
-		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, null);
+		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
 		assertThatThrownBy(() -> postService.save(postRequest, UNSAVED_USER_ID))
 			.isInstanceOf(NullPointerException.class);
@@ -157,7 +168,7 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,null);
+		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,SERIES_TITLE);
 		Long savedPost = postService.save(createRequest, user.getId());
 
 		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);

@@ -43,13 +43,10 @@ import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 @Transactional
 class PostControllerTest {
 
-	private MockMvc mockMvc;
-
 	@Autowired
 	private JwtTokenProvider jwtTokenProvider;
-
 	@Autowired
-	RestDocumentationResultHandler restDocs;
+	private RestDocumentationResultHandler restDocs;
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
@@ -58,18 +55,18 @@ class PostControllerTest {
 	private UserRepository userRepository;
 	@Autowired
 	private SeriesRepository seriesRepository;
-	Long postId;
-	Long userId;
-	Claims claims;
 
+	private MockMvc mockMvc;
+	private Long userId;
+	private Claims claims;
+	private Long postId;
 
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
-
 		userId = userRepository.save(USER).getId();
 		claims = Claims.from(userId, "ROLE_USER");
-		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", false,null);
+		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", false, SERIES_TITLE);
 		postId = postService.save(createRequest, userId);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.apply(documentationConfiguration(restDocumentation))
@@ -81,7 +78,7 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save() throws Exception {
-		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", "tag", true, null);
+		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", "tag", true, SERIES_TITLE);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
@@ -93,7 +90,8 @@ class PostControllerTest {
 					fieldWithPath("title").type(JsonFieldType.STRING).description("title"),
 					fieldWithPath("content").type(JsonFieldType.STRING).description("content"),
 					fieldWithPath("tagText").type(JsonFieldType.STRING).description("tagText"),
-					fieldWithPath("openStatus").type(JsonFieldType.BOOLEAN).description("openStatus")
+					fieldWithPath("openStatus").type(JsonFieldType.BOOLEAN).description("openStatus"),
+					fieldWithPath("seriesTitle").type(JsonFieldType.STRING).description("seriesTitle")
 				),
 				responseBody()
 			));
@@ -122,7 +120,13 @@ class PostControllerTest {
 					fieldWithPath("[].user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("[].tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("[].comment").type(JsonFieldType.ARRAY).description("comment"),
-					fieldWithPath("[].commentCount").type(JsonFieldType.NUMBER).description("commentCount")
+					fieldWithPath("[].commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
+					fieldWithPath("[].seriesResponse").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("[].seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("[].seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("[].seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
+					fieldWithPath("[].seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
+					fieldWithPath("[].seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
 				)));
 	}
 
@@ -146,7 +150,13 @@ class PostControllerTest {
 					fieldWithPath("user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
-					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount")
+					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
+					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
+					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
+					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
 				)));
 	}
 
@@ -179,7 +189,13 @@ class PostControllerTest {
 					fieldWithPath("user.profileImgUrl").type(JsonFieldType.STRING).description("profileImgUrl"),
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
-					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount")
+					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
+					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
+					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
+					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
 				)
 			));
 	}
@@ -197,7 +213,7 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물 작성 중 제목이 공백인 경우 에러가 발생해야한다.")
 	void isValidateTitleNull() throws Exception {
-		CreateRequest createRequest = new CreateRequest("", "테스트 게시물 내용", "#tag", true, null);
+		CreateRequest createRequest = new CreateRequest("", "테스트 게시물 내용", "#tag", true, SERIES_TITLE);
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
@@ -211,7 +227,7 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물 작성 중 내용이 빈칸인 경우 에러가 발생해야한다.")
 	void isValidateContentEmpty() throws Exception {
-		CreateRequest createRequest = new CreateRequest("테스트 게시물 제목", " ", "#tag", true, null);
+		CreateRequest createRequest = new CreateRequest("테스트 게시물 제목", " ", "#tag", true, SERIES_TITLE);
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
@@ -228,7 +244,7 @@ class PostControllerTest {
 		CreateRequest createRequest = new CreateRequest(
 			"안녕하세요. 여기는 프로그래머스 기술 블로그 prolog입니다. 이곳에 글을 작성하기 위해서는 제목은 50글자 미만이어야합니다.",
 			"null 게시물 내용", "#tag",
-			true, null);
+			true, SERIES_TITLE);
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 

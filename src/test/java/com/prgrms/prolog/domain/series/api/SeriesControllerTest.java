@@ -99,8 +99,8 @@ class SeriesControllerTest {
 				responseFields(
 					fieldWithPath("title").type(STRING).description("시리즈 제목"),
 					fieldWithPath("posts").type(ARRAY).description("게시글 목록"),
+					fieldWithPath("posts.[].id").type(NUMBER).description("게시글 아이디"),
 					fieldWithPath("posts.[].title").type(STRING).description("게시글 제목"),
-					fieldWithPath("posts.[].content").type(STRING).description("게시글 내용"),
 					fieldWithPath("count").type(NUMBER).description("게시물 개수")
 				))
 			);
