@@ -94,7 +94,8 @@ public class PostServiceImpl implements PostService {
 	@Override
 	@Transactional
 	public PostResponse update(UpdateRequest update, Long userId, Long postId) {
-		Post findPost = postRepository.joinUserFindById(postId)
+		// Post findPost = postRepository.joinUserFindById(postId)
+		Post findPost = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
@@ -114,6 +115,12 @@ public class PostServiceImpl implements PostService {
 	public void delete(Long postId) {
 		Post findPost = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
+		Set<RootTag> findRootTags = postTagRepository.joinRootTagFindByPostId(findPost.getId())
+			.stream()
+			.map(PostTag::getRootTag)
+			.collect(Collectors.toSet());
+		removeOrDecreaseUserTags(findPost.getUser(), findRootTags);
+		postTagRepository.deleteByPostId(postId);
 		postRepository.delete(findPost);
 	}
 
