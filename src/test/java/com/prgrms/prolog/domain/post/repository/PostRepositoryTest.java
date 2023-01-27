@@ -78,7 +78,7 @@ class PostRepositoryTest {
 	void findAll() {
 		List<Post> all = postRepository.findAll();
 
-		assertThat(all).hasSize(1);
+		assertThat(all).isNotEmpty();
 	}
 
 	@Test

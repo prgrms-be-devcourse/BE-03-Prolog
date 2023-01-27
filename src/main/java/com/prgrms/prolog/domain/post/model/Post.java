@@ -22,6 +22,7 @@ import org.springframework.util.Assert;
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
+import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -63,12 +64,17 @@ public class Post extends BaseEntity {
 	@OneToMany(mappedBy = "post")
 	private final Set<PostTag> postTags = new HashSet<>();
 
+	@ManyToOne(fetch = LAZY)
+	@JoinColumn(name = "series_id")
+	private Series series;
+
 	@Builder
-	public Post(String title, String content, boolean openStatus, User user) {
+	public Post(String title, String content, boolean openStatus, User user, Series series) {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
 		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
+		this.series = series;
 	}
 
 	public void setUser(User user) {
@@ -124,5 +130,13 @@ public class Post extends BaseEntity {
 		if (text.length() > length) {
 			throw new IllegalArgumentException("exception.post.text.overLength");
 		}
+	}
+
+	public void setSeries(Series series) {
+		if (this.series != null) {
+			this.series.getPosts().remove(this);
+		}
+		this.series = series;
+		series.getPosts().add(this);
 	}
 }

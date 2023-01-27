@@ -54,7 +54,7 @@ class PostTest {
 	@DisplayName("게시글을 생성하기 위해서는 사용자가 필요하다.")
 	void createFailByUserNullTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, content, true, null))
+		assertThatThrownBy(() -> new Post(title, content, true, null,null))
 			.isInstanceOf(NullPointerException.class);
 	}
 
@@ -62,7 +62,7 @@ class PostTest {
 	@DisplayName("게시글 제목은 50자를 넘을 수 없다.")
 	void validateTitleTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(OVER_SIZE_50, content, true, USER))
+		assertThatThrownBy(() -> new Post(OVER_SIZE_50, content, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -71,7 +71,7 @@ class PostTest {
 	@DisplayName("게시글 제목은 빈 값,null일 수 없다.")
 	void validateTitleTest2(String inputTitle) {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(inputTitle, content, true, USER))
+		assertThatThrownBy(() -> new Post(inputTitle, content, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -79,7 +79,7 @@ class PostTest {
 	@DisplayName("게시글 내용은 65535자를 넘을 수 없다.")
 	void validateContentTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, OVER_SIZE_65535, true, USER))
+		assertThatThrownBy(() -> new Post(title, OVER_SIZE_65535, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -88,7 +88,7 @@ class PostTest {
 	@DisplayName("게시글 내용은 빈 값,null일 수 없다.")
 	void validateContentTest2(String inputContent) {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, inputContent, true, USER))
+		assertThatThrownBy(() -> new Post(title, inputContent, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

@@ -22,6 +22,8 @@ import com.prgrms.prolog.domain.posttag.repository.PostTagRepository;
 import com.prgrms.prolog.domain.roottag.model.RootTag;
 import com.prgrms.prolog.domain.roottag.repository.RootTagRepository;
 import com.prgrms.prolog.domain.roottag.util.TagConverter;
+import com.prgrms.prolog.domain.series.model.Series;
+import com.prgrms.prolog.domain.series.repository.SeriesRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.domain.usertag.model.UserTag;
@@ -37,11 +39,13 @@ public class PostServiceImpl implements PostService {
 	private static final String POST_NOT_EXIST_MESSAGE = "존재하지 않는 게시물입니다.";
 	private static final String USER_NOT_EXIST_MESSAGE = "존재하지 않는 사용자입니다.";
 
+	private final SeriesRepository seriesRepository;
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final RootTagRepository rootTagRepository;
 	private final PostTagRepository postTagRepository;
 	private final UserTagRepository userTagRepository;
+
 
 	@Override
 	@Transactional
@@ -50,7 +54,25 @@ public class PostServiceImpl implements PostService {
 		Post createdPost = CreateRequest.toEntity(request, findUser);
 		Post savedPost = postRepository.save(createdPost);
 		updateNewPostAndUserIfTagExists(request.tagText(), savedPost, findUser);
+		registerSeries(request, savedPost, findUser);
 		return savedPost.getId();
+	}
+
+	private void registerSeries(CreateRequest request, Post post, User owner) {
+		String seriesTitle = request.seriesTitle();
+		if (seriesTitle == null || seriesTitle.isBlank()) {
+			return;
+		}
+		Series series = seriesRepository
+			.findByIdAndTitle(owner.getId(), seriesTitle)
+			.orElseGet(() -> seriesRepository.save(
+						Series.builder()
+							.title(seriesTitle)
+							.user(owner)
+							.build()
+				)
+			);
+		post.setSeries(series);
 	}
 
 	@Override
