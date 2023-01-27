@@ -80,7 +80,7 @@ class LikeControllerTest {
 
 		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(savedUser.getId(), savedPost.getId());
 
-		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/like")
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/like/{postId}", savedPost.getId())
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(likeRequest)))
