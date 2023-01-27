@@ -3,10 +3,10 @@ spring:
 
   # database 설정
   datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
     # 커넥션 풀 설정
     hikari:
@@ -37,21 +37,12 @@ spring:
     basename: messages/exceptions/exception, messages/logs/log-form
 
 # SQL 로그 설정
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace # 파라미터 값
 
 --- # local
 spring:
   config:
     activate.on-profile: "db-local"
     import: optional:file:.env[.properties]
-
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace # 파라미터 값
 
 --- # prod
 spring:
