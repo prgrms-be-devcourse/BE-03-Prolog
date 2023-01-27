@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/docs/**").permitAll()
+			.antMatchers("/actuator/**").hasRole("USER")
 			.anyRequest().authenticated()
 			.and()
 			// REST API 기반이기 때문에 사용 X
