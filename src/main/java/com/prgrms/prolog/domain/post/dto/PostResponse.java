@@ -18,7 +18,8 @@ public record PostResponse(String title,
 						   Set<String> tags,
 						   SeriesResponse seriesResponse,
 						   List<Comment> comment,
-						   int commentCount) {
+						   int commentCount,
+						   int likeCount) {
 
 	public static PostResponse toPostResponse(Post post) {
 		return new PostResponse(post.getTitle(),
@@ -28,6 +29,7 @@ public record PostResponse(String title,
 			PostTagsResponse.from(post.getPostTags()).tagNames(),
 			SeriesResponse.toSeriesResponse(post.getSeries()),
 			post.getComments(),
-			post.getComments().size());
+			post.getComments().size(),
+			post.getLikeCount());
 	}
 }

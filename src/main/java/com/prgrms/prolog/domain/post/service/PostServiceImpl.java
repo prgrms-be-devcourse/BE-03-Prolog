@@ -79,7 +79,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponse findById(Long postId) {
 		Post post = postRepository.joinCommentFindById(postId)
-			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
+			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
 		post.addPostTagsFrom(findPostTags);
 		return PostResponse.toPostResponse(post);
@@ -94,7 +94,6 @@ public class PostServiceImpl implements PostService {
 	@Override
 	@Transactional
 	public PostResponse update(UpdateRequest update, Long userId, Long postId) {
-		// Post findPost = postRepository.joinUserFindById(postId)
 		Post findPost = postRepository.findById(postId)
 			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
 
