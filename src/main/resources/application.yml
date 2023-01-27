@@ -12,3 +12,9 @@ spring:
       - db
       - exception
       - security
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
