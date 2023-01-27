@@ -84,7 +84,7 @@ class LikeControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(likeRequest)))
-			.andExpect(status().isOk())
+			.andExpect(status().isNoContent())
 			.andDo(restDocs.document(
 				responseBody()
 			));
