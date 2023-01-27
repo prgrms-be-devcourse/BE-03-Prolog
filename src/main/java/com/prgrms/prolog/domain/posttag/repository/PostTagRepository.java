@@ -30,4 +30,12 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
 		WHERE pt.post.id = :postId
 		""")
 	Set<PostTag> joinRootTagFindByPostId(@Param(value = "postId") Long postId);
+
+	@Modifying
+	@Query("""
+		DELETE
+		FROM PostTag pt
+		WHERE pt.post.id = :postId
+		""")
+	void deleteByPostId(@Param(value = "postId") Long postId);
 }
