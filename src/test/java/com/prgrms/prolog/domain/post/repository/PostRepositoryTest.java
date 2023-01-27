@@ -38,22 +38,21 @@ class PostRepositoryTest {
 	@BeforeEach
 	void setUp() {
 		user = userRepository.save(USER);
-		post = Post.builder()
-			.title("테스트 제목")
-			.content("테스트 내용")
+		Post p = Post.builder()
+			.title(TITLE)
+			.content(CONTENT)
 			.openStatus(true)
 			.user(user)
 			.build();
-
-		postRepository.save(post);
+		post = postRepository.save(p);
 	}
 
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save() {
 		Post newPost = Post.builder()
-			.title("새로운 테스트 제목")
-			.content("새로운 테스트 내용")
+			.title("새로 저장한 제목")
+			.content("새로 저장한 내용")
 			.openStatus(false)
 			.user(user)
 			.build();
