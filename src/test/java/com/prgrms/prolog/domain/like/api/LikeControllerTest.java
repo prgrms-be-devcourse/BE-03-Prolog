@@ -34,9 +34,6 @@ import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @SpringBootTest
 @ExtendWith(RestDocumentationExtension.class)
 @Import(RestDocsConfig.class)

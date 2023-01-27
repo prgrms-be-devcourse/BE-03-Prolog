@@ -20,9 +20,6 @@ import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.global.config.JpaConfig;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
 @Import({JpaConfig.class})
@@ -54,13 +51,13 @@ class LikeRepositoryTest {
 			.user(savedUser)
 			.post(savedPost)
 			.build();
-		likeRepository.save(like);
+		Like savedLike = likeRepository.save(like);
 
 		// when
 		Optional<Like> actual = likeRepository.findByUserAndPost(savedUser, savedPost);
 
 		// then
 		assertThat(actual)
-			.hasValueSatisfying(l -> assertThat(l.getId()).isEqualTo(1L));
+			.hasValueSatisfying(l -> assertThat(l.getId()).isEqualTo(savedLike.getId()));
 	}
 }
