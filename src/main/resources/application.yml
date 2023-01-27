@@ -12,3 +12,4 @@ spring:
       - db
       - exception
       - security
+      - aws
