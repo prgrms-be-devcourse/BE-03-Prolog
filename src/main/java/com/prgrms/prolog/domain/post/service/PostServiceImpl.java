@@ -46,6 +46,7 @@ public class PostServiceImpl implements PostService {
 	private final PostTagRepository postTagRepository;
 	private final UserTagRepository userTagRepository;
 
+
 	@Override
 	@Transactional
 	public Long save(CreateRequest request, Long userId) {
@@ -60,15 +61,16 @@ public class PostServiceImpl implements PostService {
 	private void registerSeries(CreateRequest request, Post post, User owner) {
 		String seriesTitle = request.seriesTitle();
 		if (seriesTitle == null || seriesTitle.isBlank()) {
-			return;
+			seriesTitle = "시리즈 없음";
 		}
+		final String finalSeriesTitle = seriesTitle;
 		Series series = seriesRepository
 			.findByIdAndTitle(owner.getId(), seriesTitle)
 			.orElseGet(() -> seriesRepository.save(
-					Series.builder()
-						.title(seriesTitle)
-						.user(owner)
-						.build()
+						Series.builder()
+							.title(finalSeriesTitle)
+							.user(owner)
+							.build()
 				)
 			);
 		post.setSeries(series);
@@ -77,7 +79,7 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public PostResponse findById(Long postId) {
 		Post post = postRepository.joinCommentFindById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
 		post.addPostTagsFrom(findPostTags);
 		return PostResponse.toPostResponse(post);
@@ -93,7 +95,7 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	public PostResponse update(UpdateRequest update, Long userId, Long postId) {
 		Post findPost = postRepository.joinUserFindById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
 			throw new IllegalArgumentException("exception.post.not.owner");
