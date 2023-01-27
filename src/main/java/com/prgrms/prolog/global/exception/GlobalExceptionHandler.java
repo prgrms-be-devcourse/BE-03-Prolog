@@ -68,11 +68,11 @@ public class GlobalExceptionHandler {
 		return ErrorResponse.of(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
 	}
 
-	@ResponseStatus(BAD_REQUEST)
+	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(IllegalStateException.class)
 	public ErrorResponse handleIllegalStateException(IllegalStateException e) {
 		logWarn(e);
-		return ErrorResponse.of(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
+		return ErrorResponse.of(INTERNAL_SERVER_ERROR.name(), MessageUtil.getMessage(e.getMessage()));
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
@@ -87,13 +87,11 @@ public class GlobalExceptionHandler {
 		log.debug("[EXCEPTION] HTTP_METHOD_TYPE  -----> [{}]", request.getMethod());
 		log.debug("[EXCEPTION] EXCEPTION_TYPE    -----> [{}]", e.getClass().getSimpleName());
 		log.debug("[EXCEPTION] EXCEPTION_MESSAGE -----> [{}]", MessageUtil.getMessage(e.getMessage()));
-		log.debug("[EXCEPTION]                   -----> ", e);
 	}
 
 	private void logWarn(Exception e) {
 		log.warn("[EXCEPTION] EXCEPTION_TYPE    -----> [{}]", e.getClass().getSimpleName());
 		log.warn("[EXCEPTION] EXCEPTION_MESSAGE -----> [{}]", MessageUtil.getMessage(e.getMessage()));
-		log.warn("[EXCEPTION]                   -----> ", e);
 	}
 
 	private void logError(Exception e) {
