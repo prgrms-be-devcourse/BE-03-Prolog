@@ -40,10 +40,10 @@
         <logger name="jdbc" level="OFF"/>
         <logger name="jdbc.connection" level="OFF"/>
         <logger name="jdbc.sqltiming" level="INFO" additivity="false">
-            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="CONSOLE_APPENDER"/>
         </logger>
         <logger name="jdbc.resultsettable" level="INFO" additivity="false">
-            <appender-ref ref="SQL_FILE"/>
+            <appender-ref ref="CONSOLE_APPENDER"/>
         </logger>
     </springProfile>
 
