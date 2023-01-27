@@ -87,8 +87,9 @@ class SeriesControllerTest {
 		// given
 		Claims claims = Claims.from(savedUser.getId(), USER_ROLE);
 		// when
-		mockMvc.perform(get("/api/v1/series/{title}", SERIES_TITLE)
+		mockMvc.perform(get("/api/v1/series")
 				.header(AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.param("title", SERIES_TITLE)
 			)
 			// then
 			.andExpectAll(
