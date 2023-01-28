@@ -13,3 +13,9 @@ spring:
       - exception
       - security
       - aws
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

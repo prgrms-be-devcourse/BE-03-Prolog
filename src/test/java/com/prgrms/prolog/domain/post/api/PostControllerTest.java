@@ -31,7 +31,7 @@ import com.prgrms.prolog.config.RestDocsConfig;
 import com.prgrms.prolog.config.TestContainerConfig;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.service.PostServiceImpl;
+import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.domain.series.repository.SeriesRepository;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 import com.prgrms.prolog.global.jwt.JwtTokenProvider;
@@ -50,7 +50,7 @@ class PostControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 	@Autowired
-	private PostServiceImpl postService;
+	private PostService postService;
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
@@ -64,9 +64,10 @@ class PostControllerTest {
 	@BeforeEach
 	void setUp(WebApplicationContext webApplicationContext,
 		RestDocumentationContextProvider restDocumentation) {
+
 		userId = userRepository.save(USER).getId();
 		claims = Claims.from(userId, "ROLE_USER");
-		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", false, SERIES_TITLE);
+		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", true, SERIES_TITLE);
 		postId = postService.save(createRequest, userId);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.apply(documentationConfiguration(restDocumentation))
@@ -124,9 +125,13 @@ class PostControllerTest {
 					fieldWithPath("[].seriesResponse").type(JsonFieldType.OBJECT).description("series"),
 					fieldWithPath("[].seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
 					fieldWithPath("[].seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("[].seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
-					fieldWithPath("[].seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
-					fieldWithPath("[].seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
+					fieldWithPath("[].seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+						.description("postIdInSeries"),
+					fieldWithPath("[].seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+						.description("postTitleInSeries"),
+					fieldWithPath("[].seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("[].likeCount").type(JsonFieldType.NUMBER).description("likeCount")
+
 				)));
 	}
 
@@ -154,21 +159,25 @@ class PostControllerTest {
 					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
 					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
 					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
-					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
-					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
+					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+						.description("postIdInSeries"),
+					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+						.description("postTitleInSeries"),
+					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("likeCount").type(JsonFieldType.NUMBER).description("likeCount")
 				)));
 	}
 
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 수정할 수 있다.")
 	void update() throws Exception {
-		UpdateRequest request = new UpdateRequest("수정된 테스트 제목", "수정된 테스트 내용", "", true);
+		UpdateRequest update = new UpdateRequest(UPDATE_TITLE, UPDATE_CONTENT, "", false);
+		postService.update(update, userId, postId);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(request))
+				.content(objectMapper.writeValueAsString(update))
 			).andExpect(status().isOk())
 			.andDo(restDocs.document(
 				requestFields(
@@ -193,9 +202,12 @@ class PostControllerTest {
 					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
 					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
 					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER).description("postIdInSeries"),
-					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING).description("postTitleInSeries"),
-					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount")
+					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+						.description("postIdInSeries"),
+					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+						.description("postTitleInSeries"),
+					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("likeCount").type(JsonFieldType.NUMBER).description("likeCount")
 				)
 			));
 	}
@@ -212,7 +224,7 @@ class PostControllerTest {
 
 	@Test
 	@DisplayName("게시물 작성 중 제목이 공백인 경우 에러가 발생해야한다.")
-	void isValidateTitleNull() throws Exception {
+	void validateTitleNull() throws Exception {
 		CreateRequest createRequest = new CreateRequest("", "테스트 게시물 내용", "#tag", true, SERIES_TITLE);
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
@@ -226,9 +238,8 @@ class PostControllerTest {
 
 	@Test
 	@DisplayName("게시물 작성 중 내용이 빈칸인 경우 에러가 발생해야한다.")
-	void isValidateContentEmpty() throws Exception {
+	void validateContentEmpty() throws Exception {
 		CreateRequest createRequest = new CreateRequest("테스트 게시물 제목", " ", "#tag", true, SERIES_TITLE);
-
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
@@ -240,7 +251,7 @@ class PostControllerTest {
 
 	@Test
 	@DisplayName("게시물 작성 중 게시물 제목이 50이상인 경우 에러가 발생해야한다.")
-	void isValidateTitleSizeOver() throws Exception {
+	void validateTitleSizeOver() throws Exception {
 		CreateRequest createRequest = new CreateRequest(
 			"안녕하세요. 여기는 프로그래머스 기술 블로그 prolog입니다. 이곳에 글을 작성하기 위해서는 제목은 50글자 미만이어야합니다.",
 			"null 게시물 내용", "#tag",

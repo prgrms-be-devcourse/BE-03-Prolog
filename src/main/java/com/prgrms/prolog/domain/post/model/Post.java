@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
@@ -38,10 +40,6 @@ public class Post extends BaseEntity {
 
 	private static final int TITLE_MAX_SIZE = 50;
 	private static final int CONTENT_MAX_SIZE = 65535;
-
-	private static final String USER_INFO_NEED_MESSAGE = "게시글은 작성자 정보가 필요합니다.";
-	private static final String NOT_NULL_DATA_MESSAGE = "빈 값일 수 없는 데이터입니다.";
-	private static final String OVER_LENGTH_MESSAGE = "입력할 수 있는 범위를 초과하였습니다.";
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
@@ -67,6 +65,10 @@ public class Post extends BaseEntity {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "series_id")
 	private Series series;
+
+	@ColumnDefault("0")
+	@Column(name = "like_count")
+	private int likeCount;
 
 	@Builder
 	public Post(String title, String content, boolean openStatus, User user, Series series) {

@@ -8,8 +8,12 @@ import com.prgrms.prolog.domain.post.dto.PostResponse;
 
 public interface PostService {
 	Long save(PostRequest.CreateRequest request, Long userId);
+
 	PostResponse findById(Long postId);
+
 	Page<PostResponse> findAll(Pageable pageable);
+
 	PostResponse update(PostRequest.UpdateRequest update, Long userId, Long postId);
+
 	void delete(Long id);
 }
