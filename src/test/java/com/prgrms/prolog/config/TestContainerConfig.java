@@ -14,12 +14,12 @@ public class TestContainerConfig {
 		.withDatabaseName("test");
 
 	@BeforeAll
-	static void beforeAll() {
+	public static void beforeAll() {
 		MY_SQL_CONTAINER.start();
 	}
 
 	@AfterAll
-	static void afterAll() {
+	public static void afterAll() {
 		MY_SQL_CONTAINER.stop();
 	}
 }

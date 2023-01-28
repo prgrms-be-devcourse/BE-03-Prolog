@@ -9,25 +9,15 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.prgrms.prolog.base.ServiceTest;
 import com.prgrms.prolog.domain.user.dto.UserDto.IdResponse;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 import com.prgrms.prolog.domain.user.model.User;
-import com.prgrms.prolog.domain.user.repository.UserRepository;
 
-@ExtendWith(MockitoExtension.class)
-class UserServiceTest {
-
-	@Mock
-	private UserRepository userRepository;
-
-	@Mock
-	private User userMock;
+class UserServiceTest extends ServiceTest {
 
 	@InjectMocks
 	private UserServiceImpl userService;
@@ -46,11 +36,11 @@ class UserServiceTest {
 				given(UserProfile.toUserProfile(USER)).willReturn(USER_PROFILE);
 
 				// when
-				UserProfile foundUser = userService.findUserProfileByUserId(USER_ID);
+				UserProfile foundUserProfile = userService.findUserProfileByUserId(USER_ID);
 
 				// then
 				then(userRepository).should().findById(USER_ID);
-				assertThat(foundUser)
+				assertThat(foundUserProfile)
 					.hasFieldOrPropertyWithValue("email", USER_EMAIL)
 					.hasFieldOrPropertyWithValue("nickName", USER_NICK_NAME)
 					.hasFieldOrPropertyWithValue("introduce", USER_INTRODUCE)
@@ -63,10 +53,9 @@ class UserServiceTest {
 		@Test
 		void notFoundMatchUser() {
 			//given
-			Long unsavedUserId = 100L;
 			given(userRepository.findById(any(Long.class))).willReturn(Optional.empty());
 			//when & then
-			assertThatThrownBy(() -> userService.findUserProfileByUserId(unsavedUserId))
+			assertThatThrownBy(() -> userService.findUserProfileByUserId(UNSAVED_USER_ID))
 				.isInstanceOf(IllegalArgumentException.class);
 		}
 	}
@@ -79,8 +68,8 @@ class UserServiceTest {
 		void signUpTest() {
 			// given
 			given(userRepository.findByProviderAndOauthId(PROVIDER,OAUTH_ID))
-				.willReturn(Optional.of(userMock));
-			given(userMock.getId()).willReturn(USER_ID);
+				.willReturn(Optional.of(user));
+			given(user.getId()).willReturn(USER_ID);
 			// when
 			IdResponse userId = userService.signUp(USER_INFO);
 			// then
@@ -93,8 +82,8 @@ class UserServiceTest {
 			// given
 			given(userRepository.findByProviderAndOauthId(PROVIDER, OAUTH_ID))
 				.willReturn(Optional.empty());
-			given(userRepository.save(any(User.class))).willReturn(userMock);
-			given(userMock.getId()).willReturn(USER_ID);
+			given(userRepository.save(any(User.class))).willReturn(user);
+			given(user.getId()).willReturn(USER_ID);
 			// when
 			IdResponse userId = userService.signUp(USER_INFO);
 			// then

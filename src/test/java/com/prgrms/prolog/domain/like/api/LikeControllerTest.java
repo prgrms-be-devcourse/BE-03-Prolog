@@ -1,87 +1,52 @@
 package com.prgrms.prolog.domain.like.api;
 
 import static com.prgrms.prolog.utils.TestUtils.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prgrms.prolog.config.RestDocsConfig;
+import com.prgrms.prolog.base.ControllerTest;
 import com.prgrms.prolog.domain.like.dto.LikeDto;
 import com.prgrms.prolog.domain.like.service.LikeService;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
-import com.prgrms.prolog.domain.user.model.User;
-import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.jwt.JwtTokenProvider;
-import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
-@SpringBootTest
-@ExtendWith(RestDocumentationExtension.class)
-@Import(RestDocsConfig.class)
-@Transactional
-class LikeControllerTest {
-
-	@Autowired
-	RestDocumentationResultHandler restDocs;
+class LikeControllerTest extends ControllerTest {
 
 	@Autowired
 	LikeService likeService;
 
 	@Autowired
-	ObjectMapper objectMapper;
-
-	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-
-	@Autowired
-	UserRepository userRepository;
-
-	@Autowired
 	PostRepository postRepository;
 
-	MockMvc mockMvc;
+	private Long userId;
+	private Long postId;
 
 	@BeforeEach
-	void setUpRestDocs(WebApplicationContext webApplicationContext,
-		RestDocumentationContextProvider restDocumentation) {
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-			.apply(documentationConfiguration(restDocumentation))
-			.alwaysDo(restDocs)
-			.apply(springSecurity())
+	void setPost() {
+		Post post = Post.builder()
+			.title(POST_TITLE)
+			.content(POST_CONTENT)
+			.openStatus(true)
+			.user(savedUser)
 			.build();
+		Post savedPost = postRepository.save(post);
+		postId = savedPost.getId();
+		userId = savedUser.getId();
 	}
 
 	@Test
 	void likeSaveApiTest() throws Exception {
-		User savedUser = userRepository.save(USER);
-		Post post = getPost();
-		post.setUser(savedUser);
-		Post savedPost = postRepository.save(post);
-		Claims claims = Claims.from(savedUser.getId(), USER_ROLE);
+		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(userId, postId);
 
-		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(savedUser.getId(), savedPost.getId());
-
-		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/like/{postId}", savedPost.getId())
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/like/{postId}", postId)
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(likeRequest)))
 			.andExpect(status().isNoContent())
@@ -92,18 +57,11 @@ class LikeControllerTest {
 
 	@Test
 	void likeCancelApiTest() throws Exception {
-		User savedUser = userRepository.save(USER);
-		Post post = getPost();
-		post.setUser(savedUser);
-		Post savedPost = postRepository.save(post);
-
-		Claims claims = Claims.from(savedUser.getId(), USER_ROLE);
-
-		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(savedUser.getId(), savedPost.getId());
+		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(userId, postId);
 		likeService.save(likeRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/like")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(likeRequest)))
 			.andExpect(status().isNoContent())

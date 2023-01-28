@@ -3,77 +3,53 @@ package com.prgrms.prolog.domain.post.api;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.WebApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prgrms.prolog.config.RestDocsConfig;
-import com.prgrms.prolog.config.TestContainerConfig;
+import com.prgrms.prolog.base.ControllerTest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.service.PostService;
+import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.post.repository.PostRepository;
+import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.series.repository.SeriesRepository;
-import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.jwt.JwtTokenProvider;
-import com.prgrms.prolog.global.jwt.JwtTokenProvider.Claims;
 
-@ExtendWith(RestDocumentationExtension.class)
-@Import({RestDocsConfig.class, TestContainerConfig.class})
-@SpringBootTest
-@Transactional
-class PostControllerTest {
+class PostControllerTest extends ControllerTest {
 
 	@Autowired
-	private JwtTokenProvider jwtTokenProvider;
-	@Autowired
-	private RestDocumentationResultHandler restDocs;
-	@Autowired
-	private ObjectMapper objectMapper;
-	@Autowired
-	private PostService postService;
-	@Autowired
-	private UserRepository userRepository;
+	private PostRepository postRepository;
+
 	@Autowired
 	private SeriesRepository seriesRepository;
 
-	private MockMvc mockMvc;
-	private Long userId;
-	private Claims claims;
 	private Long postId;
 
 	@BeforeEach
-	void setUp(WebApplicationContext webApplicationContext,
-		RestDocumentationContextProvider restDocumentation) {
-
-		userId = userRepository.save(USER).getId();
-		claims = Claims.from(userId, "ROLE_USER");
-		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", true, SERIES_TITLE);
-		postId = postService.save(createRequest, userId);
-		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-			.apply(documentationConfiguration(restDocumentation))
-			.alwaysDo(restDocs)
-			.apply(springSecurity())
+	void setPost() {
+		Post post = Post.builder()
+			.title(POST_TITLE)
+			.content(POST_CONTENT)
+			.openStatus(true)
+			.user(savedUser)
 			.build();
+		Post savedPost = postRepository.save(post);
+		Series series = Series.builder()
+			.title(SERIES_TITLE)
+			.user(savedUser)
+			.build();
+		Series savedSeries = seriesRepository.save(series);
+		savedPost.setSeries(savedSeries);
+		postId = savedPost.getId();
+
 	}
 
 	@Test
@@ -82,7 +58,7 @@ class PostControllerTest {
 		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", "tag", true, SERIES_TITLE);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(request))
 			).andExpect(status().isCreated())
@@ -102,10 +78,10 @@ class PostControllerTest {
 	@DisplayName("게시물을 전체 조회할 수 있다.")
 	void findAll() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts")
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.param("page", "0")
 				.param("size", "10")
-				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims)))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andDo(print())
 			.andDo(restDocs.document(
@@ -140,7 +116,7 @@ class PostControllerTest {
 	void findById() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts/{id}", postId)
 				.contentType(MediaType.APPLICATION_JSON)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims)))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN))
 			.andExpect(status().isOk())
 			.andDo(restDocs.document(
 				responseFields(
@@ -171,11 +147,10 @@ class PostControllerTest {
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 수정할 수 있다.")
 	void update() throws Exception {
-		UpdateRequest update = new UpdateRequest(UPDATE_TITLE, UPDATE_CONTENT, "", false);
-		postService.update(update, userId, postId);
+		UpdateRequest update = new UpdateRequest(UPDATE_TITLE, UPDATE_CONTENT, "#테스트", true);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(update))
 			).andExpect(status().isOk())
@@ -216,7 +191,7 @@ class PostControllerTest {
 	@DisplayName("게시물 아이디로 게시물을 삭제할 수 있다.")
 	void remove() throws Exception {
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", postId)
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 			).andExpect(status().isNoContent())
 			.andDo(document("post-delete"));
@@ -230,7 +205,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());
@@ -243,7 +218,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());
@@ -260,7 +235,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isBadRequest());
@@ -277,7 +252,7 @@ class PostControllerTest {
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
-				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + jwtTokenProvider.createAccessToken(claims))
+				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
 			.andExpect(status().isCreated());
