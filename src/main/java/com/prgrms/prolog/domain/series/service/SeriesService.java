@@ -10,10 +10,6 @@ public interface SeriesService {
 
 	IdResponse createSeries(@Valid CreateSeriesRequest request, Long userId);
 
-	IdResponse changeSeries(@Valid UpdateSeriesRequest request, Long postId, Long userId);
-
 	SeriesResponse findSeriesByTitle(Long userId, String title);
-
-	void deleteSeries(Long userId, String title);
 
 }
