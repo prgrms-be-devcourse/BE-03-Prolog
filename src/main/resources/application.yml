@@ -12,6 +12,7 @@ spring:
       - db
       - exception
       - security
+      - aws
 
 management:
   endpoints:
