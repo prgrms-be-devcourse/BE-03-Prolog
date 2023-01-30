@@ -31,12 +31,12 @@ public class CommentDto {
 	) {
 	}
 
-	public record CreatedCommentResponse(
+	public record SingleCommentResponse(
 		UserResponse user,
 		String content
 	) {
-		public static CreatedCommentResponse from(UserResponse user, String content) {
-			return new CreatedCommentResponse(user, content);
+		public static SingleCommentResponse from(UserResponse user, String content) {
+			return new SingleCommentResponse(user, content);
 		}
 	}
 }

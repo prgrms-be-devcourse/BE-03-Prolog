@@ -26,25 +26,26 @@ public class CommentController {
 
 	private final CommentService commentService;
 
-	@PostMapping("/{post_id}/comments")
-	public ResponseEntity<Void> createComment(
-		@PathVariable(name = "post_id") Long postId,
+	@PostMapping("/{postId}/comments")
+	public ResponseEntity<SingleCommentResponse> createComment(
+		@PathVariable(name = "postId") Long postId,
 		@Valid @RequestBody CreateCommentRequest createCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.createComment(createCommentRequest, user.id(), postId);
-		return ResponseEntity.status(CREATED).build();
+		SingleCommentResponse singleCommentResponse
+			= commentService.createComment(createCommentRequest, user.id(), postId);
+		return ResponseEntity.status(CREATED).body(singleCommentResponse);
 	}
 
-	@PatchMapping("/{post_id}/comments/{id}")
-	public ResponseEntity<Void> updateComment(
-		// TODO : 게시글 검증 추가
-		@PathVariable(name = "post_id") Long postId,
-		@PathVariable(name = "id") Long commentId,
+	@PatchMapping("/{postId}/comments/{commentId}")
+	public ResponseEntity<SingleCommentResponse> updateComment(
+		@PathVariable(name = "postId") Long postId,
+		@PathVariable(name = "commentId") Long commentId,
 		@Valid @RequestBody UpdateCommentRequest updateCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.updateComment(updateCommentRequest, user.id(), commentId);
-		return ResponseEntity.ok().build();
+		SingleCommentResponse singleCommentResponse
+			= commentService.updateComment(updateCommentRequest, user.id(), postId, commentId);
+		return ResponseEntity.ok(singleCommentResponse);
 	}
 }

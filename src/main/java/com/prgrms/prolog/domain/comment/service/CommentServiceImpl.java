@@ -2,6 +2,8 @@ package com.prgrms.prolog.domain.comment.service;
 
 import static com.prgrms.prolog.domain.comment.dto.CommentDto.*;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -27,22 +29,28 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public CreatedCommentResponse createComment(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
+	public SingleCommentResponse createComment(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
 		User findUser = getFindUserBy(userId);
 		Post findPost = getFindPostBy(postId);
 		Comment comment = CreateCommentRequest.from(createCommentRequest, findUser, findPost);
-		// TODO : return savedComment
-		commentRepository.save(comment);
-		return CreatedCommentResponse.from(UserDto.UserResponse.from(findUser), comment.getContent());
+		Comment savedComment = commentRepository.save(comment);
+		return SingleCommentResponse.from(UserDto.UserResponse.from(findUser), savedComment.getContent());
 	}
 
 	@Override
 	@Transactional
-	public Long updateComment(UpdateCommentRequest updateCommentRequest, Long userId, Long commentId) {
+	public SingleCommentResponse updateComment(UpdateCommentRequest updateCommentRequest, Long userId, Long postId, Long commentId) {
+		Post findPost = getFindPostBy(postId);
+		User findUser = getFindUserBy(userId);
 		Comment findComment = commentRepository.joinUserByCommentId(commentId);
+
+		validatePostComment(findPost, findComment);
+		validateUserComment(findUser, findComment);
+
 		validateCommentNotNull(findComment);
 		findComment.changeContent(updateCommentRequest.content());
-		return findComment.getId();
+
+		return SingleCommentResponse.from(UserDto.UserResponse.from(findUser), updateCommentRequest.content());
 	}
 
 	private User getFindUserBy(Long userId) {
@@ -57,5 +65,15 @@ public class CommentServiceImpl implements CommentService {
 
 	private void validateCommentNotNull(Comment comment) {
 		Assert.notNull(comment, "exception.comment.notExists");
+	}
+
+	private void validateUserComment(User findUser, Comment findComment) {
+		Assert.isTrue(!Objects.equals(findComment.getUser().getId(), findUser.getId()),
+			"exception.comment.user.notSame");
+	}
+
+	private void validatePostComment(Post findPost, Comment findComment) {
+		Assert.isTrue(!Objects.equals(findPost.getId(), findComment.getPost().getId()),
+			"exception.comment.post.notSame");
 	}
 }
