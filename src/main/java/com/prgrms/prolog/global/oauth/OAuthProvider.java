@@ -1,6 +1,7 @@
 package com.prgrms.prolog.global.oauth;
 
-import static com.prgrms.prolog.domain.user.dto.UserDto.*;
+import static com.prgrms.prolog.global.oauth.dto.KakaoUserInfo.*;
+import static lombok.AccessLevel.*;
 
 import java.util.Objects;
 

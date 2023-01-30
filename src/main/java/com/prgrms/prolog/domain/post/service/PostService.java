@@ -5,17 +5,14 @@ import static com.prgrms.prolog.domain.post.dto.PostDto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.prgrms.prolog.domain.post.dto.PostRequest;
-import com.prgrms.prolog.domain.post.dto.PostResponse;
-
 public interface PostService {
-	Long create(PostRequest.CreateRequest request, Long userId);
+	Long createPost(CreatePostRequest request, Long userId);
 
-	PostResponse findById(Long postId);
+	SinglePostResponse getSinglePost(Long userId, Long postId);
 
-	Page<PostResponse> findAll(Pageable pageable);
+	Page<SinglePostResponse> getAllPost(Pageable pageable);
 
-	PostResponse update(PostRequest.UpdateRequest update, Long userId, Long postId);
+	SinglePostResponse updatePost(UpdatePostRequest update, Long userId, Long postId);
 
-	void delete(Long id);
+	void deletePost(Long userId, Long postId);
 }

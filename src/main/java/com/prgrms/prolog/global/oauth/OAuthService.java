@@ -1,6 +1,5 @@
 package com.prgrms.prolog.global.oauth;
 
-import static com.prgrms.prolog.domain.user.dto.UserDto.*;
 import static com.prgrms.prolog.global.jwt.JwtTokenProvider.*;
 
 import org.springframework.stereotype.Service;
@@ -24,6 +23,6 @@ public class OAuthService {
 	public String login(OauthUserInfo userInfo) {
 		Long userId = userService.signUp(userInfo);
 		return jwtTokenProvider.createAccessToken(
-			Claims.from(userId,"ROLE_USER"));
+			Claims.from(userId, "ROLE_USER"));
 	}
 }
