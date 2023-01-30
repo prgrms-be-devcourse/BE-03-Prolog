@@ -39,6 +39,7 @@ public class TestUtils {
 	public static final String UPDATE_CONTENT = "수정할 내용을 입력해주세요";
 
 	// Comment
+	public static final Long COMMENT_ID = 1L;
 	public static final Comment COMMENT = getComment();
 	public static final String COMMENT_CONTENT = "댓글 내용";
 
