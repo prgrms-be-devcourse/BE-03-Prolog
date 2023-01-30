@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.post.model;
 
+import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -71,29 +72,11 @@ public class Post extends BaseEntity {
 	private int likeCount;
 
 	@Builder
-	public Post(String title, String content, boolean openStatus, User user, Series series) {
+	public Post(String title, String content, boolean openStatus, User user) {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
-		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
-		this.series = series;
-	}
-
-	public void changePost(UpdateRequest updateRequest) {
-		validateTitle(updateRequest.title());
-		validateContent(updateRequest.content());
-
-		this.title = updateRequest.title();
-		this.content = updateRequest.content();
-		this.openStatus = updateRequest.openStatus();
-	}
-
-	public void setUser(User user) {
-		if (this.user != null) {
-			this.user.getPosts().remove(this);
-		}
-		this.user = user;
-		user.getPosts().add(this);
+		this.user = Objects.requireNonNull(user, "exception.post.user.require");
 	}
 
 	public void setSeries(Series series) {
@@ -104,41 +87,28 @@ public class Post extends BaseEntity {
 		series.getPosts().add(this);
 	}
 
-	public void changeTitle(String title) {
-		this.title = validateTitle(title);
-	}
-
-	public void changeContent(String content) {
-		this.content = validateContent(content);
-	}
-
-	public void changeOpenStatus(boolean openStatus) {
-		this.openStatus = openStatus;
-	}
-
-	public void addPostTagsFrom(Set<PostTag> postTags) {
+	public void addPostTags(Set<PostTag> postTags) {
 		this.postTags.addAll(postTags);
 	}
 
+	public void changePost(UpdatePostRequest updateRequest) {
+		validateTitle(updateRequest.title());
+		validateContent(updateRequest.content());
+
+		this.title = updateRequest.title();
+		this.content = updateRequest.content();
+		this.openStatus = updateRequest.openStatus();
+	}
+
 	private String validateTitle(String title) {
-		checkText(title);
-		checkOverLength(title, TITLE_MAX_SIZE);
+		checkText(title, "exception.post.title.notText");
+		checkOverLength(title, TITLE_MAX_SIZE, "exception.post.title.overLength");
 		return title;
 	}
 
 	private String validateContent(String content) {
-		checkText(content);
-		checkOverLength(content, CONTENT_MAX_SIZE);
+		checkText(content, "exception.post.content.notText");
+		checkOverLength(content, CONTENT_MAX_SIZE, "exception.post.content.overLength");
 		return content;
-	}
-
-	private void checkText(String text) {
-		Assert.hasText(text, "exception.comment.text");
-	}
-
-	private void checkOverLength(String text, int length) {
-		if (text.length() > length) {
-			throw new IllegalArgumentException("exception.post.text.overLength");
-		}
 	}
 }

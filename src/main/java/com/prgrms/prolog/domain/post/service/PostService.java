@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.post.service;
 
+import static com.prgrms.prolog.domain.post.dto.PostDto.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
