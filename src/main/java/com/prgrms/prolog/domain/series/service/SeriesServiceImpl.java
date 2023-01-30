@@ -1,40 +1,39 @@
 package com.prgrms.prolog.domain.series.service;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
+
 import javax.validation.Valid;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.prolog.domain.series.dto.CreateSeriesRequest;
-import com.prgrms.prolog.domain.series.dto.SeriesResponse;
 import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.series.repository.SeriesRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.common.IdResponse;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class SeriesServiceImpl implements SeriesService {
 
-	private final SeriesRepository seriesRepository;
 	private final UserRepository userRepository;
+	private final SeriesRepository seriesRepository;
 
 	@Override
 	@Transactional
-	public IdResponse createSeries(@Valid CreateSeriesRequest request, Long userId) {
+	public Long createSeries(@Valid CreateSeriesRequest request, Long userId) {
 		User findUser = getFindUserBy(userId);
 		Series series = buildSeries(request.title(), findUser);
-		return new IdResponse(seriesRepository.save(series).getId());
+		return seriesRepository.save(series).getId();
 	}
 
 	@Override
-	public SeriesResponse findSeriesByTitle(Long userId, String title) {
+	public SeriesResponse getSeries(String title, Long userId) {
 		return seriesRepository.findByIdAndTitle(userId, title)
-			.map(SeriesResponse::toSeriesResponse)
+			.map(SeriesResponse::from)
 			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
 	}
 

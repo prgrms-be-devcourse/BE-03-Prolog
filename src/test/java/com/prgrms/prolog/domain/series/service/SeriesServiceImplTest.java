@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.series.service;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.SeriesResponse.*;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -12,11 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import com.prgrms.prolog.base.ServiceTest;
-import com.prgrms.prolog.domain.post.dto.PostInfo;
-import com.prgrms.prolog.domain.series.dto.CreateSeriesRequest;
-import com.prgrms.prolog.domain.series.dto.SeriesResponse;
 import com.prgrms.prolog.domain.series.model.Series;
-import com.prgrms.prolog.global.common.IdResponse;
 
 class SeriesServiceImplTest extends ServiceTest {
 
@@ -34,9 +32,9 @@ class SeriesServiceImplTest extends ServiceTest {
 		given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
 		given(series.getId()).willReturn(POST_ID);
 		// when
-		IdResponse response = seriesService.createSeries(createSeriesRequest, USER_ID);
+		Long userId = seriesService.createSeries(createSeriesRequest, USER_ID);
 		// then
-		assertThat(response.id()).isEqualTo(POST_ID);
+		assertThat(userId).isEqualTo(1L);
 		then(seriesRepository).should().save(any(Series.class));
 		then(userRepository).should().findById(USER_ID);
 	}
@@ -63,7 +61,7 @@ class SeriesServiceImplTest extends ServiceTest {
 		given(post.getId()).willReturn(POST_ID);
 		given(post.getTitle()).willReturn(POST_TITLE);
 		// when
-		SeriesResponse seriesResponse = seriesService.findSeriesByTitle(USER_ID, SERIES_TITLE);
+		SeriesResponse seriesResponse = seriesService.getSeries(SERIES_TITLE, USER_ID);
 		// then
 		then(seriesRepository).should().findByIdAndTitle(any(Long.class), any(String.class));
 		assertThat(seriesResponse)
@@ -80,7 +78,7 @@ class SeriesServiceImplTest extends ServiceTest {
 		given(seriesRepository.findByIdAndTitle(any(Long.class), any(String.class)))
 			.willReturn(Optional.empty());
 		// when & then
-		assertThatThrownBy(() -> seriesService.findSeriesByTitle(USER_ID, SERIES_TITLE))
+		assertThatThrownBy(() -> seriesService.getSeries(SERIES_TITLE, USER_ID))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("notExists");
 	}
