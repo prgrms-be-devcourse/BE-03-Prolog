@@ -1,5 +1,8 @@
 package com.prgrms.prolog.domain.post.api;
 
+import static com.prgrms.prolog.domain.post.dto.PostDto.*;
+import static org.springframework.http.HttpStatus.*;
+
 import java.net.URI;
 import java.util.List;
 
@@ -18,12 +21,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.dto.PostResponse;
 import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 

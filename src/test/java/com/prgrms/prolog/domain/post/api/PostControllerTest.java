@@ -16,8 +16,8 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 
 import com.prgrms.prolog.base.ControllerTest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.CreatePostRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
 import com.prgrms.prolog.domain.series.model.Series;
