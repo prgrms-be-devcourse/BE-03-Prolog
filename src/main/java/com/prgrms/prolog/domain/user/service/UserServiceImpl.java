@@ -10,8 +10,8 @@ import com.prgrms.prolog.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class UserServiceImpl implements UserService {
 
