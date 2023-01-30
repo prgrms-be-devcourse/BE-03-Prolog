@@ -2,6 +2,7 @@ package com.prgrms.prolog.domain.post.repository;
 
 import java.util.Optional;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.prgrms.prolog.domain.post.model.Post;
 
 @Repository
+@DynamicUpdate
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 	@Query("""
