@@ -1,7 +1,7 @@
 package com.prgrms.prolog.domain.user.model;
 
 import static com.prgrms.prolog.domain.user.dto.UserDto.*;
-import static javax.persistence.FetchType.*;
+import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 

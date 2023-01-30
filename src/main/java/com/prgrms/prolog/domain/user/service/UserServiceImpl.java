@@ -41,15 +41,15 @@ public class UserServiceImpl implements UserService {
 	/* [사용자 등록] 디폴트 설정 값으로 회원가입 진행 */
 	private User register(OauthUserInfo userInfo) {
 		return userRepository.save(
-				User.builder()
-					.email(userInfo.email())
-					.nickName(userInfo.nickName())
-					.introduce(DEFAULT_INTRODUCE)
-					.prologName(userInfo.nickName() + "의 prolog")
-					.provider(userInfo.provider())
-					.oauthId(userInfo.oauthId())
-					.profileImgUrl(userInfo.profileImgUrl())
-					.build()
-			);
+			User.builder()
+				.email(userInfo.email())
+				.nickName(userInfo.nickName())
+				.introduce(DEFAULT_INTRODUCE)
+				.prologName(userInfo.nickName() + "의 prolog")
+				.provider(userInfo.provider())
+				.oauthId(userInfo.oauthId())
+				.profileImgUrl(userInfo.profileImgUrl())
+				.build()
+		);
 	}
 }

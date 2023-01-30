@@ -44,7 +44,6 @@ public class PostServiceImpl implements PostService {
 	private final PostTagRepository postTagRepository;
 	private final UserTagRepository userTagRepository;
 
-
 	@Override
 	@Transactional
 	public Long createPost(CreatePostRequest createRequest, Long userId) {
@@ -65,10 +64,10 @@ public class PostServiceImpl implements PostService {
 		Series series = seriesRepository
 			.findByIdAndTitle(owner.getId(), seriesTitle)
 			.orElseGet(() -> seriesRepository.save(
-						Series.builder()
-							.title(finalSeriesTitle)
-							.user(owner)
-							.build()
+					Series.builder()
+						.title(finalSeriesTitle)
+						.user(owner)
+						.build()
 				)
 			);
 		post.setSeries(series);

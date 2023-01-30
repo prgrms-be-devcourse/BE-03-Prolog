@@ -29,9 +29,9 @@ public class UserDto {
 
 	@Builder
 	public record UpdateUserRequest(String email,
-									String nickName,
-									String introduce,
-									String prologName
+	                                String nickName,
+	                                String introduce,
+	                                String prologName
 	) {
 	}
 
