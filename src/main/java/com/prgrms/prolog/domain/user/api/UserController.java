@@ -21,11 +21,11 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping("/me")
-	ResponseEntity<UserProfile> getMyProfile(
+	ResponseEntity<UserResponse> getMyProfile(
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		return ResponseEntity.ok(
-			userService.findUserProfileByUserId(user.id())
+			userService.getUserProfile(user.id())
 		);
 	}
 

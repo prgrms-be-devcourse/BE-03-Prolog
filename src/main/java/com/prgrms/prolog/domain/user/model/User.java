@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.series.model.Series;
-import com.prgrms.prolog.domain.user.dto.UserDto;
 import com.prgrms.prolog.domain.usertag.model.UserTag;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -76,7 +75,7 @@ public class User extends BaseEntity {
 	@OneToMany(mappedBy = "user")
 	private final Set<UserTag> userTags = new HashSet<>();
 
-	@OneToMany(mappedBy = "user", fetch = LAZY)
+	@OneToMany(mappedBy = "user")
 	private final List<Series> series = new ArrayList<>();
 
 	@Builder
@@ -124,16 +123,6 @@ public class User extends BaseEntity {
 		checkOverLength(email, 100, "exception.user.email.length");
 		checkPattern(email, emailPattern, "exception.user.email.pattern");
 		return email;
-	}
-
-	private void checkText(String text, String message) {
-		Assert.hasText(text, message);
-	}
-
-	private void checkOverLength(String text, int length, String message) {
-		if (Objects.nonNull(text) && text.length() > length) {
-			throw new IllegalArgumentException(message);
-		}
 	}
 
 	private void checkPattern(String text, Pattern pattern, String message) {
