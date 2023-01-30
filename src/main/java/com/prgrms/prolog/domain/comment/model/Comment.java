@@ -22,9 +22,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+/**
+ * 롬복 (생성자 -> getter -> setter) [아래 -> 위]
+ * 하이버네이트
+ * 스프링
+ */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -74,9 +77,5 @@ public class Comment extends BaseEntity {
 		post.getComments().add(this);
 	}
 
-	public boolean checkUserEmail(String email) {
-		Assert.notNull(user, "exception.user.notExists");
-		return this.user.checkSameEmail(email);
-	}
 }
 
