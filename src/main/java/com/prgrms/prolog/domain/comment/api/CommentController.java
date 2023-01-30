@@ -27,23 +27,24 @@ public class CommentController {
 	private final CommentService commentService;
 
 	@PostMapping("/{post_id}/comments")
-	public ResponseEntity<Void> save(
+	public ResponseEntity<Void> createComment(
 		@PathVariable(name = "post_id") Long postId,
-		@Valid @RequestBody CreateCommentRequest request,
+		@Valid @RequestBody CreateCommentRequest createCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.save(request, user.id(), postId);
+		commentService.save(createCommentRequest, user.id(), postId);
 		return ResponseEntity.status(CREATED).build();
 	}
 
 	@PatchMapping("/{post_id}/comments/{id}")
-	public ResponseEntity<Void> update(
+	public ResponseEntity<Void> updateComment(
+		// TODO : 게시글 검증 추가
 		@PathVariable(name = "post_id") Long postId,
 		@PathVariable(name = "id") Long commentId,
-		@Valid @RequestBody UpdateCommentRequest request,
+		@Valid @RequestBody UpdateCommentRequest updateCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.update(request, user.id(), commentId);
+		commentService.update(updateCommentRequest, user.id(), commentId);
 		return ResponseEntity.ok().build();
 	}
 }
