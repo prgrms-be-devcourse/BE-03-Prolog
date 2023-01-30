@@ -91,6 +91,17 @@ public class User extends BaseEntity {
 		this.profileImgUrl = profileImgUrl;
 	}
 
+	public void changeUserProfile(UpdateUserRequest updateUserRequest) {
+		this.email = validateEmail(updateUserRequest.email());
+		this.nickName = validateNickName(updateUserRequest.nickName());
+		this.introduce = validateIntroduce(updateUserRequest.introduce());
+		this.prologName = validatePrologName(updateUserRequest.prologName());
+	}
+
+	public void changeProfileImgUrl(String profileImgUrl) {
+		Objects.requireNonNull(profileImgUrl, "exception.user.profile.imageUrl.null");
+	}
+
 	private String validatePrologName(String prologName) {
 		checkText(prologName, "exception.user.prologName.text");
 		checkOverLength(prologName, 100, "exception.user.prologName.length");
