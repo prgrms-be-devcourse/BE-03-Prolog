@@ -19,9 +19,9 @@ import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/like")
+@RestController
 public class LikeController {
 
 	private final LikeServiceImpl likeService;
