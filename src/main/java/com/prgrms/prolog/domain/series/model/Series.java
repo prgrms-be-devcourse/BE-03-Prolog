@@ -1,5 +1,8 @@
 package com.prgrms.prolog.domain.series.model;
 
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -7,7 +10,6 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,20 +20,19 @@ import org.springframework.util.Assert;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.user.model.User;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
 public class Series {
 
 	private static final int TITLE_MAX_SIZE = 50;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	private String title;

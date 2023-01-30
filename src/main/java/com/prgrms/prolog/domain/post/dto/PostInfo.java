@@ -2,6 +2,7 @@ package com.prgrms.prolog.domain.post.dto;
 
 import com.prgrms.prolog.domain.post.model.Post;
 
+// TODO : SimplePostResponse
 public record PostInfo(
 	Long id,
 	String title
@@ -11,4 +12,5 @@ public record PostInfo(
 			post.getId(),
 			post.getTitle()
 		);
-	}}
+	}
+}

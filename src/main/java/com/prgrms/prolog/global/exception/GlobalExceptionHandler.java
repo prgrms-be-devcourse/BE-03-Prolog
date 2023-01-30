@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 	public ErrorResponse handleMethodArgumentNotValidException(HttpServletRequest request, BindException e) {
 		logDebug(request, e);
 		log.debug("[EXCEPTION] FIELD_ERROR       -----> [{}]", e.getFieldError());
-		return ErrorResponse.of(BAD_REQUEST.name(), "잘못된 데이터입니다.");
+		return ErrorResponse.from(BAD_REQUEST.name(), "잘못된 데이터입니다.");
 	}
 
 	@ResponseStatus(BAD_REQUEST)
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 	public ErrorResponse handleMissingRequestValueException(HttpServletRequest request,
 		MissingRequestValueException e) {
 		logDebug(request, e);
-		return ErrorResponse.of(BAD_REQUEST.name(), "데이터가 충분하지 않습니다.");
+		return ErrorResponse.from(BAD_REQUEST.name(), "데이터가 충분하지 않습니다.");
 	}
 
 	@ResponseStatus(BAD_REQUEST)
@@ -44,42 +44,42 @@ public class GlobalExceptionHandler {
 	public ErrorResponse handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
 		HttpRequestMethodNotSupportedException e) {
 		logDebug(request, e);
-		return ErrorResponse.of(BAD_REQUEST.name(), "잘못된 요청입니다.");
+		return ErrorResponse.from(BAD_REQUEST.name(), "잘못된 요청입니다.");
 	}
 
 	@ResponseStatus(BAD_REQUEST)
 	@ExceptionHandler(NoHandlerFoundException.class)
 	public ErrorResponse handleNoHandlerFoundException(HttpServletRequest request, NoHandlerFoundException e) {
 		logDebug(request, e);
-		return ErrorResponse.of(BAD_REQUEST.name(), "잘못된 uri 입니다.");
+		return ErrorResponse.from(BAD_REQUEST.name(), "잘못된 uri 입니다.");
 	}
 
 	@ResponseStatus(BAD_REQUEST)
 	@ExceptionHandler(EntityNotFoundException.class)
 	public ErrorResponse handleEntityNotFoundException(EntityNotFoundException e) {
 		logWarn(e);
-		return ErrorResponse.of(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
+		return ErrorResponse.from(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
 	}
 
 	@ResponseStatus(BAD_REQUEST)
 	@ExceptionHandler(IllegalArgumentException.class)
 	public ErrorResponse handleIllegalArgumentException(IllegalArgumentException e) {
 		logWarn(e);
-		return ErrorResponse.of(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
+		return ErrorResponse.from(BAD_REQUEST.name(), MessageUtil.getMessage(e.getMessage()));
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(IllegalStateException.class)
 	public ErrorResponse handleIllegalStateException(IllegalStateException e) {
 		logWarn(e);
-		return ErrorResponse.of(INTERNAL_SERVER_ERROR.name(), MessageUtil.getMessage(e.getMessage()));
+		return ErrorResponse.from(INTERNAL_SERVER_ERROR.name(), MessageUtil.getMessage(e.getMessage()));
 	}
 
 	@ResponseStatus(INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
 	public ErrorResponse handleException(Exception e) {
 		logError(e);
-		return ErrorResponse.of(INTERNAL_SERVER_ERROR.name(), "서버 내부에서 에러가 발생하였습니다.");
+		return ErrorResponse.from(INTERNAL_SERVER_ERROR.name(), "서버 내부에서 에러가 발생하였습니다.");
 	}
 
 	private void logDebug(HttpServletRequest request, Exception e) {

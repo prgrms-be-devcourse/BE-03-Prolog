@@ -49,12 +49,12 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	@Transactional
-	public Long save(CreateRequest request, Long userId) {
+	public Long create(CreateRequest createRequest, Long userId) {
 		User findUser = userRepository.joinUserTagFindByUserId(userId);
-		Post createdPost = CreateRequest.toEntity(request, findUser);
+		Post createdPost = CreateRequest.toEntity(createRequest, findUser);
 		Post savedPost = postRepository.save(createdPost);
-		updateNewPostAndUserIfTagExists(request.tagText(), savedPost, findUser);
-		registerSeries(request, savedPost, findUser);
+		updateNewPostAndUserIfTagExists(createRequest.tagText(), savedPost, findUser);
+		registerSeries(createRequest, savedPost, findUser);
 		return savedPost.getId();
 	}
 
@@ -78,17 +78,17 @@ public class PostServiceImpl implements PostService {
 
 	@Override
 	public PostResponse findById(Long postId) {
-		Post post = postRepository.joinCommentFindById(postId)
+		Post post = postRepository.joinCommentFindByPostId(postId)
 			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
 		post.addPostTagsFrom(findPostTags);
-		return PostResponse.toPostResponse(post);
+		return PostResponse.from(post);
 	}
 
 	@Override
 	public Page<PostResponse> findAll(Pageable pageable) {
 		return postRepository.findAll(pageable)
-			.map(PostResponse::toPostResponse);
+			.map(PostResponse::from);
 	}
 
 	@Override
@@ -102,11 +102,11 @@ public class PostServiceImpl implements PostService {
 		}
 
 		findPost.changePost(update);
-		updatePostAndUserIfTagChanged(update.tagText(), findPost);
+		updateIfTagChanged(update.tagText(), findPost);
 
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(findPost.getId());
 		findPost.addPostTagsFrom(findPostTags);
-		return PostResponse.toPostResponse(findPost);
+		return PostResponse.from(findPost);
 	}
 
 	@Override
@@ -123,9 +123,9 @@ public class PostServiceImpl implements PostService {
 		postRepository.delete(findPost);
 	}
 
-	private void updatePostAndUserIfTagChanged(String tagText, Post findPost) {
+	private void updateIfTagChanged(String tagText, Post findPost) {
 		Set<String> tagNames = TagConverter.convertFrom(tagText);
-		Set<RootTag> currentRootTags = rootTagRepository.findByTagNamesIn(tagNames);
+		Set<RootTag> currentRootTags = rootTagRepository.findByInTagNames(tagNames);
 		Set<String> newTagNames = distinguishNewTagNames(tagNames, currentRootTags);
 		Set<RootTag> savedNewRootTags = saveNewRootTags(newTagNames);
 		saveNewPostTags(findPost, savedNewRootTags);
@@ -180,7 +180,7 @@ public class PostServiceImpl implements PostService {
 			return;
 		}
 
-		Set<RootTag> currentRootTags = rootTagRepository.findByTagNamesIn(tagNames);
+		Set<RootTag> currentRootTags = rootTagRepository.findByInTagNames(tagNames);
 		Set<String> newTagNames = distinguishNewTagNames(tagNames, currentRootTags);
 		Set<RootTag> savedNewRootTags = saveNewRootTags(newTagNames);
 		currentRootTags.addAll(savedNewRootTags);

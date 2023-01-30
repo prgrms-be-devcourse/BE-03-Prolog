@@ -68,7 +68,7 @@ class PostServiceTest {
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
 		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
-		Long savePostId = postService.save(postRequest, user.getId());
+		Long savePostId = postService.create(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
 	}
 
@@ -79,7 +79,7 @@ class PostServiceTest {
 		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
+		Long savedPostId = postService.create(request, user.getId());
 		PostResponse findPostResponse = postService.findById(savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
@@ -94,7 +94,7 @@ class PostServiceTest {
 		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
+		Long savedPostId = postService.create(request, user.getId());
 		PostResponse findPostResponse = postService.findById(savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
@@ -110,7 +110,7 @@ class PostServiceTest {
 		final List<String> expectedTags = List.of("테스트", "test", "test1", "테 스트");
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
+		Long savedPostId = postService.create(request, user.getId());
 		PostResponse findPostResponse = postService.findById(savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
@@ -126,7 +126,7 @@ class PostServiceTest {
 		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
+		Long savedPostId = postService.create(request, user.getId());
 		PostResponse findPost = postService.findById(savedPostId);
 
 		// then
@@ -143,7 +143,7 @@ class PostServiceTest {
 	void save_fail() {
 		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
-		assertThatThrownBy(() -> postService.save(postRequest, UNSAVED_USER_ID))
+		assertThatThrownBy(() -> postService.create(postRequest, UNSAVED_USER_ID))
 			.isInstanceOf(NullPointerException.class);
 	}
 
@@ -169,7 +169,7 @@ class PostServiceTest {
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
 		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,SERIES_TITLE);
-		Long savedPost = postService.save(createRequest, user.getId());
+		Long savedPost = postService.create(createRequest, user.getId());
 
 		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);
 		PostResponse updatedPostResponse = postService.update(updateRequest, user.getId(), savedPost);

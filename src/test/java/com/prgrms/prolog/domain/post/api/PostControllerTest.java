@@ -68,7 +68,7 @@ class PostControllerTest {
 		userId = userRepository.save(USER).getId();
 		claims = Claims.from(userId, "ROLE_USER");
 		CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#tag", true, SERIES_TITLE);
-		postId = postService.save(createRequest, userId);
+		postId = postService.create(createRequest, userId);
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
 			.apply(documentationConfiguration(restDocumentation))
 			.alwaysDo(restDocs)
