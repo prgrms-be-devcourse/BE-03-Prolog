@@ -37,6 +37,8 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
   green:
     container_name: green
     image: fortune00/prolog
@@ -55,3 +57,5 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
