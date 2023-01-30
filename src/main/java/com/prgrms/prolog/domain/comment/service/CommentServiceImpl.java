@@ -27,19 +27,18 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public Long save(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
+	public CreatedCommentResponse createComment(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
 		User findUser = getFindUserBy(userId);
 		Post findPost = getFindPostBy(postId);
-
-		Comment comment = CreateCommentRequest.toEntity(createCommentRequest, findUser, findPost);
-
+		Comment comment = CreateCommentRequest.from(createCommentRequest, findUser, findPost);
 		// TODO : return savedComment
-		return commentRepository.save(comment).getId();
+		commentRepository.save(comment);
+		return CreatedCommentResponse.from(UserDto.UserResponse.from(findUser), comment.getContent());
 	}
 
 	@Override
 	@Transactional
-	public Long update(UpdateCommentRequest updateCommentRequest, Long userId, Long commentId) {
+	public Long updateComment(UpdateCommentRequest updateCommentRequest, Long userId, Long commentId) {
 		Comment findComment = commentRepository.joinUserByCommentId(commentId);
 		validateCommentNotNull(findComment);
 		findComment.changeContent(updateCommentRequest.content());

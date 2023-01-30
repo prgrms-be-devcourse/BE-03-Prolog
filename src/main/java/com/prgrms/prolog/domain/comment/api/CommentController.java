@@ -32,7 +32,7 @@ public class CommentController {
 		@Valid @RequestBody CreateCommentRequest createCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.save(createCommentRequest, user.id(), postId);
+		commentService.createComment(createCommentRequest, user.id(), postId);
 		return ResponseEntity.status(CREATED).build();
 	}
 
@@ -44,7 +44,7 @@ public class CommentController {
 		@Valid @RequestBody UpdateCommentRequest updateCommentRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		commentService.update(updateCommentRequest, user.id(), commentId);
+		commentService.updateComment(updateCommentRequest, user.id(), commentId);
 		return ResponseEntity.ok().build();
 	}
 }

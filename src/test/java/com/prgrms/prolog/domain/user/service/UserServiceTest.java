@@ -66,13 +66,13 @@ class UserServiceTest extends ServiceTest {
 		@DisplayName("등록된 사용자는 회원 가입 절차 없이 등록된 사용자 ID를 반환 받을 수 있다.")
 		void signUpTest() {
 			// given
-			given(userRepository.findByProviderAndOauthId(PROVIDER,OAUTH_ID))
+			given(userRepository.findByProviderAndOauthId(PROVIDER, OAUTH_ID))
 				.willReturn(Optional.of(user));
 			given(user.getId()).willReturn(USER_ID);
 			// when
 			userService.signUp(USER_INFO);
 			// then
-			then(userRepository).should().findByProviderAndOauthId(PROVIDER,OAUTH_ID);
+			then(userRepository).should().findByProviderAndOauthId(PROVIDER, OAUTH_ID);
 		}
 
 		@Test
