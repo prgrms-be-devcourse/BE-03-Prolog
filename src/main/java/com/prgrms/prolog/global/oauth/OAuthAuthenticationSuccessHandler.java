@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
+import com.prgrms.prolog.domain.user.dto.UserDto.UserInfo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +36,8 @@ public class OAuthAuthenticationSuccessHandler implements AuthenticationSuccessH
 		Object principal = authentication.getPrincipal();
 
 		if (principal instanceof OAuth2User oauth2User) {
-			UserProfile userProfile = OAuthProvider.toUserProfile(oauth2User, providerName);
-			String accessToken = oauthService.login(userProfile);
+			UserInfo userInfo = OAuthProvider.toUserProfile(oauth2User, providerName);
+			String accessToken = oauthService.login(userInfo);
 			setResponse(response, accessToken); // TODO: 헤더에 넣기
 		}
 	}

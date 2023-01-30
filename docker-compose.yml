@@ -1,5 +1,13 @@
 version : "3"
 services:
+  nginx:
+    container_name: nginx
+    image: nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/:/etc/nginx/conf.d/
   db:
     container_name: prolog-db
     image: mysql
@@ -11,23 +19,43 @@ services:
     volumes:
       - ./mysqldata:/var/lib/mysql
     restart: always
-  app:
-    build:
-      context: "."
-      dockerfile: "Dockerfile"
-    container_name: prolog-app
-    ports:
-      - "8080:8080"
+  blue:
+    container_name: blue
+    image: fortune00/prolog
+    expose:
+      - "8080"
     working_dir: /app
     depends_on:
       - db
     restart: always
     environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
       SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       REDIRECT_URI: ${REDIRECT_URI}
       JWT_ISSUER: ${JWT_ISSUER}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       CLIENT_ID: ${CLIENT_ID}
       CLIENT_SECRET: ${CLIENT_SECRET}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+  green:
+    container_name: green
+    image: fortune00/prolog
+    expose:
+      - "8080"
+    working_dir: /app
+    depends_on:
+      - db
+    restart: always
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      REDIRECT_URI: ${REDIRECT_URI}
+      JWT_ISSUER: ${JWT_ISSUER}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}

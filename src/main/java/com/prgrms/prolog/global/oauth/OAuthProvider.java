@@ -12,16 +12,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class OAuthProvider {
 
-	public static UserProfile toUserProfile(OAuth2User oauth, String providerName) {
+	public static UserInfo toUserProfile(OAuth2User oauth, String providerName) {
 		Map<String, Object> response = oauth.getAttributes();
 		Map<String, Object> properties = oauth.getAttribute("properties");
 		Map<String, Object> account = oauth.getAttribute("kakao_account");
 
-		return UserProfile.builder()
+		return UserInfo.builder()
 			.email(String.valueOf(account.get("email")))
 			.nickName(String.valueOf(properties.get("nickname")))
 			.oauthId(String.valueOf(response.get("id")))
 			.provider(providerName)
+			.profileImgUrl(String.valueOf(properties.get("profile_image")))
 			.build();
 	}
 }

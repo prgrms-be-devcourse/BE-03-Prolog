@@ -1,8 +1,12 @@
 # default
 spring:
 
+  # database 설정
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
     # 커넥션 풀 설정
     hikari:
@@ -22,27 +26,23 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
 
+    # flyway 설정
   flyway:
-    enabled: false
+    enabled: true
+    baseline-on-migrate: true
 
+  # 커넥션 풀 설정
   messages:
     encoding: UTF-8
     basename: messages/exceptions/exception, messages/logs/log-form
 
+# SQL 로그 설정
+
 --- # local
 spring:
-  config.activate.on-profile: "db-local"
-
-  datasource:
-    url: ${db.datasource.url}
-    username: ${db.datasource.username}
-    password: ${db.datasource.password}
-
-# SQL 로그 설정
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type: trace # 파라미터 값
+  config:
+    activate.on-profile: "db-local"
+    import: optional:file:.env[.properties]
 
 --- # prod
 spring:
@@ -50,12 +50,6 @@ spring:
     activate.on-profile: "db-prod"
     import: optional:file:.env[.properties]
 
-  datasource:
-    url: ${MYSQL_URL}
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_ROOT_PASSWORD}
-
-  # Flyway 설정
   flyway:
     enabled: true
     baseline-on-migrate: true

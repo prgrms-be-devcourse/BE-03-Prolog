@@ -1,12 +1,15 @@
 package com.prgrms.prolog.domain.user.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,6 +21,8 @@ import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
+import com.prgrms.prolog.domain.series.model.Series;
+import com.prgrms.prolog.domain.usertag.model.UserTag;
 import com.prgrms.prolog.global.common.BaseEntity;
 
 import lombok.AccessLevel;
@@ -49,11 +54,17 @@ public class User extends BaseEntity {
 	private final List<Post> posts = new ArrayList<>();
 	@OneToMany(mappedBy = "user")
 	private final List<Comment> comments = new ArrayList<>();
+	@OneToMany(mappedBy = "user")
+	private final Set<UserTag> userTags = new HashSet<>();
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<Series> series = new ArrayList<>();
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Size(max = 100)
 	private String email;
+	@Size(max = 255)
+	private String profileImgUrl;
 	@Size(max = 100)
 	private String nickName;
 	@Size(max = 100)
@@ -67,13 +78,14 @@ public class User extends BaseEntity {
 
 	@Builder
 	public User(String email, String nickName, String introduce,
-		String prologName, String provider, String oauthId) {
+		String prologName, String provider, String oauthId, String profileImgUrl) {
 		this.email = validateEmail(email);
 		this.nickName = validateNickName(nickName);
 		this.introduce = validateIntroduce(introduce);
 		this.prologName = validatePrologName(prologName);
 		this.provider = Objects.requireNonNull(provider, "provider" + NULL_VALUE_MESSAGE);
 		this.oauthId = Objects.requireNonNull(oauthId, "oauthId" + NULL_VALUE_MESSAGE);
+		this.profileImgUrl = profileImgUrl;
 	}
 
 	private String validatePrologName(String prologName) {
@@ -133,6 +145,14 @@ public class User extends BaseEntity {
 
 	public boolean checkSameEmail(String email) {
 		return this.email.equals(email);
+	}
+
+	public boolean checkSameUserId(Long userId) {
+		return Objects.equals(this.id, userId);
+	}
+
+	public void changeProfileImgUrl(String profileImgUrl) {
+		Objects.requireNonNull(profileImgUrl, "profileImgUrl" + NULL_VALUE_MESSAGE);
 	}
 
 	@Override

@@ -1,0 +1,17 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  profiles:
+    include:
+      - security
+      - aws
+
+  flyway:
+    enabled: false
+
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:mysql:8.0.31:///test?TC_INITSCRIPT=schema.sql
+
+jwt:
+  expiry-seconds: 2

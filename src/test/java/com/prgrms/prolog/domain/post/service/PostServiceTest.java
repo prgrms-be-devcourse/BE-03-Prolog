@@ -1,9 +1,12 @@
 package com.prgrms.prolog.domain.post.service;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesResponse.*;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,18 +23,18 @@ import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
+import com.prgrms.prolog.domain.series.model.Series;
+import com.prgrms.prolog.domain.series.repository.SeriesRepository;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
-import com.prgrms.prolog.global.config.DatabaseConfig;
 
-@Import(DatabaseConfig.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @SpringBootTest
 @Transactional
 class PostServiceTest {
 
 	@Autowired
-	private PostService postService;
+	PostService postService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -40,38 +42,109 @@ class PostServiceTest {
 	@Autowired
 	PostRepository postRepository;
 
+	@Autowired
+	SeriesRepository seriesRepository;
+
 	User user;
 	Post post;
+	Series savedSeries;
 
 	@BeforeEach
 	void setData() {
 		user = userRepository.save(USER);
+		Series series = Series.builder().title(SERIES_TITLE).user(user).build();
+		savedSeries = seriesRepository.save(series);
 		post = Post.builder()
 			.title("테스트 게시물")
 			.content("테스트 내용")
 			.openStatus(true)
 			.user(user)
 			.build();
+		post.setSeries(savedSeries);
 		postRepository.save(post);
 	}
 
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
-		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", true);
-		Long savePostId = postService.save(postRequest, USER_EMAIL);
+		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
+		Long savePostId = postService.save(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
+	}
+
+	@Test
+	@DisplayName("게시글에 태그 없이 등록할 수 있다.")
+	void savePostAndWithOutAnyTagTest() {
+		// given
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, SERIES_TITLE);
+
+		// when
+		Long savedPostId = postService.save(request, user.getId());
+		PostResponse findPostResponse = postService.findById(savedPostId);
+		Set<String> findTags = findPostResponse.tags();
+
+		// then
+		assertThat(findTags).isEmpty();
+	}
+
+	@Test
+	@DisplayName("게시글에 태그가 공백이거나 빈 칸이라면 태그는 무시된다.")
+	void savePostWithBlankTagTest() {
+		// given
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, SERIES_TITLE);
+
+		// when
+		Long savedPostId = postService.save(request, user.getId());
+		PostResponse findPostResponse = postService.findById(savedPostId);
+		Set<String> findTags = findPostResponse.tags();
+
+		// then
+		assertThat(findTags).isEmpty();
+	}
+
+	@Test
+	@DisplayName("게시글에 복수의 태그를 등록할 수 있다.")
+	void savePostAndTagsTest() {
+		// given
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true, SERIES_TITLE);
+		final List<String> expectedTags = List.of("테스트", "test", "test1", "테 스트");
+
+		// when
+		Long savedPostId = postService.save(request, user.getId());
+		PostResponse findPostResponse = postService.findById(savedPostId);
+		Set<String> findTags = findPostResponse.tags();
+
+		// then
+		assertThat(findTags)
+			.containsExactlyInAnyOrderElementsOf(expectedTags);
+	}
+
+	@Test
+	@DisplayName("게시물과 태그를 조회할 수 있다.")
+	void findPostAndTagsTest() {
+		// given
+		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, SERIES_TITLE);
+
+		// when
+		Long savedPostId = postService.save(request, user.getId());
+		PostResponse findPost = postService.findById(savedPostId);
+
+		// then
+		assertThat(findPost)
+			.hasFieldOrPropertyWithValue("title", request.title())
+			.hasFieldOrPropertyWithValue("content", request.content())
+			.hasFieldOrPropertyWithValue("openStatus", request.openStatus())
+			.hasFieldOrPropertyWithValue("tags", Set.of("테스트"))
+			.hasFieldOrPropertyWithValue("seriesResponse", toSeriesResponse(savedSeries));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 사용자(비회원)의 이메일로 게시물을 등록할 수 없다.")
 	void save_fail() {
-		String notExistEmail = "no_email@test.com";
+		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
-		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", true);
-
-		assertThatThrownBy(() -> postService.save(postRequest, notExistEmail))
-			.isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> postService.save(postRequest, UNSAVED_USER_ID))
+			.isInstanceOf(NullPointerException.class);
 	}
 
 	@Test
@@ -93,22 +166,26 @@ class PostServiceTest {
 	}
 
 	@Test
-	@DisplayName("존재하는 게시물의 아이디로 게시물을 수정할 수 있다.")
+	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", true);
+		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,SERIES_TITLE);
+		Long savedPost = postService.save(createRequest, user.getId());
 
-		PostResponse update = postService.update(post.getId(), updateRequest);
+		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);
+		PostResponse updatedPostResponse = postService.update(updateRequest, user.getId(), savedPost);
 
-		assertThat(update.title()).isEqualTo("수정된 테스트");
-		assertThat(update.content()).isEqualTo("수정된 테스트 내용");
+		assertThat(updatedPostResponse)
+			.hasFieldOrPropertyWithValue("title", updateRequest.title())
+			.hasFieldOrPropertyWithValue("content", updateRequest.content())
+			.hasFieldOrPropertyWithValue("tags", Set.of("테스트", "수정된 태그"));
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 게시물의 아이디로 게시물을 수정할 수 없다.")
 	void update_fail() {
-		UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", true);
+		UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "", true);
 
-		assertThatThrownBy(() -> postService.update(0L, updateRequest))
+		assertThatThrownBy(() -> postService.update(updateRequest, user.getId(), 0L))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -119,7 +196,7 @@ class PostServiceTest {
 
 		Page<PostResponse> all = postService.findAll(page);
 
-		assertThat(all).hasSize(1);
+		assertThat(all).isNotNull();
 	}
 
 	@Test

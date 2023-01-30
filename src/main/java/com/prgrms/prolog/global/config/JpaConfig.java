@@ -25,13 +25,13 @@ public class JpaConfig {
 	public AuditorAware<String> auditorAwareProvider() {
 		return () -> Optional.ofNullable(SecurityContextHolder.getContext())
 			.map(SecurityContext::getAuthentication)
-			.map(this::getUser);
+			.map(this::getCreatorInfo);
 	}
 
-	private String getUser(Authentication authentication) { //TODO: 메소드명 바꾸기
+	private String getCreatorInfo(Authentication authentication) {
 		if (isValidAuthentication(authentication)) {
 			JwtAuthentication user = (JwtAuthentication)authentication.getPrincipal();
-			return user.userEmail();
+			return user.id().toString();
 		}
 		return null;
 	}

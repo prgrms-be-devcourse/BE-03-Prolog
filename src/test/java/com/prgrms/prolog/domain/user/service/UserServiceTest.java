@@ -12,9 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.prgrms.prolog.domain.user.dto.UserDto.UserInfo;
+import com.prgrms.prolog.domain.user.dto.UserDto.IdResponse;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
@@ -25,81 +26,80 @@ class UserServiceTest {
 	@Mock
 	private UserRepository userRepository;
 
+	@Mock
+	private User userMock;
+
 	@InjectMocks
-	private UserServiceImpl userService; // 빈으로 등록해서 주입 받고 싶으면 어떻게 해야하나요? 구현체말고 인터페이스를 주입 받고 싶습니다!
+	private UserServiceImpl userService;
 
 	@Nested
 	@DisplayName("사용자 조회 #10")
 	class SignUpAndLogin {
 
 		@Test
-		@DisplayName("이메일로 사용자 정보를 조회할 수 있다")
+		@DisplayName("userId를 통해서 사용자 정보를 조회할 수 있다")
 		void findByEmailTest() {
-			// given
-			User user = getUser();
-			given(userRepository.findByEmail(USER_EMAIL)).willReturn(Optional.of(user));
-			// when
-			UserInfo foundUser = userService.findByEmail(USER_EMAIL);
-			// then
-			then(userRepository).should().findByEmail(USER_EMAIL);
-			assertThat(foundUser)
-				.hasFieldOrPropertyWithValue("email", user.getEmail())
-				.hasFieldOrPropertyWithValue("nickName", user.getNickName())
-				.hasFieldOrPropertyWithValue("introduce", user.getIntroduce())
-				.hasFieldOrPropertyWithValue("prologName", user.getPrologName());
+			try (MockedStatic<UserProfile> userProfile = mockStatic(UserProfile.class)) {
+
+				//given
+				given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
+				given(UserProfile.toUserProfile(USER)).willReturn(USER_PROFILE);
+
+				// when
+				UserProfile foundUser = userService.findUserProfileByUserId(USER_ID);
+
+				// then
+				then(userRepository).should().findById(USER_ID);
+				assertThat(foundUser)
+					.hasFieldOrPropertyWithValue("email", USER_EMAIL)
+					.hasFieldOrPropertyWithValue("nickName", USER_NICK_NAME)
+					.hasFieldOrPropertyWithValue("introduce", USER_INTRODUCE)
+					.hasFieldOrPropertyWithValue("prologName", USER_PROLOG_NAME)
+					.hasFieldOrPropertyWithValue("profileImgUrl", USER_PROFILE_IMG_URL);
+			}
 		}
 
-		@DisplayName("이메일 정보에 일치하는 사용자가 없으면 NotFoundException")
+		@DisplayName("userId에 해당하는 사용자가 없으면 IllegalArgumentException")
 		@Test
 		void notFoundMatchUser() {
-			given(userRepository.findByEmail(any(String.class))).willReturn(Optional.empty());
-			String unsavedEmail = "unsaved@test.com";
-			assertThatThrownBy(() -> userService.findByEmail(unsavedEmail))
+			//given
+			Long unsavedUserId = 100L;
+			given(userRepository.findById(any(Long.class))).willReturn(Optional.empty());
+			//when & then
+			assertThatThrownBy(() -> userService.findUserProfileByUserId(unsavedUserId))
 				.isInstanceOf(IllegalArgumentException.class);
 		}
 	}
 
 	@Nested
-	@DisplayName("회원가입 및 로그인 #9")
-	class FindUserInfo {
+	@DisplayName("회원가입 #9")
+	class FindUserProfile {
 		@Test
-		@DisplayName("등록된 사용자라면 로그인할 수 있다.")
-		void loginTest() {
+		@DisplayName("등록된 사용자는 회원 가입 절차 없이 등록된 사용자 ID를 반환 받을 수 있다.")
+		void signUpTest() {
 			// given
-			User user = getUser();
-			UserProfile savedUserProfile = getUserProfile();
-			given(userRepository.findByEmail(any(String.class))).willReturn(Optional.of(user));
+			given(userRepository.findByProviderAndOauthId(PROVIDER,OAUTH_ID))
+				.willReturn(Optional.of(userMock));
+			given(userMock.getId()).willReturn(USER_ID);
 			// when
-			UserInfo foundUserInfo = userService.login(savedUserProfile);
+			IdResponse userId = userService.signUp(USER_INFO);
 			// then
-			then(userRepository).should().findByEmail(savedUserProfile.email());
-			assertThat(foundUserInfo)
-				.hasFieldOrPropertyWithValue("email", user.getEmail())
-				.hasFieldOrPropertyWithValue("email", savedUserProfile.email())
-				.hasFieldOrPropertyWithValue("nickName", user.getNickName())
-				.hasFieldOrPropertyWithValue("nickName", savedUserProfile.nickName())
-				.hasFieldOrPropertyWithValue("introduce", user.getIntroduce())
-				.hasFieldOrPropertyWithValue("prologName", user.getPrologName());
+			then(userRepository).should().findByProviderAndOauthId(PROVIDER,OAUTH_ID);
 		}
 
 		@Test
-		@DisplayName("등록되지 않은 사용자가 로그인하는 경우 자동으로 회원가입이 진행된다.")
+		@DisplayName("등록되지 않은 사용자는 자동으로 회원가입이 진행된다.")
 		void defaultSignUpTest() {
 			// given
-			User user = getUser();
-			UserProfile unsavedUserProfile = getUserProfile();
-			given(userRepository.findByEmail(any(String.class))).willReturn(Optional.empty());
-			given(userRepository.save(any(User.class))).willReturn(user);
+			given(userRepository.findByProviderAndOauthId(PROVIDER, OAUTH_ID))
+				.willReturn(Optional.empty());
+			given(userRepository.save(any(User.class))).willReturn(userMock);
+			given(userMock.getId()).willReturn(USER_ID);
 			// when
-			UserInfo foundUserInfo = userService.login(unsavedUserProfile);
+			IdResponse userId = userService.signUp(USER_INFO);
 			// then
-			then(userRepository).should().findByEmail(unsavedUserProfile.email());
+			then(userRepository).should().findByProviderAndOauthId(PROVIDER, OAUTH_ID);
 			then(userRepository).should().save(any(User.class));
-			assertThat(foundUserInfo)
-				.hasFieldOrPropertyWithValue("email", user.getEmail())
-				.hasFieldOrPropertyWithValue("nickName", user.getNickName())
-				.hasFieldOrPropertyWithValue("introduce", user.getIntroduce())
-				.hasFieldOrPropertyWithValue("prologName", user.getPrologName());
 		}
 	}
 }

@@ -7,6 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class JwtAuthenticationTest {
 
@@ -17,11 +19,11 @@ class JwtAuthenticationTest {
 	void token() {
 		// given
 		JwtAuthentication jwtAuthentication
-			= new JwtAuthentication(token, USER_EMAIL);
+			= new JwtAuthentication(token, USER_ID);
 		// when & then
 		assertThat(jwtAuthentication)
 			.hasFieldOrPropertyWithValue("token", token)
-			.hasFieldOrPropertyWithValue("userEmail", USER_EMAIL);
+			.hasFieldOrPropertyWithValue("id", USER_ID);
 	}
 
 	@ParameterizedTest
@@ -29,18 +31,19 @@ class JwtAuthenticationTest {
 	@DisplayName("token은 null, 빈 값일 수 없다.")
 	void validateTokenTest(String inputToken) {
 		//given & when & then
-		assertThatThrownBy(() -> new JwtAuthentication(inputToken, USER_EMAIL))
+		assertThatThrownBy(() -> new JwtAuthentication(inputToken, USER_ID))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("토큰");
 	}
 
 	@ParameterizedTest
-	@NullAndEmptySource
-	@DisplayName("email은 null, 빈 값일 수 없다.")
-	void validateUserEmailTest(String inputUserEmail) {
+	@NullSource
+	@ValueSource(longs = {0L, -1L, -100L})
+	@DisplayName("userId는 null, 0 이하일 수 없다.")
+	void validateUserEmailTest(Long inputUserId) {
 		//given & when & then
-		assertThatThrownBy(() -> new JwtAuthentication(token, inputUserEmail))
+		assertThatThrownBy(() -> new JwtAuthentication(token, inputUserId))
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("이메일");
+			.hasMessageContaining("ID");
 	}
 }

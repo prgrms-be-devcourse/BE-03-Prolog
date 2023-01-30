@@ -5,16 +5,18 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.7'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.hidetake.swagger.generator' version '2.18.2'
     id 'com.epages.restdocs-api-spec' version '0.16.2'
     id 'jacoco'
 }
 
 group = 'com.prgrms'
-version = '1.0.0'
+version = '1.0.2'
 sourceCompatibility = '17'
 
 configurations {
+    asciidoctorExt
     compileOnly {
         extendsFrom annotationProcessor
     }
@@ -31,6 +33,7 @@ swaggerSources {
 }
 
 ext {
+    set('snippetsDir', file("build/generated-snippets"))
     set('testcontainersVersion', "1.17.6")
 }
 
@@ -41,16 +44,18 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // OAuth2-Client dependency
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' // Actuator dependency
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // AWS S3 dependency
+    
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     // RestDocs API SPEC
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
 
     // Swagger UI
     swaggerUI 'org.webjars:swagger-ui:4.11.1'
-
-    testImplementation 'org.springframework.security:spring-security-test'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     //Lombok dependency
     compileOnly 'org.projectlombok:lombok'
@@ -59,18 +64,18 @@ dependencies {
     // MySQL Driver
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    //testcontainers dependency
+    //Testcontainers dependency
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mysql'
 
     // Flyway dependency
-    // https://mvnrepository.com/artifact/org.flywaydb/flyway-core
     implementation 'org.flywaydb:flyway-core:6.4.2'
 
     // JWT dependency
-    // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
 
+    // Log4jdbc
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
 }
 
 dependencyManagement {
@@ -88,12 +93,17 @@ openapi3 {
 }
 
 tasks.named('test') {
+    outputs.dir snippetsDir
     useJUnitPlatform()
     finalizedBy jacocoTestReport
 }
 
 tasks.withType(GenerateSwaggerUI).configureEach {
     dependsOn 'openapi3'
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
 }
 
 tasks.register('copySwaggerUI', Copy) {
@@ -103,6 +113,12 @@ tasks.register('copySwaggerUI', Copy) {
 
     from("${generateSwaggerUISampleTask.outputDir}")
     into("${project.buildDir}/resources/main/static/docs")
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
 }
 
 tasks.withType(BootJar).configureEach {
@@ -138,7 +154,8 @@ jacocoTestCoverageVerification {
 
             excludes = [
                     '*.global*',
-                    '*.service*',
+                    '*.series*',
+                    '*.comment*',
                     '*.dto*'
             ]
 

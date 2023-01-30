@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,7 +23,7 @@ jobs:
         run: sudo docker run -d -p 3306:3306 -e MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}" -e MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}" mysql:8.0.23
 
       - name: Create db config file
-        run: echo "${{ secrets.DB_PROPERTIES }}" > ./.env
+        run: echo "${{ secrets.ENV_PROPERTIES }}" > ./.env
 
       - name: Build with Gradle
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
@@ -42,10 +42,5 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_KEY }}
-          script: |
-            sudo docker-compose down
-            sudo docker rmi fortune00/prolog
-            sudo docker pull fortune00/prolog
-            echo "${{ secrets.DOCKER_COMPOSE }}" > ./docker-compose.yml
-            echo "${{ secrets.DOCKER_COMPOSE_ENV }}" > ./.env
-            sudo docker-compose up -d
+          script: #docker-compose.yml ./.env ./nginx/default.conf ./deploy.sh 서버에 초기화
+            bash deploy.sh
