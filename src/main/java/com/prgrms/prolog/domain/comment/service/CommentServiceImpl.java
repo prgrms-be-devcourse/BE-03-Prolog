@@ -15,8 +15,8 @@ import com.prgrms.prolog.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -26,28 +26,23 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public Long save(CreateCommentRequest request, Long userId, Long postId) {
-		Post findPost = getFindPostBy(postId);
+	public Long save(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
 		User findUser = getFindUserBy(userId);
-		Comment comment = buildComment(request, findPost, findUser);
+		Post findPost = getFindPostBy(postId);
+
+		Comment comment = CreateCommentRequest.toEntity(createCommentRequest, findUser, findPost);
+
+		// TODO : return savedComment
 		return commentRepository.save(comment).getId();
 	}
 
 	@Override
 	@Transactional
-	public Long update(UpdateCommentRequest request, Long userId, Long commentId) {
+	public Long update(UpdateCommentRequest updateCommentRequest, Long userId, Long commentId) {
 		Comment findComment = commentRepository.joinUserByCommentId(commentId);
 		validateCommentNotNull(findComment);
-		findComment.changeContent(request.content());
+		findComment.changeContent(updateCommentRequest.content());
 		return findComment.getId();
-	}
-
-	private Comment buildComment(CreateCommentRequest request, Post findPost, User findUser) {
-		return Comment.builder()
-			.content(request.content())
-			.post(findPost)
-			.user(findUser)
-			.build();
 	}
 
 	private User getFindUserBy(Long userId) {
