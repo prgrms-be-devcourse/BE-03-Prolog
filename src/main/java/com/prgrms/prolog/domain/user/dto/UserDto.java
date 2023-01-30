@@ -37,6 +37,7 @@ public class UserDto {
 		}
 	}
 
+	// TODO : OauthDto Class로 분리
 	public record UserInfo(
 		String email,
 		String nickName,
@@ -54,6 +55,11 @@ public class UserDto {
 		}
 	}
 
-	public record IdResponse(Long id) {
+	public record UpdateUserRequest(String email,
+									String nickName,
+									String introduce,
+									String prologName
+	) {
 	}
+
 }
