@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.comment.model;
 
+import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
@@ -12,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
-import org.springframework.util.Assert;
-
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
@@ -23,11 +22,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 롬복 (생성자 -> getter -> setter) [아래 -> 위]
- * 하이버네이트
- * 스프링
- */
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -59,16 +53,6 @@ public class Comment extends BaseEntity {
 		this.user = Objects.requireNonNull(user, "exception.user.require");
 	}
 
-	public void changeContent(String content) {
-		this.content = validateContent(content);
-	}
-
-	private String validateContent(String content) {
-		Assert.hasText(content, CONTENT_OVER_LENGTH_MESSAGE);
-		Assert.isTrue(content.length() <= CONTENT_MAX_SIZE, CONTENT_OVER_LENGTH_MESSAGE);
-		return content;
-	}
-
 	public void setPost(Post post) {
 		if (this.post != null) {
 			this.post.getComments().remove(this);
@@ -77,5 +61,14 @@ public class Comment extends BaseEntity {
 		post.getComments().add(this);
 	}
 
+	public void changeContent(String content) {
+		this.content = validateContent(content);
+	}
+
+	private String validateContent(String content) {
+		checkOverLength(content, CONTENT_MAX_SIZE, CONTENT_OVER_LENGTH_MESSAGE);
+		checkText(content, CONTENT_OVER_LENGTH_MESSAGE);
+		return content;
+	}
 }
 
