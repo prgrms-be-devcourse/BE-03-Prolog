@@ -10,6 +10,7 @@ import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.comment.repository.CommentRepository;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
+import com.prgrms.prolog.domain.user.dto.UserDto;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 
