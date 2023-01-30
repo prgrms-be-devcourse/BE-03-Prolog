@@ -25,10 +25,10 @@ public class LikeServiceImpl implements LikeService {
 	private final PostRepository postRepository;
 
 	@Override
-	public Long save(likeRequest likeRequest) {
+	public Long save(likeRequest request) {
 
-		User user = getFindUserBy(likeRequest.userId());
-		Post post = getFindPostBy(likeRequest.postId());
+		User user = getFindUserBy(request.userId());
+		Post post = getFindPostBy(request.postId());
 
 		//TODO 이미 좋아요 되어있으면 에러 반환 -> 409 Conflict 오류로 변환
 		if (likeRepository.findByUserAndPost(user, post).isPresent()) {
