@@ -55,7 +55,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save() throws Exception {
-		CreateRequest request = new CreateRequest("생성된 테스트 제목", "생성된 테스트 내용", "tag", true, SERIES_TITLE);
+		CreatePostRequest request = new CreatePostRequest("생성된 테스트 제목", "생성된 테스트 내용", "tag", true, SERIES_TITLE);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
@@ -147,7 +147,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 수정할 수 있다.")
 	void update() throws Exception {
-		UpdateRequest update = new UpdateRequest(UPDATE_TITLE, UPDATE_CONTENT, "#테스트", true);
+		UpdatePostRequest update = new UpdatePostRequest(UPDATE_TITLE, UPDATE_CONTENT, "", false);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
@@ -200,7 +200,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("게시물 작성 중 제목이 공백인 경우 에러가 발생해야한다.")
 	void validateTitleNull() throws Exception {
-		CreateRequest createRequest = new CreateRequest("", "테스트 게시물 내용", "#tag", true, SERIES_TITLE);
+		CreatePostRequest createRequest = new CreatePostRequest("", "테스트 게시물 내용", "#tag", true, SERIES_TITLE);
 
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
@@ -214,7 +214,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("게시물 작성 중 내용이 빈칸인 경우 에러가 발생해야한다.")
 	void validateContentEmpty() throws Exception {
-		CreateRequest createRequest = new CreateRequest("테스트 게시물 제목", " ", "#tag", true, SERIES_TITLE);
+		CreatePostRequest createRequest = new CreatePostRequest("테스트 게시물 제목", " ", "#tag", true, SERIES_TITLE);
 		String requestJsonString = objectMapper.writeValueAsString(createRequest);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
@@ -227,7 +227,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("게시물 작성 중 게시물 제목이 50이상인 경우 에러가 발생해야한다.")
 	void validateTitleSizeOver() throws Exception {
-		CreateRequest createRequest = new CreateRequest(
+		CreatePostRequest createRequest = new CreatePostRequest(
 			"안녕하세요. 여기는 프로그래머스 기술 블로그 prolog입니다. 이곳에 글을 작성하기 위해서는 제목은 50글자 미만이어야합니다.",
 			"null 게시물 내용", "#tag",
 			true, SERIES_TITLE);
@@ -244,7 +244,7 @@ class PostControllerTest extends ControllerTest {
 	@Test
 	@DisplayName("포스트 생성시 시리즈도 만들어진다.")
 	void createSeries() throws Exception {
-		CreateRequest createRequest = new CreateRequest(
+		CreatePostRequest createRequest = new CreatePostRequest(
 			"안녕하세요. 여기는 프로그래머스 기술 블로그 prolog입니다",
 			"null 게시물 내용", "#tag",
 			true, "테스트 중");

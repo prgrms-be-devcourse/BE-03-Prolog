@@ -37,47 +37,52 @@ public class PostController {
 
 	private final PostService postService;
 
-	@PostMapping // TODO: 불필요한 괄호 지우기
+	@PostMapping
 	public ResponseEntity<Void> createPost(
-		@Valid @RequestBody CreateRequest createRequest, // TODO: 매개변수 명도 명확하게
+		@Valid @RequestBody CreatePostRequest createPostRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		// TODO : Controller -> create, Service -> create, Repository -> save
-		Long savePostId = postService.create(createRequest, user.id());
+		Long savePostId = postService.createPost(createPostRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + savePostId).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	// TODO : 명확한 id 표시
 	@GetMapping("/{postId}")
-	public ResponseEntity<PostResponse> getSinglePost(@PathVariable Long postId) {
+	public ResponseEntity<SinglePostResponse> getSinglePost(
+		@PathVariable Long postId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
 		// TODO : 비공개 필터링 기능 추가
-		PostResponse findPost = postService.findById(postId);
+		SinglePostResponse findPost = postService.getSinglePost(user.id(), postId);
 		return ResponseEntity.ok(findPost);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<PostResponse>> getAllPost(
-		@PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
+	public ResponseEntity<List<SinglePostResponse>> getAllPost(
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC)
+		Pageable pageable
 	) {
 		// TODO : 응답의 타입을 Page로 전환
-		Page<PostResponse> allPost = postService.findAll(pageable);
+		Page<SinglePostResponse> allPost = postService.getAllPost(pageable);
 		return ResponseEntity.ok(allPost.getContent());
 	}
 
 	@PutMapping("/{postId}")
-	public ResponseEntity<PostResponse> updatePost(
+	public ResponseEntity<SinglePostResponse> updatePost(
 		@PathVariable Long postId,
-		@AuthenticationPrincipal JwtAuthentication user,
-		@Valid @RequestBody UpdateRequest updateRequest) {
-		PostResponse updatedPost = postService.update(updateRequest, user.id(), postId);
+		@Valid @RequestBody UpdatePostRequest updateRequest,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		SinglePostResponse updatedPost = postService.updatePost(updateRequest, user.id(), postId);
 		return ResponseEntity.ok(updatedPost);
 	}
 
-	// TODO : JwtAuthentication 추가
 	@DeleteMapping("/{postId}")
-	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
-		postService.delete(postId);
-		return ResponseEntity.noContent().build();
+	@ResponseStatus(NO_CONTENT)
+	public void deletePost(
+		@PathVariable Long postId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		postService.deletePost(user.id(), postId);
 	}
 }

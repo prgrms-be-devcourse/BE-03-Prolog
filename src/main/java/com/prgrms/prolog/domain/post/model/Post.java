@@ -21,10 +21,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
 import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.model.User;
