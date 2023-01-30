@@ -13,9 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,55 +24,58 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
 import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
-import com.prgrms.prolog.domain.post.service.PostServiceImpl;
+import com.prgrms.prolog.domain.post.service.PostService;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
-@RestController
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
+@RestController
 public class PostController {
 
-	private final PostServiceImpl postService;
+	private final PostService postService;
 
-	public PostController(PostServiceImpl postService) {
-		this.postService = postService;
-	}
-
-	@PostMapping()
-	public ResponseEntity<Void> save(
-		@Valid @RequestBody CreateRequest create,
+	@PostMapping // TODO: 불필요한 괄호 지우기
+	public ResponseEntity<Void> createPost(
+		@Valid @RequestBody CreateRequest createRequest, // TODO: 매개변수 명도 명확하게
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		Long savePostId = postService.save(create, user.id());
+		// TODO : Controller -> create, Service -> create, Repository -> save
+		Long savePostId = postService.create(createRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + savePostId).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> findById(@PathVariable Long id) { // 비공개 처리는?
-		PostResponse findPost = postService.findById(id);
+	// TODO : 명확한 id 표시
+	@GetMapping("/{postId}")
+	public ResponseEntity<PostResponse> getSinglePost(@PathVariable Long postId) {
+		// TODO : 비공개 필터링 기능 추가
+		PostResponse findPost = postService.findById(postId);
 		return ResponseEntity.ok(findPost);
 	}
 
-	@GetMapping()
-	public ResponseEntity<List<PostResponse>> findAll(
-			@PageableDefault(size=10, page=0, sort="updatedAt", direction= Sort.Direction.DESC) Pageable pageable
+	@GetMapping
+	public ResponseEntity<List<PostResponse>> getAllPost(
+		@PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
 		Page<PostResponse> allPost = postService.findAll(pageable);
 		return ResponseEntity.ok(allPost.getContent());
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<PostResponse> update(
-		@PathVariable Long id,
+	@PutMapping("/{postId}")
+	public ResponseEntity<PostResponse> updatePost(
+		@PathVariable Long postId,
 		@AuthenticationPrincipal JwtAuthentication user,
-		@Valid @RequestBody UpdateRequest postRequest) {
-		PostResponse update = postService.update(postRequest, user.id(), id);
-		return ResponseEntity.ok(update);
+		@Valid @RequestBody UpdateRequest updateRequest) {
+		PostResponse updatedPost = postService.update(updateRequest, user.id(), postId);
+		return ResponseEntity.ok(updatedPost);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		postService.delete(id);
+	// TODO : JwtAuthentication 추가
+	@DeleteMapping("/{postId}")
+	public ResponseEntity<Void> deletePost(@PathVariable Long postId) {
+		postService.delete(postId);
 		return ResponseEntity.noContent().build();
 	}
 }

@@ -2,6 +2,7 @@ package com.prgrms.prolog.domain.post.model;
 
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,14 +29,13 @@ import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Entity
 public class Post extends BaseEntity {
 
 	private static final int TITLE_MAX_SIZE = 50;
@@ -79,12 +79,29 @@ public class Post extends BaseEntity {
 		this.series = series;
 	}
 
+	public void changePost(UpdateRequest updateRequest) {
+		validateTitle(updateRequest.title());
+		validateContent(updateRequest.content());
+
+		this.title = updateRequest.title();
+		this.content = updateRequest.content();
+		this.openStatus = updateRequest.openStatus();
+	}
+
 	public void setUser(User user) {
 		if (this.user != null) {
 			this.user.getPosts().remove(this);
 		}
 		this.user = user;
 		user.getPosts().add(this);
+	}
+
+	public void setSeries(Series series) {
+		if (this.series != null) {
+			this.series.getPosts().remove(this);
+		}
+		this.series = series;
+		series.getPosts().add(this);
 	}
 
 	public void changeTitle(String title) {
@@ -97,15 +114,6 @@ public class Post extends BaseEntity {
 
 	public void changeOpenStatus(boolean openStatus) {
 		this.openStatus = openStatus;
-	}
-
-	public void changePost(UpdateRequest updateRequest) {
-		validateTitle(updateRequest.title());
-		validateContent(updateRequest.content());
-
-		this.title = updateRequest.title();
-		this.content = updateRequest.content();
-		this.openStatus = updateRequest.openStatus();
 	}
 
 	public void addPostTagsFrom(Set<PostTag> postTags) {
@@ -132,13 +140,5 @@ public class Post extends BaseEntity {
 		if (text.length() > length) {
 			throw new IllegalArgumentException("exception.post.text.overLength");
 		}
-	}
-
-	public void setSeries(Series series) {
-		if (this.series != null) {
-			this.series.getPosts().remove(this);
-		}
-		this.series = series;
-		series.getPosts().add(this);
 	}
 }

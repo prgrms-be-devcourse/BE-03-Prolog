@@ -31,7 +31,7 @@ class RootTagRepositoryTest extends RepositoryTest {
 		rootTagRepository.saveAll(tags);
 
 		// when
-		Set<RootTag> findTags = rootTagRepository.findByTagNamesIn(tagNames);
+		Set<RootTag> findTags = rootTagRepository.findByInTagNames(tagNames);
 
 		// then
 		assertThat(findTags).hasSize(5);

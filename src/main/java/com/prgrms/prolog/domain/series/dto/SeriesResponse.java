@@ -8,6 +8,7 @@ import com.prgrms.prolog.domain.series.model.Series;
 
 public record SeriesResponse(
 	String title,
+	// TODO : PostInfo를 SeriesResponse 내에서 해결한다.
 	List<PostInfo> posts,
 	int count
 ) {
@@ -20,5 +21,4 @@ public record SeriesResponse(
 			posts.size()
 		);
 	}
-
 }
