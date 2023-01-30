@@ -6,7 +6,8 @@ import lombok.Builder;
 
 public class UserDto {
 
-	public record UserProfile(
+	@Builder
+	public record UserResponse(
 		Long id,
 		String email,
 		String nickName,
@@ -14,19 +15,8 @@ public class UserDto {
 		String prologName,
 		String profileImgUrl
 	) {
-		@Builder
-		public UserProfile(Long id, String email, String nickName, String introduce, String prologName,
-			String profileImgUrl) {
-			this.id = id;
-			this.email = email;
-			this.nickName = nickName;
-			this.introduce = introduce;
-			this.prologName = prologName;
-			this.profileImgUrl = profileImgUrl;
-		}
-
-		public static UserProfile toUserProfile(User user) {
-			return new UserProfile(
+		public static UserResponse from(User user) {
+			return new UserResponse(
 				user.getId(),
 				user.getEmail(),
 				user.getNickName(),
@@ -37,24 +27,7 @@ public class UserDto {
 		}
 	}
 
-	// TODO : OauthDto Class로 분리
-	public record UserInfo(
-		String email,
-		String nickName,
-		String provider,
-		String oauthId,
-		String profileImgUrl
-	) {
-		@Builder
-		public UserInfo(String email, String nickName, String provider, String oauthId, String profileImgUrl) {
-			this.email = email;
-			this.nickName = nickName;
-			this.provider = provider;
-			this.oauthId = oauthId;
-			this.profileImgUrl = profileImgUrl;
-		}
-	}
-
+	@Builder
 	public record UpdateUserRequest(String email,
 									String nickName,
 									String introduce,

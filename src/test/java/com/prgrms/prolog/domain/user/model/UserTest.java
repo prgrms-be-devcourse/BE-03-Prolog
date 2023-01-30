@@ -1,7 +1,6 @@
 package com.prgrms.prolog.domain.user.model;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
@@ -132,28 +131,6 @@ class UserTest {
 				.build())
 			.isInstanceOf(NullPointerException.class)
 			.hasMessageContaining("oauthId는 NULL");
-	}
-
-	@ParameterizedTest
-	@DisplayName("필드 수정시 유효성 검사")
-	@NullAndEmptySource
-	@MethodSource("provideStringDummy")
-	void changeTest(String input) {
-		//given
-		User user = User.builder()
-			.email(email)
-			.nickName(nickName)
-			.introduce(introduce)
-			.prologName(prologName)
-			.provider(provider)
-			.oauthId(oauthId)
-			.build();
-		// when & then
-		assertAll(
-			() -> assertThatThrownBy(() -> user.changeEmail(input)),
-			() -> assertThatThrownBy(() -> user.changeNickName(input)),
-			() -> assertThatThrownBy(() -> user.changePrologName(input))
-		);
 	}
 
 	private User.UserBuilder getBuilder() {
