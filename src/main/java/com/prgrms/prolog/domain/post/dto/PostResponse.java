@@ -17,7 +17,7 @@ public record PostResponse(String title,
 						   boolean openStatus,
 						   UserProfile user,
 						   Set<String> tags,
-						   SeriesResponse seriesResponse,
+						   SeriesResponse series,
 						   List<Comment> comment,
 						   int commentCount,
 						   int likeCount) {

@@ -59,6 +59,7 @@ public class PostController {
 	public ResponseEntity<List<PostResponse>> getAllPost(
 		@PageableDefault(size = 10, page = 0, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
+		// TODO : 응답의 타입을 Page로 전환
 		Page<PostResponse> allPost = postService.findAll(pageable);
 		return ResponseEntity.ok(allPost.getContent());
 	}
