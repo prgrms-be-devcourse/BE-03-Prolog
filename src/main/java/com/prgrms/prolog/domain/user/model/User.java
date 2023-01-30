@@ -130,32 +130,8 @@ public class User extends BaseEntity {
 		Assert.isTrue(matcher.matches(), message);
 	}
 
-	public void changeEmail(String email) {
-		this.email = validateEmail(email);
-	}
-
-	public void changeNickName(String nickName) {
-		this.nickName = validateNickName(nickName);
-	}
-
-	public void changeIntroduce(String introduce) {
-		this.introduce = validateIntroduce(introduce);
-	}
-
-	public void changePrologName(String prologName) {
-		this.prologName = validatePrologName(prologName);
-	}
-
-	public boolean checkSameEmail(String email) {
-		return this.email.equals(email);
-	}
-
 	public boolean checkSameUserId(Long userId) {
 		return Objects.equals(this.id, userId);
-	}
-
-	public void changeProfileImgUrl(String profileImgUrl) {
-		Objects.requireNonNull(profileImgUrl, "profileImgUrl" + NULL_VALUE_MESSAGE);
 	}
 
 	@Override
