@@ -37,7 +37,7 @@ public class LikeServiceImpl implements LikeService {
 
 		Like like = likeRepository.save(saveLike(user, post));
 
-		postRepository.addLikeCount(post.getId());
+		postRepository.addLikeCountByPostId(post.getId());
 		return like.getId();
 	}
 
@@ -51,7 +51,7 @@ public class LikeServiceImpl implements LikeService {
 			.orElseThrow(() -> new EntityNotFoundException("exception.like.notExist"));
 
 		likeRepository.delete(like);
-		postRepository.subLikeCount(post.getId());
+		postRepository.subLikeCountByPostId(post.getId());
 	}
 
 	private Like saveLike(User user, Post post) {

@@ -102,15 +102,15 @@ class LikeServiceTest {
 		given(postRepository.findById(POST_ID)).willReturn(Optional.of(POST));
 		given(likeRepository.findByUserAndPost(USER, POST)).willReturn(Optional.empty());
 		given(likeRepository.save(any(Like.class))).willReturn(like);
-		given(postRepository.addLikeCount(any())).willReturn(1);
+		given(postRepository.addLikeCountByPostId(any())).willReturn(1);
 		given(like.getId()).willReturn(1L);
 
 		// when
 		likeService.save(likeRequest);
 
 		// then
-		then(postRepository).should().addLikeCount(any());    // 행위 검증
-		assertThat(postRepository.addLikeCount(POST_ID)).isEqualTo(1);
+		then(postRepository).should().addLikeCountByPostId(any());    // 행위 검증
+		assertThat(postRepository.addLikeCountByPostId(POST_ID)).isEqualTo(1);
 	}
 
 	@Test
@@ -121,13 +121,13 @@ class LikeServiceTest {
 		given(postRepository.findById(POST_ID)).willReturn(Optional.of(POST));
 		given(likeRepository.findByUserAndPost(USER, POST)).willReturn(Optional.of(LIKE));
 		willDoNothing().given(likeRepository).delete(any(Like.class));
-		given(postRepository.subLikeCount(any())).willReturn(1);
+		given(postRepository.subLikeCountByPostId(any())).willReturn(1);
 
 		// when
 		likeService.cancel(likeRequest);
 
 		// then
-		then(postRepository).should().subLikeCount(any());
-		assertThat(postRepository.subLikeCount(POST_ID)).isEqualTo(1);
+		then(postRepository).should().subLikeCountByPostId(any());
+		assertThat(postRepository.subLikeCountByPostId(POST_ID)).isEqualTo(1);
 	}
 }
