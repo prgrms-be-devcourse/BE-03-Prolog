@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.series.model;
 
+import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
@@ -40,7 +41,7 @@ public class Series {
 	@OneToMany(mappedBy = "series")
 	private final List<Post> posts = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
 
