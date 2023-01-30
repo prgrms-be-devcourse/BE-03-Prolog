@@ -15,5 +15,5 @@ public interface RootTagRepository extends JpaRepository<RootTag, Long> {
 		FROM RootTag rt
 		WHERE rt.name IN :tagNames
 		""")
-	Set<RootTag> findByTagNamesIn(@Param(value = "tagNames") Set<String> tagNames);
+	Set<RootTag> findByInTagNames(@Param(value = "tagNames") Set<String> tagNames);
 }

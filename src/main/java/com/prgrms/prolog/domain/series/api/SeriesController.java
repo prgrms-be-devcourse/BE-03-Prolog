@@ -20,8 +20,8 @@ public class SeriesController {
 
 	private final SeriesService seriesService;
 
-	@GetMapping()
-	ResponseEntity<SeriesResponse> findSeriesByTitle(
+	@GetMapping
+	public ResponseEntity<SeriesResponse> findSeriesByTitle(
 		@RequestParam String title,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {

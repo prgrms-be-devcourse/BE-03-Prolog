@@ -7,7 +7,7 @@ import com.prgrms.prolog.domain.post.dto.PostRequest;
 import com.prgrms.prolog.domain.post.dto.PostResponse;
 
 public interface PostService {
-	Long save(PostRequest.CreateRequest request, Long userId);
+	Long create(PostRequest.CreateRequest request, Long userId);
 
 	PostResponse findById(Long postId);
 

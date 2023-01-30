@@ -11,6 +11,7 @@ import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.series.dto.SeriesResponse;
 import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
 
+// TODO : PostResponse 를 분리한다. (MainPostResponse, SinglePostResponse, ...)
 public record PostResponse(String title,
 						   String content,
 						   boolean openStatus,
@@ -21,7 +22,9 @@ public record PostResponse(String title,
 						   int commentCount,
 						   int likeCount) {
 
-	public static PostResponse toPostResponse(Post post) {
+	// TODO : Post -> from(...) 으로 통일
+	// TODO : PostResponse -> from(...) 으로 통일
+	public static PostResponse from(Post post) {
 		return new PostResponse(post.getTitle(),
 			post.getContent(),
 			post.isOpenStatus(),
