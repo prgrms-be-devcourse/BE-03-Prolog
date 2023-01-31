@@ -13,6 +13,10 @@ public class CommentDto {
 	public record CreateCommentRequest(
 		@NotBlank String content
 	) {
+		public static CreateCommentRequest from(String content) {
+			return new CreateCommentRequest(content);
+		}
+
 		public static Comment from(
 			CreateCommentRequest createCommentRequest,
 			User user,
@@ -29,14 +33,27 @@ public class CommentDto {
 	public record UpdateCommentRequest(
 		@NotBlank String content
 	) {
+		public static UpdateCommentRequest from(String content) {
+			return new UpdateCommentRequest(content);
+		}
 	}
 
 	public record SingleCommentResponse(
-		UserResponse user,
+		SimpleUserInfo user,
 		String content
 	) {
 		public static SingleCommentResponse from(UserResponse user, String content) {
-			return new SingleCommentResponse(user, content);
+			return new SingleCommentResponse(SimpleUserInfo.from(user), content);
+		}
+	}
+
+	public record SimpleUserInfo(
+		Long userId,
+		String nickName,
+		String profileImgUrl
+	) {
+		public static SimpleUserInfo from(UserResponse user) {
+			return new SimpleUserInfo(user.id(), user.nickName(), user.profileImgUrl());
 		}
 	}
 }
