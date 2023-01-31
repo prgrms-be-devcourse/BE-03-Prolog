@@ -208,7 +208,13 @@ class PostControllerTest extends ControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isBadRequest())
+				.andDo(restDocs.document(
+					responseFields(
+						fieldWithPath("status").description("Http Status"),
+						fieldWithPath("message").description("에러 메시지 응답")
+					)
+				));
 	}
 
 	@Test
@@ -221,7 +227,14 @@ class PostControllerTest extends ControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isBadRequest())
+			.andDo(restDocs.document(
+				responseFields(
+					fieldWithPath("status").description("Http Status"),
+					fieldWithPath("message").description("에러 메시지 응답")
+				)
+			));
+
 	}
 
 	@Test
@@ -238,7 +251,13 @@ class PostControllerTest extends ControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJsonString))
-			.andExpect(status().isBadRequest());
+			.andExpect(status().isBadRequest())
+			.andDo(restDocs.document(
+				responseFields(
+					fieldWithPath("status").description("Http Status"),
+					fieldWithPath("message").description("에러 메시지 응답")
+				)
+			));
 	}
 
 	@Test
