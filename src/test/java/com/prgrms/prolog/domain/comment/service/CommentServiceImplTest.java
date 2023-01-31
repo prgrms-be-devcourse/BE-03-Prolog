@@ -13,11 +13,11 @@ import com.prgrms.prolog.base.ServiceTest;
 
 class CommentServiceImplTest extends ServiceTest {
 
-	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT.getContent());
-	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT.getContent() + "updated");
-	final SingleCommentResponse SINGLE_COMMENT_RESPONSE = new SingleCommentResponse(USER_PROFILE, COMMENT.getContent());
+	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT_CONTENT);
+	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT_CONTENT + "updated");
+	final SingleCommentResponse SINGLE_COMMENT_RESPONSE = SingleCommentResponse.from(USER_PROFILE, COMMENT_CONTENT);
 	final SingleCommentResponse UPDATED_SINGLE_COMMENT_RESPONSE
-		= new SingleCommentResponse(USER_PROFILE, COMMENT.getContent() + "updated");
+		= SingleCommentResponse.from(USER_PROFILE, COMMENT.getContent() + "updated");
 
 	@Mock
 	CommentServiceImpl commentService;
