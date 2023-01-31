@@ -60,7 +60,7 @@ class UserTest {
 		//given & when & then
 		assertThatThrownBy(() -> getBuilder().email(inputEmail).build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("이메일");
+			.hasMessageContaining("email");
 	}
 
 	@ParameterizedTest
@@ -73,7 +73,7 @@ class UserTest {
 			() -> getBuilder().nickName(inputNickName)
 				.email(email).build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("닉네임");
+			.hasMessageContaining("nickName");
 	}
 
 	@ParameterizedTest
@@ -104,7 +104,7 @@ class UserTest {
 				.email(email).nickName(nickName)
 				.build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("블로그 제목");
+			.hasMessageContaining("prolog");
 	}
 
 	@ParameterizedTest
@@ -117,7 +117,7 @@ class UserTest {
 				.email(email).nickName(nickName).prologName(prologName)
 				.build())
 			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("provider는 NULL");
+			.hasMessageContaining("provider");
 	}
 
 	@ParameterizedTest
@@ -130,7 +130,7 @@ class UserTest {
 				.email(email).nickName(nickName).prologName(prologName).provider(provider)
 				.build())
 			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("oauthId는 NULL");
+			.hasMessageContaining("oauthId");
 	}
 
 	private User.UserBuilder getBuilder() {

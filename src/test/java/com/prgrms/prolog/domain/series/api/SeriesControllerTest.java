@@ -55,7 +55,7 @@ class SeriesControllerTest extends ControllerTest {
 			)
 			// then
 			.andExpectAll(
-				handler().methodName("findSeriesByTitle"),
+				handler().methodName("getSeriesByTitle"),
 				status().isOk())
 			// docs
 			.andDo(restDocs.document(

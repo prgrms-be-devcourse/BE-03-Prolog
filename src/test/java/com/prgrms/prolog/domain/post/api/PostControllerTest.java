@@ -98,14 +98,14 @@ class PostControllerTest extends ControllerTest {
 					fieldWithPath("[].tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("[].comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("[].commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
-					fieldWithPath("[].seriesResponse").type(JsonFieldType.OBJECT).description("series"),
-					fieldWithPath("[].seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
-					fieldWithPath("[].seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("[].seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+					fieldWithPath("[].series").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("[].series.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("[].series.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("[].series.posts.[].id").type(JsonFieldType.NUMBER)
 						.description("postIdInSeries"),
-					fieldWithPath("[].seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+					fieldWithPath("[].series.posts.[].title").type(JsonFieldType.STRING)
 						.description("postTitleInSeries"),
-					fieldWithPath("[].seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("[].series.count").type(JsonFieldType.NUMBER).description("seriesCount"),
 					fieldWithPath("[].likeCount").type(JsonFieldType.NUMBER).description("likeCount")
 
 				)));
@@ -132,14 +132,14 @@ class PostControllerTest extends ControllerTest {
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
-					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
-					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
-					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+					fieldWithPath("series").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("series.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("series.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("series.posts.[].id").type(JsonFieldType.NUMBER)
 						.description("postIdInSeries"),
-					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+					fieldWithPath("series.posts.[].title").type(JsonFieldType.STRING)
 						.description("postTitleInSeries"),
-					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("series.count").type(JsonFieldType.NUMBER).description("seriesCount"),
 					fieldWithPath("likeCount").type(JsonFieldType.NUMBER).description("likeCount")
 				)));
 	}
@@ -149,7 +149,7 @@ class PostControllerTest extends ControllerTest {
 	void update() throws Exception {
 		UpdatePostRequest update = new UpdatePostRequest(UPDATE_TITLE, UPDATE_CONTENT, "", false);
 
-		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/v1/posts/{id}", postId)
+		mockMvc.perform(RestDocumentationRequestBuilders.put("/api/v1/posts/{id}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(update))
@@ -174,14 +174,14 @@ class PostControllerTest extends ControllerTest {
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("tags"),
 					fieldWithPath("comment").type(JsonFieldType.ARRAY).description("comment"),
 					fieldWithPath("commentCount").type(JsonFieldType.NUMBER).description("commentCount"),
-					fieldWithPath("seriesResponse").type(JsonFieldType.OBJECT).description("series"),
-					fieldWithPath("seriesResponse.title").type(JsonFieldType.STRING).description("seriesTitle"),
-					fieldWithPath("seriesResponse.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
-					fieldWithPath("seriesResponse.posts.[].id").type(JsonFieldType.NUMBER)
+					fieldWithPath("series").type(JsonFieldType.OBJECT).description("series"),
+					fieldWithPath("series.title").type(JsonFieldType.STRING).description("seriesTitle"),
+					fieldWithPath("series.posts").type(JsonFieldType.ARRAY).description("postInSeries"),
+					fieldWithPath("series.posts.[].id").type(JsonFieldType.NUMBER)
 						.description("postIdInSeries"),
-					fieldWithPath("seriesResponse.posts.[].title").type(JsonFieldType.STRING)
+					fieldWithPath("series.posts.[].title").type(JsonFieldType.STRING)
 						.description("postTitleInSeries"),
-					fieldWithPath("seriesResponse.count").type(JsonFieldType.NUMBER).description("seriesCount"),
+					fieldWithPath("series.count").type(JsonFieldType.NUMBER).description("seriesCount"),
 					fieldWithPath("likeCount").type(JsonFieldType.NUMBER).description("likeCount")
 				)
 			));
