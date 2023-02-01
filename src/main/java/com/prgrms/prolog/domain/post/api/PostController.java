@@ -1,10 +1,8 @@
 package com.prgrms.prolog.domain.post.api;
 
 import static com.prgrms.prolog.domain.post.dto.PostDto.*;
-import static org.springframework.http.HttpStatus.*;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -21,11 +19,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.prgrms.prolog.domain.post.service.PostService;
+import com.prgrms.prolog.global.common.PageCustomResponse;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
 import lombok.RequiredArgsConstructor;
@@ -52,37 +50,35 @@ public class PostController {
 		@PathVariable Long postId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		// TODO : 비공개 필터링 기능 추가
 		SinglePostResponse findPost = postService.getSinglePost(user.id(), postId);
 		return ResponseEntity.ok(findPost);
 	}
 
 	@GetMapping
-	public ResponseEntity<List<SinglePostResponse>> getAllPost(
-		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC)
-		Pageable pageable
+	public ResponseEntity<PageCustomResponse<SinglePostResponse>> getAllPost(
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		// TODO : 응답의 타입을 Page로 전환
-		Page<SinglePostResponse> allPost = postService.getAllPost(pageable);
-		return ResponseEntity.ok(allPost.getContent());
+		Page<SinglePostResponse> pagePost = postService.getAllPost(pageable);
+		return ResponseEntity.ok(new PageCustomResponse<>(
+			pagePost.getContent(), pagePost.getPageable(), pagePost.getTotalElements()));
 	}
 
 	@PutMapping("/{postId}")
 	public ResponseEntity<SinglePostResponse> updatePost(
 		@PathVariable Long postId,
-		@Valid @RequestBody UpdatePostRequest updateRequest,
+		@Valid @RequestBody UpdatePostRequest updatePostRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		SinglePostResponse updatedPost = postService.updatePost(updateRequest, user.id(), postId);
+		SinglePostResponse updatedPost = postService.updatePost(updatePostRequest, user.id(), postId);
 		return ResponseEntity.ok(updatedPost);
 	}
 
 	@DeleteMapping("/{postId}")
-	@ResponseStatus(NO_CONTENT)
-	public void deletePost(
+	public ResponseEntity<Void> deletePost(
 		@PathVariable Long postId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		postService.deletePost(user.id(), postId);
+		return ResponseEntity.noContent().build();
 	}
 }
