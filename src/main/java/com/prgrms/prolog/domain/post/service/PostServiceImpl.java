@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
 		}
 		final String finalSeriesTitle = seriesTitle;
 		Series series = seriesRepository
-			.findByIdAndTitle(owner.getId(), seriesTitle)
+			.findById(owner.getId())
 			.orElseGet(() -> seriesRepository.save(
 					Series.builder()
 						.title(finalSeriesTitle)
@@ -98,7 +98,7 @@ public class PostServiceImpl implements PostService {
 			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalArgumentException("exception.post.not.owner");
+			throw new IllegalAccessPostException("exception.post.not.owner");
 		}
 
 		findPost.changePost(updatePostRequest);
@@ -116,7 +116,7 @@ public class PostServiceImpl implements PostService {
 			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalArgumentException("exception.post.not.owner");
+			throw new IllegalAccessPostException("exception.post.not.owner");
 		}
 
 		Set<RootTag> findRootTags = postTagRepository.joinRootTagFindByPostId(findPost.getId())
