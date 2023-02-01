@@ -16,7 +16,16 @@ public class SeriesDto {
 		}
 	}
 
+	public record UpdateSeriesRequest(
+		@NotBlank String title
+	) {
+		public static UpdateSeriesRequest from(String title) {
+			return new UpdateSeriesRequest(title);
+		}
+	}
+
 	public record SeriesResponse(
+		Long id,
 		String title,
 		List<SimplePostResponse> posts,
 		int count
@@ -24,6 +33,7 @@ public class SeriesDto {
 		public static SeriesResponse from(Series series) {
 			List<Post> posts = series.getPosts();
 			return new SeriesResponse(
+				series.getId(),
 				series.getTitle(),
 				posts.stream()
 					.map(SimplePostResponse::from)
@@ -45,4 +55,17 @@ public class SeriesDto {
 		}
 	}
 
+	public record SeriesSimpleResponse(
+		Long id,
+		String title,
+		int count
+	) {
+		public static SeriesSimpleResponse from(Series series) {
+			return new SeriesSimpleResponse(
+				series.getId(),
+				series.getTitle(),
+				series.getPosts().size()
+			);
+		}
+	}
 }
