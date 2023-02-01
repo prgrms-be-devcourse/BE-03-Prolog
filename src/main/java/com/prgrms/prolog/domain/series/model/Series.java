@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.series.model;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -15,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.post.model.Post;
@@ -27,6 +30,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
+@SQLDelete(sql = "UPDATE series SET deleted = true where id=?")
+@Where(clause = "deleted=false")
 public class Series {
 
 	private static final int TITLE_MAX_SIZE = 50;
@@ -43,6 +48,8 @@ public class Series {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	private boolean deleted;
 
 	@Builder
 	public Series(String title, User user, Post post) {
@@ -66,8 +73,9 @@ public class Series {
 		user.getSeries().add(this);
 	}
 
-	public void changeTitle(String title) {
-		this.title = validateTitle(title);
+	public Series changeSeriesTitle(UpdateSeriesRequest updateSeriesRequest) {
+		this.title = validateTitle(updateSeriesRequest.title());
+		return this;
 	}
 
 	private String validateTitle(String title) {
