@@ -51,6 +51,10 @@ class LikeControllerTest extends ControllerTest {
 				.content(objectMapper.writeValueAsString(likeRequest)))
 			.andExpect(status().isNoContent())
 			.andDo(restDocs.document(
+				requestFields(
+					fieldWithPath("userId").description("사용자 아이디"),
+					fieldWithPath("postId").description("게시물 아이디")
+				),
 				responseBody()
 			));
 	}

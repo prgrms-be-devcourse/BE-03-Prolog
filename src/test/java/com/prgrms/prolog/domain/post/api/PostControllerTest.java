@@ -194,7 +194,7 @@ class PostControllerTest extends ControllerTest {
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 			).andExpect(status().isNoContent())
-			.andDo(document("post-delete"));
+			.andDo(restDocs.document());
 	}
 
 	@Test
