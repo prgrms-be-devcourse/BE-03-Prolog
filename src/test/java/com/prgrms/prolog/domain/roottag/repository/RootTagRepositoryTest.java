@@ -7,18 +7,15 @@ import java.util.Set;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.prgrms.prolog.base.RepositoryTest;
 import com.prgrms.prolog.domain.roottag.model.RootTag;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = NONE)
-class RootTagRepositoryTest {
-
-	@Autowired
-	RootTagRepository rootTagRepository;
+class RootTagRepositoryTest extends RepositoryTest {
 
 	@Test
 	@DisplayName("태그 이름들로 루트 태그들을 검색한다.")

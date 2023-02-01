@@ -26,7 +26,7 @@ public class SeriesController {
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
 		return ResponseEntity.ok(
-			seriesService.findByTitle(user.id(), title)
+			seriesService.findSeriesByTitle(user.id(), title)
 		);
 	}
 }

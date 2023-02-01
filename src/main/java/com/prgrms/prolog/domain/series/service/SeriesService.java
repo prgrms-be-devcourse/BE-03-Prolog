@@ -8,8 +8,8 @@ import com.prgrms.prolog.global.common.IdResponse;
 
 public interface SeriesService {
 
-	IdResponse create(@Valid CreateSeriesRequest request, Long userId);
+	IdResponse createSeries(@Valid CreateSeriesRequest request, Long userId);
 
-	SeriesResponse findByTitle(Long userId, String title);
+	SeriesResponse findSeriesByTitle(Long userId, String title);
 
 }

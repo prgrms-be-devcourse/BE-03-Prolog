@@ -25,14 +25,14 @@ public class SeriesServiceImpl implements SeriesService {
 
 	@Override
 	@Transactional
-	public IdResponse create(@Valid CreateSeriesRequest request, Long userId) {
+	public IdResponse createSeries(@Valid CreateSeriesRequest request, Long userId) {
 		User findUser = getFindUserBy(userId);
 		Series series = buildSeries(request.title(), findUser);
 		return new IdResponse(seriesRepository.save(series).getId());
 	}
 
 	@Override
-	public SeriesResponse findByTitle(Long userId, String title) {
+	public SeriesResponse findSeriesByTitle(Long userId, String title) {
 		return seriesRepository.findByIdAndTitle(userId, title)
 			.map(SeriesResponse::toSeriesResponse)
 			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));

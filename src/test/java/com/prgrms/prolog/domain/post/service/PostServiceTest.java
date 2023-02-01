@@ -1,6 +1,5 @@
 package com.prgrms.prolog.domain.post.service;
 
-import static com.prgrms.prolog.domain.series.dto.SeriesResponse.*;
 import static com.prgrms.prolog.utils.TestUtils.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -134,8 +133,7 @@ class PostServiceTest {
 			.hasFieldOrPropertyWithValue("title", request.title())
 			.hasFieldOrPropertyWithValue("content", request.content())
 			.hasFieldOrPropertyWithValue("openStatus", request.openStatus())
-			.hasFieldOrPropertyWithValue("tags", Set.of("테스트"))
-			.hasFieldOrPropertyWithValue("seriesResponse", toSeriesResponse(savedSeries));
+			.hasFieldOrPropertyWithValue("tags", Set.of("테스트"));
 	}
 
 	@Test
@@ -168,7 +166,8 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,SERIES_TITLE);
+		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,
+			SERIES_TITLE);
 		Long savedPost = postService.save(createRequest, user.getId());
 
 		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);

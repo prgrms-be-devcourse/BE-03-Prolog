@@ -7,18 +7,16 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
-class CommentServiceImplTest {
+import com.prgrms.prolog.base.ServiceTest;
 
-	@Mock
-	CommentServiceImpl commentService;
+class CommentServiceImplTest extends ServiceTest {
 
 	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT.getContent());
 	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT.getContent() + "updated");
+	@Mock
+	CommentServiceImpl commentService;
 
 	@Test
 	@DisplayName("댓글 저장에 성공한다.")

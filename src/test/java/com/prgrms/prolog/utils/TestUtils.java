@@ -12,7 +12,7 @@ import com.prgrms.prolog.domain.user.model.User;
 
 public class TestUtils {
 
-	// User Data
+	// User
 	public static final Long USER_ID = 1L;
 	public static final User USER = getUser();
 	public static final Long UNSAVED_USER_ID = 0L;

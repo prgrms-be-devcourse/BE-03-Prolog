@@ -11,24 +11,22 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 class PostTest {
 
-	private static final String title = "제목";
-	private static final String content = "내용";
 
 	@Test
 	@DisplayName("게시글 생성")
 	void createPostTest() {
 		//given
 		Post post = Post.builder()
-			.title(title)
-			.content(content)
+			.title(POST_TITLE)
+			.content(POST_CONTENT)
 			.openStatus(true)
 			.user(USER)
 			.build();
 		// when & then
 		assertAll(
 			() -> assertThat(post)
-				.hasFieldOrPropertyWithValue("title", title)
-				.hasFieldOrPropertyWithValue("content", content)
+				.hasFieldOrPropertyWithValue("title", POST_TITLE)
+				.hasFieldOrPropertyWithValue("content", POST_CONTENT)
 				.hasFieldOrPropertyWithValue("openStatus", true),
 			() -> assertThat(post.getUser()).isEqualTo(USER)
 		);
@@ -54,7 +52,7 @@ class PostTest {
 	@DisplayName("게시글을 생성하기 위해서는 사용자가 필요하다.")
 	void createFailByUserNullTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, content, true, null,null))
+		assertThatThrownBy(() -> new Post(POST_TITLE, POST_CONTENT, true, null,null))
 			.isInstanceOf(NullPointerException.class);
 	}
 
@@ -62,7 +60,7 @@ class PostTest {
 	@DisplayName("게시글 제목은 50자를 넘을 수 없다.")
 	void validateTitleTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(OVER_SIZE_50, content, true, USER, null))
+		assertThatThrownBy(() -> new Post(OVER_SIZE_50, POST_CONTENT, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -71,7 +69,7 @@ class PostTest {
 	@DisplayName("게시글 제목은 빈 값,null일 수 없다.")
 	void validateTitleTest2(String inputTitle) {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(inputTitle, content, true, USER, null))
+		assertThatThrownBy(() -> new Post(inputTitle, POST_CONTENT, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -79,7 +77,7 @@ class PostTest {
 	@DisplayName("게시글 내용은 65535자를 넘을 수 없다.")
 	void validateContentTest() {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, OVER_SIZE_65535, true, USER, null))
+		assertThatThrownBy(() -> new Post(POST_TITLE, OVER_SIZE_65535, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -88,7 +86,7 @@ class PostTest {
 	@DisplayName("게시글 내용은 빈 값,null일 수 없다.")
 	void validateContentTest2(String inputContent) {
 		//given & when & then
-		assertThatThrownBy(() -> new Post(title, inputContent, true, USER, null))
+		assertThatThrownBy(() -> new Post(POST_TITLE, inputContent, true, USER, null))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 

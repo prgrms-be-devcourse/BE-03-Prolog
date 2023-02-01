@@ -10,36 +10,17 @@ import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.prgrms.prolog.base.ServiceTest;
 import com.prgrms.prolog.domain.like.dto.LikeDto.likeRequest;
 import com.prgrms.prolog.domain.like.model.Like;
-import com.prgrms.prolog.domain.like.repository.LikeRepository;
-import com.prgrms.prolog.domain.post.repository.PostRepository;
-import com.prgrms.prolog.domain.user.repository.UserRepository;
 
-@ExtendWith(MockitoExtension.class)
-class LikeServiceTest {
+class LikeServiceTest extends ServiceTest {
 
+	private static final likeRequest likeRequest = new likeRequest(USER_ID, POST_ID);
 	@InjectMocks
 	private LikeServiceImpl likeService;
-
-	@Mock
-	private LikeRepository likeRepository;
-
-	@Mock
-	private PostRepository postRepository;
-
-	@Mock
-	private UserRepository userRepository;
-
-	@Mock
-	private Like like;
-
-	likeRequest likeRequest = new likeRequest(USER_ID, POST_ID);
 
 	@Test
 	@DisplayName("게시물에 좋아요를 누를 수 있다.")
@@ -77,20 +58,24 @@ class LikeServiceTest {
 	@Test
 	@DisplayName("좋아요한 게시물에 또 좋아요를 할 수 없다.")
 	void insertDuplicateLikeTest() {
+		// given
 		given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
 		given(postRepository.findById(POST_ID)).willReturn(Optional.of(POST));
 		given(likeRepository.findByUserAndPost(USER, POST)).willReturn(Optional.of(LIKE));
 
+		// when & then
 		assertThatThrownBy(() -> likeService.save(likeRequest)).isInstanceOf(EntityNotFoundException.class);
 	}
 
 	@Test
 	@DisplayName("좋아요를 하지 않은 게시물에는 좋아요를 취소할 수 없다.")
 	void cancelDuplicateLikeTest() {
+		// given
 		given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
 		given(postRepository.findById(POST_ID)).willReturn(Optional.of(POST));
 		given(likeRepository.findByUserAndPost(USER, POST)).willThrow(EntityNotFoundException.class);
 
+		// when & then
 		assertThatThrownBy(() -> likeService.save(likeRequest)).isInstanceOf(EntityNotFoundException.class);
 	}
 
@@ -109,7 +94,7 @@ class LikeServiceTest {
 		likeService.save(likeRequest);
 
 		// then
-		then(postRepository).should().addLikeCount(any());    // 행위 검증
+		then(postRepository).should().addLikeCount(any());
 		assertThat(postRepository.addLikeCount(POST_ID)).isEqualTo(1);
 	}
 
@@ -120,7 +105,6 @@ class LikeServiceTest {
 		given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
 		given(postRepository.findById(POST_ID)).willReturn(Optional.of(POST));
 		given(likeRepository.findByUserAndPost(USER, POST)).willReturn(Optional.of(LIKE));
-		willDoNothing().given(likeRepository).delete(any(Like.class));
 		given(postRepository.subLikeCount(any())).willReturn(1);
 
 		// when
