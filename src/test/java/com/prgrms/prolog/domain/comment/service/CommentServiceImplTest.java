@@ -32,8 +32,8 @@ class CommentServiceImplTest extends ServiceTest {
 			= commentService.createComment(CREATE_COMMENT_REQUEST, USER_ID, POST_ID);
 		// then
 		assertThat(singleCommentResponse)
-			.hasFieldOrPropertyWithValue("user", USER_PROFILE)
-			.hasFieldOrPropertyWithValue("content", COMMENT.getContent());
+			.usingRecursiveComparison()
+			.isEqualTo(SINGLE_COMMENT_RESPONSE);
 	}
 
 	@Test
@@ -43,8 +43,8 @@ class CommentServiceImplTest extends ServiceTest {
 		SingleCommentResponse singleCommentResponse
 			= commentService.updateComment(UPDATE_COMMENT_REQUEST, USER_ID, POST_ID, COMMENT_ID);
 		assertThat(singleCommentResponse)
-			.hasFieldOrPropertyWithValue("user", USER_PROFILE)
-			.hasFieldOrPropertyWithValue("content", UPDATED_SINGLE_COMMENT_RESPONSE.content());
+			.usingRecursiveComparison()
+			.isEqualTo(UPDATED_SINGLE_COMMENT_RESPONSE);
 	}
 
 	@Test
