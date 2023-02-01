@@ -20,25 +20,25 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class LikeServiceImpl implements LikeService {
 
-	private final LikeRepository likeRepository;
 	private final UserRepository userRepository;
 	private final PostRepository postRepository;
+	private final LikeRepository likeRepository;
 
 	@Override
-	public Long save(likeRequest request) {
+	public Long save(likeRequest likeRequest) {
 
-		User user = getFindUserBy(request.userId());
-		Post post = getFindPostBy(request.postId());
+		User user = getFindUserBy(likeRequest.userId());
+		Post post = getFindPostBy(likeRequest.postId());
 
 		//TODO 이미 좋아요 되어있으면 에러 반환 -> 409 Conflict 오류로 변환
 		if (likeRepository.findByUserAndPost(user, post).isPresent()) {
-			throw new EntityNotFoundException("exception.like.alreadyExist");
+			throw new EntityNotFoundException("exception.like.already.exist");
 		}
 
-		Like like = likeRepository.save(saveLike(user, post));
-
+		Like like = likeRequest.from(user, post);
+		Like savedLike = likeRepository.save(like);
 		postRepository.addLikeCountByPostId(post.getId());
-		return like.getId();
+		return savedLike.getId();
 	}
 
 	@Override
@@ -48,26 +48,19 @@ public class LikeServiceImpl implements LikeService {
 		Post post = getFindPostBy(likeRequest.postId());
 
 		Like like = likeRepository.findByUserAndPost(user, post)
-			.orElseThrow(() -> new EntityNotFoundException("exception.like.notExist"));
+			.orElseThrow(() -> new EntityNotFoundException("exception.like.not.exist"));
 
 		likeRepository.delete(like);
 		postRepository.subLikeCountByPostId(post.getId());
 	}
 
-	private Like saveLike(User user, Post post) {
-		return Like.builder()
-			.user(user)
-			.post(post)
-			.build();
-	}
-
 	private User getFindUserBy(Long userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException("exception.user.note.exists"));
 	}
 
 	private Post getFindPostBy(Long postId) {
 		return postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException("exception.post.not.exists"));
 	}
 }
