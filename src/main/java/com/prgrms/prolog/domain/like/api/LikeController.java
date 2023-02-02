@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.prgrms.prolog.domain.like.dto.LikeDto.likeRequest;
+import com.prgrms.prolog.domain.like.dto.LikeDto.LikeRequest;
 import com.prgrms.prolog.domain.like.service.LikeServiceImpl;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
@@ -29,7 +29,7 @@ public class LikeController {
 		@PathVariable Long postId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		final likeRequest likeRequest = new likeRequest(user.id(), postId);
+		final LikeRequest likeRequest = new LikeRequest(user.id(), postId);
 		Long likeId = likeService.save(likeRequest);
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/like/" + postId + "/" + likeId).build().toUri();
 		return ResponseEntity.created(location).build();
@@ -40,7 +40,7 @@ public class LikeController {
 		@PathVariable Long postId,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		final likeRequest likeRequest = new likeRequest(user.id(), postId);
+		final LikeRequest likeRequest = new LikeRequest(user.id(), postId);
 		likeService.cancel(likeRequest);
 		return ResponseEntity.noContent().build();
 	}

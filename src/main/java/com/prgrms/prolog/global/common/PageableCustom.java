@@ -1,6 +1,6 @@
 package com.prgrms.prolog.global.common;
 
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class PageableCustom {
 	private int size;
 	private Sort sort;
 
-	public PageableCustom(PageImpl page) {
+	public PageableCustom(Page page) {
 		this.first = page.isFirst();
 		this.last = page.isLast();
 		this.hasNext = page.hasNext();

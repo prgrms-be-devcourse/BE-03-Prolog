@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import com.prgrms.prolog.base.ServiceTest;
-import com.prgrms.prolog.domain.like.dto.LikeDto.likeRequest;
+import com.prgrms.prolog.domain.like.dto.LikeDto.LikeRequest;
 import com.prgrms.prolog.domain.like.model.Like;
 
 class LikeServiceTest extends ServiceTest {
 
-	private static final likeRequest likeRequest = new likeRequest(USER_ID, POST_ID);
+	private static final LikeRequest likeRequest = new LikeRequest(USER_ID, POST_ID);
 	@InjectMocks
 	private LikeServiceImpl likeService;
 

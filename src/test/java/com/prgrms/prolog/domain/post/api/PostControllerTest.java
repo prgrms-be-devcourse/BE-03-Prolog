@@ -99,6 +99,7 @@ class PostControllerTest extends ControllerTest {
 						.description("게시물을 작성한 사용자의 프로필 이미지 주소"),
 					fieldWithPath("stock.[].tags").type(JsonFieldType.ARRAY).description("게시물의 태그"),
 					fieldWithPath("stock.[].series").type(JsonFieldType.OBJECT).description("시리즈"),
+					fieldWithPath("stock.[].series.id").type(JsonFieldType.NUMBER).description("시리즈 ID"),
 					fieldWithPath("stock.[].series.title").type(JsonFieldType.STRING).description("시리즈의 이름"),
 					fieldWithPath("stock.[].series.posts").type(JsonFieldType.ARRAY).description("시리즈에 포함된 게시물"),
 					fieldWithPath("stock.[].series.posts.[].id").type(JsonFieldType.NUMBER)
@@ -147,6 +148,7 @@ class PostControllerTest extends ControllerTest {
 						.description("게시물을 작성한 사용자의 프로필 이미지 주소"),
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("게시물의 태그"),
 					fieldWithPath("series").type(JsonFieldType.OBJECT).description("시리즈"),
+					fieldWithPath("series.id").type(JsonFieldType.NUMBER).description("시리즈 ID"),
 					fieldWithPath("series.title").type(JsonFieldType.STRING).description("시리즈의 이름"),
 					fieldWithPath("series.posts").type(JsonFieldType.ARRAY).description("시리즈에 포함된 게시물"),
 					fieldWithPath("series.posts.[].id").type(JsonFieldType.NUMBER)
@@ -190,6 +192,7 @@ class PostControllerTest extends ControllerTest {
 						.description("게시물을 작성한 사용자의 프로필 이미지 주소"),
 					fieldWithPath("tags").type(JsonFieldType.ARRAY).description("게시물의 태그"),
 					fieldWithPath("series").type(JsonFieldType.OBJECT).description("시리즈"),
+					fieldWithPath("series.id").type(JsonFieldType.NUMBER).description("시리즈 ID"),
 					fieldWithPath("series.title").type(JsonFieldType.STRING).description("시리즈의 이름"),
 					fieldWithPath("series.posts").type(JsonFieldType.ARRAY).description("시리즈에 포함된 게시물"),
 					fieldWithPath("series.posts.[].id").type(JsonFieldType.NUMBER)

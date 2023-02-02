@@ -35,6 +35,7 @@ CREATE TABLE series
     created_at datetime     NOT NULL DEFAULT now(),
     updated_at datetime     NOT NULL DEFAULT now(),
     deleted_at datetime,
+    deleted    boolean NOT NULL DEFAULT false,
     user_id    bigint       NOT NULL,
     FOREIGN KEY fk_series_user_id (user_id) REFERENCES users (id)
 );

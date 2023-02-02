@@ -5,7 +5,7 @@ import javax.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.prolog.domain.like.dto.LikeDto.likeRequest;
+import com.prgrms.prolog.domain.like.dto.LikeDto.LikeRequest;
 import com.prgrms.prolog.domain.like.model.Like;
 import com.prgrms.prolog.domain.like.repository.LikeRepository;
 import com.prgrms.prolog.domain.post.model.Post;
@@ -25,7 +25,7 @@ public class LikeServiceImpl implements LikeService {
 	private final LikeRepository likeRepository;
 
 	@Override
-	public Long save(likeRequest likeRequest) {
+	public Long save(LikeRequest likeRequest) {
 
 		User user = getFindUserBy(likeRequest.userId());
 		Post post = getFindPostBy(likeRequest.postId());
@@ -42,7 +42,7 @@ public class LikeServiceImpl implements LikeService {
 	}
 
 	@Override
-	public void cancel(likeRequest likeRequest) {
+	public void cancel(LikeRequest likeRequest) {
 
 		User user = getFindUserBy(likeRequest.userId());
 		Post post = getFindPostBy(likeRequest.postId());
