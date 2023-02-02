@@ -18,7 +18,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 		WHERE u.provider = :provider
 		and u.oauthId = :oauthId
 		""")
-	Optional<User> findByProviderAndOauthId(String provider, String oauthId);
+	Optional<User> findByProviderAndOauthId(
+		@Param("provider") String provider,
+		@Param("oauthId") String oauthId);
 
 	@Query("""
 		SELECT u

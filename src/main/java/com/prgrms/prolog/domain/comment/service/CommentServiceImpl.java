@@ -2,6 +2,8 @@ package com.prgrms.prolog.domain.comment.service;
 
 import static com.prgrms.prolog.domain.comment.dto.CommentDto.*;
 
+import java.util.Objects;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -10,13 +12,14 @@ import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.comment.repository.CommentRepository;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
+import com.prgrms.prolog.domain.user.dto.UserDto;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -26,28 +29,28 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	@Transactional
-	public Long save(CreateCommentRequest request, Long userId, Long postId) {
-		Post findPost = getFindPostBy(postId);
+	public SingleCommentResponse createComment(CreateCommentRequest createCommentRequest, Long userId, Long postId) {
 		User findUser = getFindUserBy(userId);
-		Comment comment = buildComment(request, findPost, findUser);
-		return commentRepository.save(comment).getId();
+		Post findPost = getFindPostBy(postId);
+		Comment comment = CreateCommentRequest.from(createCommentRequest, findUser, findPost);
+		Comment savedComment = commentRepository.save(comment);
+		return SingleCommentResponse.from(UserDto.UserResponse.from(findUser), savedComment.getContent());
 	}
 
 	@Override
 	@Transactional
-	public Long update(UpdateCommentRequest request, Long userId, Long commentId) {
+	public SingleCommentResponse updateComment(UpdateCommentRequest updateCommentRequest, Long userId, Long postId, Long commentId) {
+		Post findPost = getFindPostBy(postId);
+		User findUser = getFindUserBy(userId);
 		Comment findComment = commentRepository.joinUserByCommentId(commentId);
-		validateCommentNotNull(findComment);
-		findComment.changeContent(request.content());
-		return findComment.getId();
-	}
 
-	private Comment buildComment(CreateCommentRequest request, Post findPost, User findUser) {
-		return Comment.builder()
-			.content(request.content())
-			.post(findPost)
-			.user(findUser)
-			.build();
+		validatePostComment(findPost, findComment);
+		validateUserComment(findUser, findComment);
+
+		validateCommentNotNull(findComment);
+		findComment.changeContent(updateCommentRequest.content());
+
+		return SingleCommentResponse.from(UserDto.UserResponse.from(findUser), updateCommentRequest.content());
 	}
 
 	private User getFindUserBy(Long userId) {
@@ -62,5 +65,15 @@ public class CommentServiceImpl implements CommentService {
 
 	private void validateCommentNotNull(Comment comment) {
 		Assert.notNull(comment, "exception.comment.notExists");
+	}
+
+	private void validateUserComment(User findUser, Comment findComment) {
+		Assert.isTrue(!Objects.equals(findComment.getUser().getId(), findUser.getId()),
+			"exception.comment.user.notSame");
+	}
+
+	private void validatePostComment(Post findPost, Comment findComment) {
+		Assert.isTrue(!Objects.equals(findPost.getId(), findComment.getPost().getId()),
+			"exception.comment.post.notSame");
 	}
 }

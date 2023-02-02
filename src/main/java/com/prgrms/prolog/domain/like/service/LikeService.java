@@ -1,9 +1,9 @@
 package com.prgrms.prolog.domain.like.service;
 
-import com.prgrms.prolog.domain.like.dto.LikeDto;
+import static com.prgrms.prolog.domain.like.dto.LikeDto.*;
 
 public interface LikeService {
-	Long save(LikeDto.likeRequest likeRequest);
+	Long save(LikeRequest likeRequest);
 
-	void cancel(LikeDto.likeRequest likeRequest);
+	void cancel(LikeRequest likeRequest);
 }

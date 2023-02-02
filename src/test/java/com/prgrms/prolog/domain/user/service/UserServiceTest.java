@@ -13,8 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 
 import com.prgrms.prolog.base.ServiceTest;
-import com.prgrms.prolog.domain.user.dto.UserDto.IdResponse;
-import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
+import com.prgrms.prolog.domain.user.dto.UserDto.UserResponse;
 import com.prgrms.prolog.domain.user.model.User;
 
 class UserServiceTest extends ServiceTest {
@@ -29,18 +28,18 @@ class UserServiceTest extends ServiceTest {
 		@Test
 		@DisplayName("userId를 통해서 사용자 정보를 조회할 수 있다")
 		void findByEmailTest() {
-			try (MockedStatic<UserProfile> userProfile = mockStatic(UserProfile.class)) {
+			try (MockedStatic<UserResponse> userProfile = mockStatic(UserResponse.class)) {
 
 				//given
 				given(userRepository.findById(USER_ID)).willReturn(Optional.of(USER));
-				given(UserProfile.toUserProfile(USER)).willReturn(USER_PROFILE);
+				given(UserResponse.from(USER)).willReturn(USER_PROFILE);
 
 				// when
-				UserProfile foundUserProfile = userService.findUserProfileByUserId(USER_ID);
+				UserResponse foundUser = userService.getUserProfile(USER_ID);
 
 				// then
 				then(userRepository).should().findById(USER_ID);
-				assertThat(foundUserProfile)
+				assertThat(foundUser)
 					.hasFieldOrPropertyWithValue("email", USER_EMAIL)
 					.hasFieldOrPropertyWithValue("nickName", USER_NICK_NAME)
 					.hasFieldOrPropertyWithValue("introduce", USER_INTRODUCE)
@@ -55,7 +54,7 @@ class UserServiceTest extends ServiceTest {
 			//given
 			given(userRepository.findById(any(Long.class))).willReturn(Optional.empty());
 			//when & then
-			assertThatThrownBy(() -> userService.findUserProfileByUserId(UNSAVED_USER_ID))
+			assertThatThrownBy(() -> userService.getUserProfile(UNSAVED_USER_ID))
 				.isInstanceOf(IllegalArgumentException.class);
 		}
 	}
@@ -67,13 +66,13 @@ class UserServiceTest extends ServiceTest {
 		@DisplayName("등록된 사용자는 회원 가입 절차 없이 등록된 사용자 ID를 반환 받을 수 있다.")
 		void signUpTest() {
 			// given
-			given(userRepository.findByProviderAndOauthId(PROVIDER,OAUTH_ID))
+			given(userRepository.findByProviderAndOauthId(PROVIDER, OAUTH_ID))
 				.willReturn(Optional.of(user));
 			given(user.getId()).willReturn(USER_ID);
 			// when
-			IdResponse userId = userService.signUp(USER_INFO);
+			userService.signUp(USER_INFO);
 			// then
-			then(userRepository).should().findByProviderAndOauthId(PROVIDER,OAUTH_ID);
+			then(userRepository).should().findByProviderAndOauthId(PROVIDER, OAUTH_ID);
 		}
 
 		@Test
@@ -85,7 +84,7 @@ class UserServiceTest extends ServiceTest {
 			given(userRepository.save(any(User.class))).willReturn(user);
 			given(user.getId()).willReturn(USER_ID);
 			// when
-			IdResponse userId = userService.signUp(USER_INFO);
+			userService.signUp(USER_INFO);
 			// then
 			then(userRepository).should().findByProviderAndOauthId(PROVIDER, OAUTH_ID);
 			then(userRepository).should().save(any(User.class));

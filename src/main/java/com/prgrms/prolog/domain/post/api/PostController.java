@@ -1,7 +1,8 @@
 package com.prgrms.prolog.domain.post.api;
 
+import static com.prgrms.prolog.domain.post.dto.PostDto.*;
+
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -13,66 +14,71 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.dto.PostResponse;
-import com.prgrms.prolog.domain.post.service.PostServiceImpl;
+import com.prgrms.prolog.domain.post.service.PostService;
+import com.prgrms.prolog.global.common.PageCustomResponse;
 import com.prgrms.prolog.global.jwt.JwtAuthentication;
 
-@RestController
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/posts")
+@RestController
 public class PostController {
 
-	private final PostServiceImpl postService;
+	private final PostService postService;
 
-	public PostController(PostServiceImpl postService) {
-		this.postService = postService;
-	}
-
-	@PostMapping()
-	public ResponseEntity<Void> save(
-		@Valid @RequestBody CreateRequest create,
+	@PostMapping
+	public ResponseEntity<Void> createPost(
+		@Valid @RequestBody CreatePostRequest createPostRequest,
 		@AuthenticationPrincipal JwtAuthentication user
 	) {
-		Long savePostId = postService.save(create, user.id());
+		Long savePostId = postService.createPost(createPostRequest, user.id());
 		URI location = UriComponentsBuilder.fromUriString("/api/v1/posts/" + savePostId).build().toUri();
 		return ResponseEntity.created(location).build();
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<PostResponse> findById(@PathVariable Long id) { // 비공개 처리는?
-		PostResponse findPost = postService.findById(id);
+	@GetMapping("/{postId}")
+	public ResponseEntity<SinglePostResponse> getSinglePost(
+		@PathVariable Long postId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		SinglePostResponse findPost = postService.getSinglePost(user.id(), postId);
 		return ResponseEntity.ok(findPost);
 	}
 
-	@GetMapping()
-	public ResponseEntity<List<PostResponse>> findAll(
-			@PageableDefault(size=10, page=0, sort="updatedAt", direction= Sort.Direction.DESC) Pageable pageable
+	@GetMapping
+	public ResponseEntity<PageCustomResponse<SinglePostResponse>> getAllPost(
+		@PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		Page<PostResponse> allPost = postService.findAll(pageable);
-		return ResponseEntity.ok(allPost.getContent());
+		Page<SinglePostResponse> pagePost = postService.getAllPost(pageable);
+		return ResponseEntity.ok(new PageCustomResponse<>(
+			pagePost.getContent(), pagePost.getPageable(), pagePost.getTotalElements()));
 	}
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<PostResponse> update(
-		@PathVariable Long id,
-		@AuthenticationPrincipal JwtAuthentication user,
-		@Valid @RequestBody UpdateRequest postRequest) {
-		PostResponse update = postService.update(postRequest, user.id(), id);
-		return ResponseEntity.ok(update);
+	@PutMapping("/{postId}")
+	public ResponseEntity<SinglePostResponse> updatePost(
+		@PathVariable Long postId,
+		@Valid @RequestBody UpdatePostRequest updatePostRequest,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		SinglePostResponse updatedPost = postService.updatePost(updatePostRequest, user.id(), postId);
+		return ResponseEntity.ok(updatedPost);
 	}
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		postService.delete(id);
+	@DeleteMapping("/{postId}")
+	public ResponseEntity<Void> deletePost(
+		@PathVariable Long postId,
+		@AuthenticationPrincipal JwtAuthentication user
+	) {
+		postService.deletePost(user.id(), postId);
 		return ResponseEntity.noContent().build();
 	}
 }

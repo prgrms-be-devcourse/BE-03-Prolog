@@ -30,6 +30,8 @@ class LikeControllerTest extends ControllerTest {
 
 	@BeforeEach
 	void setPost() {
+		userId = savedUser.getId();
+
 		Post post = Post.builder()
 			.title(POST_TITLE)
 			.content(POST_CONTENT)
@@ -38,18 +40,17 @@ class LikeControllerTest extends ControllerTest {
 			.build();
 		Post savedPost = postRepository.save(post);
 		postId = savedPost.getId();
-		userId = savedUser.getId();
 	}
 
 	@Test
 	void likeSaveApiTest() throws Exception {
-		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(userId, postId);
+		LikeDto.LikeRequest likeRequest = new LikeDto.LikeRequest(userId, postId);
 
 		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/like/{postId}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(likeRequest)))
-			.andExpect(status().isNoContent())
+			.andExpect(status().isCreated())
 			.andDo(restDocs.document(
 				responseBody()
 			));
@@ -57,19 +58,14 @@ class LikeControllerTest extends ControllerTest {
 
 	@Test
 	void likeCancelApiTest() throws Exception {
-		LikeDto.likeRequest likeRequest = new LikeDto.likeRequest(userId, postId);
-		likeService.save(likeRequest);
-
-		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/like")
+		LikeDto.LikeRequest likeRequest = new LikeDto.LikeRequest(userId, postId);
+		Long likeId = likeService.save(likeRequest);
+		System.out.println("likeId : " + likeId);
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/like/{postId}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(likeRequest)))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isNoContent())
 			.andDo(restDocs.document(
-				requestFields(
-					fieldWithPath("userId").description("사용자 아이디"),
-					fieldWithPath("postId").description("게시물 아이디")
-				),
 				responseBody()
 			));
 	}

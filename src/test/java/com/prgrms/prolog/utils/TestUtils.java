@@ -6,9 +6,10 @@ import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
 import com.prgrms.prolog.domain.roottag.model.RootTag;
 import com.prgrms.prolog.domain.series.model.Series;
-import com.prgrms.prolog.domain.user.dto.UserDto.UserInfo;
-import com.prgrms.prolog.domain.user.dto.UserDto.UserProfile;
+import com.prgrms.prolog.domain.user.dto.UserDto.UserResponse;
 import com.prgrms.prolog.domain.user.model.User;
+import com.prgrms.prolog.global.oauth.dto.KakaoUserInfo;
+import com.prgrms.prolog.global.oauth.dto.OauthUserInfo;
 
 public class TestUtils {
 
@@ -23,8 +24,8 @@ public class TestUtils {
 	public static final String PROVIDER = "kakao";
 	public static final String OAUTH_ID = "kakao@123456789";
 	public static final String USER_PROFILE_IMG_URL = "http://kakao/defaultImg.jpg";
-	public static final UserInfo USER_INFO = getUserInfo();
-	public static final UserProfile USER_PROFILE = getUserProfile();
+	public static final OauthUserInfo USER_INFO = getUserInfo();
+	public static final UserResponse USER_PROFILE = getUserProfile();
 	public static final String USER_ROLE = "ROLE_USER";
 
 	// Post
@@ -38,6 +39,7 @@ public class TestUtils {
 	public static final String UPDATE_CONTENT = "수정할 내용을 입력해주세요";
 
 	// Comment
+	public static final Long COMMENT_ID = 1L;
 	public static final Comment COMMENT = getComment();
 	public static final String COMMENT_CONTENT = "댓글 내용";
 
@@ -97,8 +99,8 @@ public class TestUtils {
 			.build();
 	}
 
-	public static UserInfo getUserInfo() {
-		return UserInfo.builder()
+	public static OauthUserInfo getUserInfo() {
+		return KakaoUserInfo.builder()
 			.email(USER_EMAIL)
 			.nickName(USER_NICK_NAME)
 			.provider(PROVIDER)
@@ -107,8 +109,8 @@ public class TestUtils {
 			.build();
 	}
 
-	public static UserProfile getUserProfile() {
-		return UserProfile.builder()
+	public static UserResponse getUserProfile() {
+		return UserResponse.builder()
 			.id(USER_ID)
 			.email(USER_EMAIL)
 			.nickName(USER_NICK_NAME)

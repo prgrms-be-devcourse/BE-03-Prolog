@@ -49,7 +49,3 @@ spring:
   config:
     activate.on-profile: "db-prod"
     import: optional:file:.env[.properties]
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true

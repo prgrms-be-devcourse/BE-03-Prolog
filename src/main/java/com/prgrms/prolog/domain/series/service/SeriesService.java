@@ -1,15 +1,20 @@
 package com.prgrms.prolog.domain.series.service;
 
-import javax.validation.Valid;
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
 
-import com.prgrms.prolog.domain.series.dto.CreateSeriesRequest;
-import com.prgrms.prolog.domain.series.dto.SeriesResponse;
-import com.prgrms.prolog.global.common.IdResponse;
+import java.util.List;
+
+import javax.validation.Valid;
 
 public interface SeriesService {
 
-	IdResponse createSeries(@Valid CreateSeriesRequest request, Long userId);
+	Long createSeries(@Valid CreateSeriesRequest request, Long userId);
 
-	SeriesResponse findSeriesByTitle(Long userId, String title);
+	SeriesResponse getSeriesById(Long userId, Long seriesId);
 
+	List<SeriesSimpleResponse> getAllSeries(Long userId);
+
+	SeriesResponse updateSeries(@Valid UpdateSeriesRequest updateSeriesRequest, Long userId, Long seriesId);
+
+	void deleteSeries(Long userId, Long seriesId);
 }

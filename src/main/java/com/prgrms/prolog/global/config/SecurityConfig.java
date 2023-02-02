@@ -15,8 +15,8 @@ import com.prgrms.prolog.global.oauth.OAuthAuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-@Configuration
 @EnableWebSecurity
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;

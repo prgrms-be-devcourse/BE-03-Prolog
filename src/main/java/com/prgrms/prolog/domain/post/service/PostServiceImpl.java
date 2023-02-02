@@ -12,9 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.dto.PostResponse;
+import com.prgrms.prolog.domain.post.dto.PostDto.CreatePostRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.SinglePostResponse;
+import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
+import com.prgrms.prolog.domain.post.exception.IllegalAccessPostException;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
@@ -36,96 +37,101 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
-	private static final String POST_NOT_EXIST_MESSAGE = "존재하지 않는 게시물입니다.";
-	private static final String USER_NOT_EXIST_MESSAGE = "존재하지 않는 사용자입니다.";
-
-	private final SeriesRepository seriesRepository;
-	private final PostRepository postRepository;
 	private final UserRepository userRepository;
+	private final PostRepository postRepository;
+	private final SeriesRepository seriesRepository;
 	private final RootTagRepository rootTagRepository;
 	private final PostTagRepository postTagRepository;
 	private final UserTagRepository userTagRepository;
 
-
 	@Override
 	@Transactional
-	public Long save(CreateRequest request, Long userId) {
+	public Long createPost(CreatePostRequest createRequest, Long userId) {
 		User findUser = userRepository.joinUserTagFindByUserId(userId);
-		Post createdPost = CreateRequest.toEntity(request, findUser);
+		Post createdPost = CreatePostRequest.from(createRequest, findUser);
 		Post savedPost = postRepository.save(createdPost);
-		updateNewPostAndUserIfTagExists(request.tagText(), savedPost, findUser);
-		registerSeries(request, savedPost, findUser);
+		updateNewPostAndUserIfTagExists(createRequest.tagText(), savedPost, findUser);
+		registerSeries(createRequest, savedPost, findUser);
 		return savedPost.getId();
 	}
 
-	private void registerSeries(CreateRequest request, Post post, User owner) {
+	private void registerSeries(CreatePostRequest request, Post post, User owner) {
 		String seriesTitle = request.seriesTitle();
 		if (seriesTitle == null || seriesTitle.isBlank()) {
 			seriesTitle = "시리즈 없음";
 		}
 		final String finalSeriesTitle = seriesTitle;
 		Series series = seriesRepository
-			.findByIdAndTitle(owner.getId(), seriesTitle)
+			.findById(owner.getId())
 			.orElseGet(() -> seriesRepository.save(
-						Series.builder()
-							.title(finalSeriesTitle)
-							.user(owner)
-							.build()
+					Series.builder()
+						.title(finalSeriesTitle)
+						.user(owner)
+						.build()
 				)
 			);
 		post.setSeries(series);
 	}
 
 	@Override
-	public PostResponse findById(Long postId) {
-		Post post = postRepository.joinCommentFindById(postId)
+	public SinglePostResponse getSinglePost(Long userId, Long postId) {
+		Post post = postRepository.joinCommentFindByPostId(postId)
 			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+		if (!post.isOpenStatus() && !post.getUser().checkSameUserId(userId)) { // 비공개 and 다른 사용자인 경우
+			throw new IllegalAccessPostException("exception.post.not.access");
+		}
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
-		post.addPostTagsFrom(findPostTags);
-		return PostResponse.toPostResponse(post);
+		post.addPostTags(findPostTags);
+		return SinglePostResponse.from(post);
 	}
 
 	@Override
-	public Page<PostResponse> findAll(Pageable pageable) {
+	public Page<SinglePostResponse> getAllPost(Pageable pageable) {
 		return postRepository.findAll(pageable)
-			.map(PostResponse::toPostResponse);
+			.map(SinglePostResponse::from);
 	}
 
 	@Override
 	@Transactional
-	public PostResponse update(UpdateRequest update, Long userId, Long postId) {
+	public SinglePostResponse updatePost(UpdatePostRequest updatePostRequest, Long userId, Long postId) {
 		Post findPost = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
+			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalArgumentException("exception.post.not.owner");
+			throw new IllegalAccessPostException("exception.post.not.owner");
 		}
 
-		findPost.changePost(update);
-		updatePostAndUserIfTagChanged(update.tagText(), findPost);
+		findPost.changePost(updatePostRequest);
+		updateIfTagChanged(updatePostRequest.tagText(), findPost);
 
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(findPost.getId());
-		findPost.addPostTagsFrom(findPostTags);
-		return PostResponse.toPostResponse(findPost);
+		findPost.addPostTags(findPostTags);
+		return SinglePostResponse.from(findPost);
 	}
 
 	@Override
 	@Transactional
-	public void delete(Long postId) {
+	public void deletePost(Long userId, Long postId) {
 		Post findPost = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException(POST_NOT_EXIST_MESSAGE));
+			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+
+		if (!findPost.getUser().checkSameUserId(userId)) {
+			throw new IllegalAccessPostException("exception.post.not.owner");
+		}
+
 		Set<RootTag> findRootTags = postTagRepository.joinRootTagFindByPostId(findPost.getId())
 			.stream()
 			.map(PostTag::getRootTag)
 			.collect(Collectors.toSet());
+
 		removeOrDecreaseUserTags(findPost.getUser(), findRootTags);
 		postTagRepository.deleteByPostId(postId);
 		postRepository.delete(findPost);
 	}
 
-	private void updatePostAndUserIfTagChanged(String tagText, Post findPost) {
+	private void updateIfTagChanged(String tagText, Post findPost) {
 		Set<String> tagNames = TagConverter.convertFrom(tagText);
-		Set<RootTag> currentRootTags = rootTagRepository.findByTagNamesIn(tagNames);
+		Set<RootTag> currentRootTags = rootTagRepository.findByInTagNames(tagNames);
 		Set<String> newTagNames = distinguishNewTagNames(tagNames, currentRootTags);
 		Set<RootTag> savedNewRootTags = saveNewRootTags(newTagNames);
 		saveNewPostTags(findPost, savedNewRootTags);
@@ -180,7 +186,7 @@ public class PostServiceImpl implements PostService {
 			return;
 		}
 
-		Set<RootTag> currentRootTags = rootTagRepository.findByTagNamesIn(tagNames);
+		Set<RootTag> currentRootTags = rootTagRepository.findByInTagNames(tagNames);
 		Set<String> newTagNames = distinguishNewTagNames(tagNames, currentRootTags);
 		Set<RootTag> savedNewRootTags = saveNewRootTags(newTagNames);
 		currentRootTags.addAll(savedNewRootTags);

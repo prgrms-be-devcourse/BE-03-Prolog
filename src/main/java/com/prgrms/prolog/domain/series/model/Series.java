@@ -1,13 +1,16 @@
 package com.prgrms.prolog.domain.series.model;
 
+import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
+import static javax.persistence.FetchType.*;
+import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,20 +21,21 @@ import org.springframework.util.Assert;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.user.model.User;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
 @Entity
+// @SQLDelete(sql = "UPDATE series SET deleted = true where id=?")
+// @Where(clause = "deleted=false")
 public class Series {
 
 	private static final int TITLE_MAX_SIZE = 50;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
 
 	private String title;
@@ -39,9 +43,11 @@ public class Series {
 	@OneToMany(mappedBy = "series")
 	private final List<Post> posts = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
+
+	private boolean deleted;
 
 	@Builder
 	public Series(String title, User user, Post post) {
@@ -65,8 +71,9 @@ public class Series {
 		user.getSeries().add(this);
 	}
 
-	public void changeTitle(String title) {
-		this.title = validateTitle(title);
+	public Series changeSeriesTitle(UpdateSeriesRequest updateSeriesRequest) {
+		this.title = validateTitle(updateSeriesRequest.title());
+		return this;
 	}
 
 	private String validateTitle(String title) {

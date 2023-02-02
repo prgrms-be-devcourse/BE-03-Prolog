@@ -13,8 +13,12 @@ import com.prgrms.prolog.base.ServiceTest;
 
 class CommentServiceImplTest extends ServiceTest {
 
-	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT.getContent());
-	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT.getContent() + "updated");
+	final CreateCommentRequest CREATE_COMMENT_REQUEST = new CreateCommentRequest(COMMENT_CONTENT);
+	final UpdateCommentRequest UPDATE_COMMENT_REQUEST = new UpdateCommentRequest(COMMENT_CONTENT + "updated");
+	final SingleCommentResponse SINGLE_COMMENT_RESPONSE = SingleCommentResponse.from(USER_PROFILE, COMMENT_CONTENT);
+	final SingleCommentResponse UPDATED_SINGLE_COMMENT_RESPONSE
+		= SingleCommentResponse.from(USER_PROFILE, COMMENT.getContent() + "updated");
+
 	@Mock
 	CommentServiceImpl commentService;
 
@@ -22,54 +26,61 @@ class CommentServiceImplTest extends ServiceTest {
 	@DisplayName("댓글 저장에 성공한다.")
 	void saveTest() {
 		// given
-		when(commentService.save(any(), anyLong(), anyLong())).thenReturn(1L);
+		when(commentService.createComment(any(), anyLong(), anyLong())).thenReturn(SINGLE_COMMENT_RESPONSE);
 		// when
-		Long commentId = commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 1L);
+		SingleCommentResponse singleCommentResponse
+			= commentService.createComment(CREATE_COMMENT_REQUEST, USER_ID, POST_ID);
 		// then
-		assertThat(commentId).isEqualTo(1L);
+		assertThat(singleCommentResponse)
+			.usingRecursiveComparison()
+			.isEqualTo(SINGLE_COMMENT_RESPONSE);
 	}
 
 	@Test
 	@DisplayName("댓글 수정에 성공한다.")
 	void updateTest() {
-		when(commentService.update(any(), anyLong(), anyLong())).thenReturn(1L);
-		Long commentId = commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 1L);
-		assertThat(commentId).isEqualTo(1L);
+		when(commentService.updateComment(any(), anyLong(), anyLong(), anyLong())).thenReturn(UPDATED_SINGLE_COMMENT_RESPONSE);
+		SingleCommentResponse singleCommentResponse
+			= commentService.updateComment(UPDATE_COMMENT_REQUEST, USER_ID, POST_ID, COMMENT_ID);
+		assertThat(singleCommentResponse)
+			.usingRecursiveComparison()
+			.isEqualTo(UPDATED_SINGLE_COMMENT_RESPONSE);
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 댓글을 수정하면 예외가 발생한다.")
 	void updateNotExistsCommentThrowExceptionTest() {
 		// given
-		when(commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 0L)).thenThrow(
-			new IllegalArgumentException());
+		when(commentService.updateComment(UPDATE_COMMENT_REQUEST, USER_ID, POST_ID, COMMENT_ID))
+			.thenThrow(new IllegalArgumentException());
 		// when & then
-		assertThatThrownBy(() -> commentService.update(UPDATE_COMMENT_REQUEST, USER_ID, 0L)).isInstanceOf(
-			IllegalArgumentException.class);
+		assertThatThrownBy(() -> commentService.updateComment(UPDATE_COMMENT_REQUEST, USER_ID, POST_ID, COMMENT_ID))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 회원이 댓글을 저장하면 예외가 발생한다.")
 	void updateCommentByNotExistsUserThrowExceptionTest() {
 		// given
-
 		final UpdateCommentRequest updateCommentRequest = new UpdateCommentRequest("댓글 내용");
-		when(commentService.update(updateCommentRequest, UNSAVED_USER_ID, 1L)).thenThrow(
-			new IllegalArgumentException());
-		// when & then
-		assertThatThrownBy(() -> commentService.update(updateCommentRequest, UNSAVED_USER_ID, 1L)).isInstanceOf(
-			IllegalArgumentException.class);
+		// when
+		when(commentService.updateComment(updateCommentRequest, UNSAVED_USER_ID, POST_ID, COMMENT_ID))
+			.thenThrow(new IllegalArgumentException());
+		// then
+		assertThatThrownBy(
+			() -> commentService.updateComment(updateCommentRequest, UNSAVED_USER_ID, POST_ID, COMMENT_ID))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("존재하지 않는 게시글에 댓글을 저장하면 예외가 발생한다.")
 	void saveCommentNotExistsPostThrowExceptionTest() {
 		// given
-		when(commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 0L)).thenThrow(
-			new IllegalArgumentException());
+		when(commentService.createComment(CREATE_COMMENT_REQUEST, USER_ID, 0L))
+			.thenThrow(new IllegalArgumentException());
 		// when & then
-		assertThatThrownBy(() -> commentService.save(CREATE_COMMENT_REQUEST, USER_ID, 0L)).isInstanceOf(
-			IllegalArgumentException.class);
+		assertThatThrownBy(() -> commentService.createComment(CREATE_COMMENT_REQUEST, USER_ID, 0L))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.prgrms.prolog.domain.post.model;
 
+import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
+import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,23 +21,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
 import com.prgrms.prolog.domain.posttag.model.PostTag;
 import com.prgrms.prolog.domain.series.model.Series;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = PROTECTED)
+@Entity
 public class Post extends BaseEntity {
 
 	private static final int TITLE_MAX_SIZE = 50;
@@ -71,67 +71,11 @@ public class Post extends BaseEntity {
 	private int likeCount;
 
 	@Builder
-	public Post(String title, String content, boolean openStatus, User user, Series series) {
+	public Post(String title, String content, boolean openStatus, User user) {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
-		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
-		this.series = series;
-	}
-
-	public void setUser(User user) {
-		if (this.user != null) {
-			this.user.getPosts().remove(this);
-		}
-		this.user = user;
-		user.getPosts().add(this);
-	}
-
-	public void changeTitle(String title) {
-		this.title = validateTitle(title);
-	}
-
-	public void changeContent(String content) {
-		this.content = validateContent(content);
-	}
-
-	public void changeOpenStatus(boolean openStatus) {
-		this.openStatus = openStatus;
-	}
-
-	public void changePost(UpdateRequest updateRequest) {
-		validateTitle(updateRequest.title());
-		validateContent(updateRequest.content());
-
-		this.title = updateRequest.title();
-		this.content = updateRequest.content();
-		this.openStatus = updateRequest.openStatus();
-	}
-
-	public void addPostTagsFrom(Set<PostTag> postTags) {
-		this.postTags.addAll(postTags);
-	}
-
-	private String validateTitle(String title) {
-		checkText(title);
-		checkOverLength(title, TITLE_MAX_SIZE);
-		return title;
-	}
-
-	private String validateContent(String content) {
-		checkText(content);
-		checkOverLength(content, CONTENT_MAX_SIZE);
-		return content;
-	}
-
-	private void checkText(String text) {
-		Assert.hasText(text, "exception.comment.text");
-	}
-
-	private void checkOverLength(String text, int length) {
-		if (text.length() > length) {
-			throw new IllegalArgumentException("exception.post.text.overLength");
-		}
+		this.user = Objects.requireNonNull(user, "exception.post.user.require");
 	}
 
 	public void setSeries(Series series) {
@@ -140,5 +84,30 @@ public class Post extends BaseEntity {
 		}
 		this.series = series;
 		series.getPosts().add(this);
+	}
+
+	public void addPostTags(Set<PostTag> postTags) {
+		this.postTags.addAll(postTags);
+	}
+
+	public void changePost(UpdatePostRequest updateRequest) {
+		validateTitle(updateRequest.title());
+		validateContent(updateRequest.content());
+
+		this.title = updateRequest.title();
+		this.content = updateRequest.content();
+		this.openStatus = updateRequest.openStatus();
+	}
+
+	private String validateTitle(String title) {
+		checkText(title, "exception.post.title.notText");
+		checkOverLength(title, TITLE_MAX_SIZE, "exception.post.title.overLength");
+		return title;
+	}
+
+	private String validateContent(String content) {
+		checkText(content, "exception.post.content.notText");
+		checkOverLength(content, CONTENT_MAX_SIZE, "exception.post.content.overLength");
+		return content;
 	}
 }

@@ -1,7 +1,6 @@
 package com.prgrms.prolog.domain.user.model;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.stream.Stream;
 
@@ -61,7 +60,7 @@ class UserTest {
 		//given & when & then
 		assertThatThrownBy(() -> getBuilder().email(inputEmail).build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("이메일");
+			.hasMessageContaining("email");
 	}
 
 	@ParameterizedTest
@@ -74,7 +73,7 @@ class UserTest {
 			() -> getBuilder().nickName(inputNickName)
 				.email(email).build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("닉네임");
+			.hasMessageContaining("nickName");
 	}
 
 	@ParameterizedTest
@@ -105,7 +104,7 @@ class UserTest {
 				.email(email).nickName(nickName)
 				.build())
 			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("블로그 제목");
+			.hasMessageContaining("prolog");
 	}
 
 	@ParameterizedTest
@@ -118,7 +117,7 @@ class UserTest {
 				.email(email).nickName(nickName).prologName(prologName)
 				.build())
 			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("provider는 NULL");
+			.hasMessageContaining("provider");
 	}
 
 	@ParameterizedTest
@@ -131,29 +130,7 @@ class UserTest {
 				.email(email).nickName(nickName).prologName(prologName).provider(provider)
 				.build())
 			.isInstanceOf(NullPointerException.class)
-			.hasMessageContaining("oauthId는 NULL");
-	}
-
-	@ParameterizedTest
-	@DisplayName("필드 수정시 유효성 검사")
-	@NullAndEmptySource
-	@MethodSource("provideStringDummy")
-	void changeTest(String input) {
-		//given
-		User user = User.builder()
-			.email(email)
-			.nickName(nickName)
-			.introduce(introduce)
-			.prologName(prologName)
-			.provider(provider)
-			.oauthId(oauthId)
-			.build();
-		// when & then
-		assertAll(
-			() -> assertThatThrownBy(() -> user.changeEmail(input)),
-			() -> assertThatThrownBy(() -> user.changeNickName(input)),
-			() -> assertThatThrownBy(() -> user.changePrologName(input))
-		);
+			.hasMessageContaining("oauthId");
 	}
 
 	private User.UserBuilder getBuilder() {

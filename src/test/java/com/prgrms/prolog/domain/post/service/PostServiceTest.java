@@ -17,9 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.prgrms.prolog.domain.post.dto.PostRequest.CreateRequest;
-import com.prgrms.prolog.domain.post.dto.PostRequest.UpdateRequest;
-import com.prgrms.prolog.domain.post.dto.PostResponse;
+import com.prgrms.prolog.domain.post.dto.PostDto.CreatePostRequest;
+import com.prgrms.prolog.domain.post.dto.PostDto.SinglePostResponse;
+import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.post.repository.PostRepository;
 import com.prgrms.prolog.domain.series.model.Series;
@@ -66,8 +66,8 @@ class PostServiceTest {
 	@Test
 	@DisplayName("게시물을 등록할 수 있다.")
 	void save_success() {
-		final CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
-		Long savePostId = postService.save(postRequest, user.getId());
+		final CreatePostRequest postRequest = new CreatePostRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
+		Long savePostId = postService.createPost(postRequest, user.getId());
 		assertThat(savePostId).isNotNull();
 	}
 
@@ -75,11 +75,11 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그 없이 등록할 수 있다.")
 	void savePostAndWithOutAnyTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", null, true, SERIES_TITLE);
+		final CreatePostRequest request = new CreatePostRequest("테스트 제목", "테스트 내용", null, true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
-		PostResponse findPostResponse = postService.findById(savedPostId);
+		Long savedPostId = postService.createPost(request, user.getId());
+		SinglePostResponse findPostResponse = postService.getSinglePost(user.getId(), savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
 		// then
@@ -90,11 +90,11 @@ class PostServiceTest {
 	@DisplayName("게시글에 태그가 공백이거나 빈 칸이라면 태그는 무시된다.")
 	void savePostWithBlankTagTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "# #", true, SERIES_TITLE);
+		final CreatePostRequest request = new CreatePostRequest("테스트 제목", "테스트 내용", "# #", true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
-		PostResponse findPostResponse = postService.findById(savedPostId);
+		Long savedPostId = postService.createPost(request, user.getId());
+		SinglePostResponse findPostResponse = postService.getSinglePost(user.getId(), savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
 		// then
@@ -105,12 +105,13 @@ class PostServiceTest {
 	@DisplayName("게시글에 복수의 태그를 등록할 수 있다.")
 	void savePostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true, SERIES_TITLE);
+		final CreatePostRequest request = new CreatePostRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,
+			SERIES_TITLE);
 		final List<String> expectedTags = List.of("테스트", "test", "test1", "테 스트");
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
-		PostResponse findPostResponse = postService.findById(savedPostId);
+		Long savedPostId = postService.createPost(request, user.getId());
+		SinglePostResponse findPostResponse = postService.getSinglePost(user.getId(), savedPostId);
 		Set<String> findTags = findPostResponse.tags();
 
 		// then
@@ -122,11 +123,11 @@ class PostServiceTest {
 	@DisplayName("게시물과 태그를 조회할 수 있다.")
 	void findPostAndTagsTest() {
 		// given
-		final CreateRequest request = new CreateRequest("테스트 제목", "테스트 내용", "#테스트", true, SERIES_TITLE);
+		final CreatePostRequest request = new CreatePostRequest("테스트 제목", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
 		// when
-		Long savedPostId = postService.save(request, user.getId());
-		PostResponse findPost = postService.findById(savedPostId);
+		Long savedPostId = postService.createPost(request, user.getId());
+		SinglePostResponse findPost = postService.getSinglePost(user.getId(), savedPostId);
 
 		// then
 		assertThat(findPost)
@@ -139,16 +140,16 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 사용자(비회원)의 이메일로 게시물을 등록할 수 없다.")
 	void save_fail() {
-		CreateRequest postRequest = new CreateRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
+		CreatePostRequest postRequest = new CreatePostRequest("테스트", "테스트 내용", "#테스트", true, SERIES_TITLE);
 
-		assertThatThrownBy(() -> postService.save(postRequest, UNSAVED_USER_ID))
+		assertThatThrownBy(() -> postService.createPost(postRequest, UNSAVED_USER_ID))
 			.isInstanceOf(NullPointerException.class);
 	}
 
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 단건 조회할 수 있다")
 	void findById() {
-		PostResponse findPost = postService.findById(post.getId());
+		SinglePostResponse findPost = postService.getSinglePost(user.getId(), post.getId());
 
 		assertThat(findPost.title()).isEqualTo(post.getTitle());
 		assertThat(findPost.content()).isEqualTo(post.getContent());
@@ -160,18 +161,19 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 게시물의 아이디로 게시물을 조회할 수 없다.")
 	void findById_fail() {
-		assertThatThrownBy(() -> postService.findById(0L)).isInstanceOf(IllegalArgumentException.class);
+		assertThatThrownBy(() -> postService.getSinglePost(user.getId(), 0L)).isInstanceOf(
+			IllegalArgumentException.class);
 	}
 
 	@Test
 	@DisplayName("존재하는 게시물의 아이디로 게시물의 제목, 내용, 태그, 공개범위를 수정할 수 있다.")
 	void update_success() {
-		final CreateRequest createRequest = new CreateRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,
+		final CreatePostRequest createRequest = new CreatePostRequest("테스트 제목", "테스트 내용", "#테스트#test#test1#테 스트", true,
 			SERIES_TITLE);
-		Long savedPost = postService.save(createRequest, user.getId());
+		Long savedPost = postService.createPost(createRequest, user.getId());
 
-		final UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);
-		PostResponse updatedPostResponse = postService.update(updateRequest, user.getId(), savedPost);
+		final UpdatePostRequest updateRequest = new UpdatePostRequest("수정된 테스트", "수정된 테스트 내용", "#테스트#수정된 태그", true);
+		SinglePostResponse updatedPostResponse = postService.updatePost(updateRequest, user.getId(), savedPost);
 
 		assertThat(updatedPostResponse)
 			.hasFieldOrPropertyWithValue("title", updateRequest.title())
@@ -182,9 +184,9 @@ class PostServiceTest {
 	@Test
 	@DisplayName("존재하지 않는 게시물의 아이디로 게시물을 수정할 수 없다.")
 	void update_fail() {
-		UpdateRequest updateRequest = new UpdateRequest("수정된 테스트", "수정된 테스트 내용", "", true);
+		UpdatePostRequest updateRequest = new UpdatePostRequest("수정된 테스트", "수정된 테스트 내용", "", true);
 
-		assertThatThrownBy(() -> postService.update(updateRequest, user.getId(), 0L))
+		assertThatThrownBy(() -> postService.updatePost(updateRequest, user.getId(), 0L))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -193,7 +195,7 @@ class PostServiceTest {
 	void findAll_success() {
 		PageRequest page = PageRequest.of(0, 10);
 
-		Page<PostResponse> all = postService.findAll(page);
+		Page<SinglePostResponse> all = postService.getAllPost(page);
 
 		assertThat(all).isNotNull();
 	}
@@ -201,7 +203,7 @@ class PostServiceTest {
 	@Test
 	@DisplayName("게시물 아이디로 게시물을 삭제할 수 있다.")
 	void delete_success() {
-		postService.delete(post.getId());
+		postService.deletePost(user.getId(), post.getId());
 
 		Optional<Post> findPost = postRepository.findById(post.getId());
 
@@ -212,6 +214,6 @@ class PostServiceTest {
 	@DisplayName("존재하지 않는 게시물 아이디 입력시 게시물을 삭제할 수 없다.")
 	void delete_fail() {
 		assertThatThrownBy(() ->
-			postService.delete(0L)).isInstanceOf(IllegalArgumentException.class);
+			postService.deletePost(user.getId(), 0L)).isInstanceOf(IllegalArgumentException.class);
 	}
 }

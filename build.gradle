@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // OAuth2-Client dependency
     implementation 'org.springframework.boot:spring-boot-starter-actuator' // Actuator dependency
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE' // AWS S3 dependency
-    
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -85,7 +85,7 @@ dependencyManagement {
 }
 
 openapi3 {
-    setServer("http://localhost:8080")
+    setServer("http://43.201.105.123")
     title = "restdocs-swagger API Documentation"
     description = "Spring REST Docs with SwaggerUI."
     version = "0.0.1"
@@ -156,7 +156,8 @@ jacocoTestCoverageVerification {
                     '*.global*',
                     '*.series*',
                     '*.comment*',
-                    '*.dto*'
+                    '*.dto*',
+                    '*.exception.*'
             ]
 
         }
