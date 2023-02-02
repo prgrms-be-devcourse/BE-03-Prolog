@@ -21,6 +21,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.dto.PostDto.UpdatePostRequest;
@@ -36,6 +38,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
+@SQLDelete(sql = "UPDATE post SET deleted = true where id=?")
+@Where(clause = "deleted=false")
 public class Post extends BaseEntity {
 
 	private static final int TITLE_MAX_SIZE = 50;

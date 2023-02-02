@@ -5,11 +5,6 @@ import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
 
-import static com.prgrms.prolog.domain.user.dto.UserDto.*;
-import static com.prgrms.prolog.global.util.ValidateUtil.*;
-import static javax.persistence.GenerationType.*;
-import static lombok.AccessLevel.*;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,12 +20,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.comment.model.Comment;
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.series.model.Series;
-import com.prgrms.prolog.domain.user.dto.UserDto;
 import com.prgrms.prolog.domain.usertag.model.UserTag;
 import com.prgrms.prolog.global.common.BaseEntity;
 
@@ -42,6 +38,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Entity
 @Table(name = "users")
+@SQLDelete(sql = "UPDATE users SET deleted = true where id=?")
+@Where(clause = "deleted=false")
 public class User extends BaseEntity {
 
 	private static final Pattern emailPattern
