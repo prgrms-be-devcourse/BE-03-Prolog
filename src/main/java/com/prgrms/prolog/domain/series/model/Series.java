@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 import com.prgrms.prolog.domain.post.model.Post;
@@ -28,8 +30,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @Entity
-// @SQLDelete(sql = "UPDATE series SET deleted = true where id=?")
-// @Where(clause = "deleted=false")
+@SQLDelete(sql = "UPDATE series SET deleted = true where id=?")
+@Where(clause = "deleted=false")
 public class Series {
 
 	private static final int TITLE_MAX_SIZE = 50;
@@ -46,8 +48,6 @@ public class Series {
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "user_id")
 	private User user;
-
-	private boolean deleted;
 
 	@Builder
 	public Series(String title, User user, Post post) {

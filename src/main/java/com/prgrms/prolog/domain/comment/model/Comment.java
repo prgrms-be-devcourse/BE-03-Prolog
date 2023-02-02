@@ -13,6 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import com.prgrms.prolog.domain.post.model.Post;
 import com.prgrms.prolog.domain.user.model.User;
 import com.prgrms.prolog.global.common.BaseEntity;
@@ -25,6 +28,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@SQLDelete(sql = "UPDATE comment SET deleted = true where id=?")
+@Where(clause = "deleted=false")
 public class Comment extends BaseEntity {
 
 	private static final String CONTENT_OVER_LENGTH_MESSAGE = "exception.comment.content.overLength";
