@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.comment.model;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -32,8 +33,6 @@ import lombok.NoArgsConstructor;
 @Where(clause = "deleted=false")
 public class Comment extends BaseEntity {
 
-	private static final String CONTENT_OVER_LENGTH_MESSAGE = "exception.comment.content.overLength";
-	private static final String CONTENT_EMPTY_VALUE_MESSAGE = "exception.comment.content.empty";
 	private static final int CONTENT_MAX_SIZE = 255;
 
 	@Id
@@ -54,8 +53,8 @@ public class Comment extends BaseEntity {
 	@Builder
 	public Comment(String content, Post post, User user) {
 		this.content = validateContent(content);
-		this.post = Objects.requireNonNull(post, "exception.post.require");
-		this.user = Objects.requireNonNull(user, "exception.user.require");
+		this.post = Objects.requireNonNull(post, messageKey().exception().post().require().endKey());
+		this.user = Objects.requireNonNull(user, messageKey().exception().user().require().endKey());
 	}
 
 	public void setPost(Post post) {
@@ -71,8 +70,8 @@ public class Comment extends BaseEntity {
 	}
 
 	private String validateContent(String content) {
-		checkOverLength(content, CONTENT_MAX_SIZE, CONTENT_OVER_LENGTH_MESSAGE);
-		checkText(content, CONTENT_OVER_LENGTH_MESSAGE);
+		checkOverLength(content, CONTENT_MAX_SIZE, messageKey().exception().comment().content().overLength().endKey());
+		checkText(content, messageKey().exception().comment().content().text().endKey());
 		return content;
 	}
 }

@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.posttag.model;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
@@ -43,12 +44,12 @@ public class PostTag {
 	}
 
 	private RootTag validateRootTag(RootTag rootTag) {
-		Assert.notNull(rootTag, "exception.postTag.rootTag.null");
+		Assert.notNull(rootTag, messageKey().exception().postTag().rootTag().isNull().endKey());
 		return rootTag;
 	}
 
 	private Post validatePost(Post post) {
-		Assert.notNull(post, "exception.postTag.post.null");
+		Assert.notNull(post, messageKey().exception().postTag().post().isNull().endKey());
 		return post;
 	}
 }

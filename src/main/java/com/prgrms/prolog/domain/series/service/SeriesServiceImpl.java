@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.series.service;
 
 import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class SeriesServiceImpl implements SeriesService {
 	public SeriesResponse getSeriesById(Long userId, Long seriesId) {
 		return seriesRepository.joinPostFindByIdAndUserId(seriesId, userId)
 			.map(SeriesResponse::from)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	@Override
@@ -55,7 +56,7 @@ public class SeriesServiceImpl implements SeriesService {
 		return seriesRepository.joinPostFindByIdAndUserId(seriesId, userId)
 			.map(series -> series.changeSeriesTitle(updateSeriesRequest))
 			.map(SeriesResponse::from)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	@Override
@@ -63,13 +64,13 @@ public class SeriesServiceImpl implements SeriesService {
 	public void deleteSeries(Long userId, Long seriesId) {
 		int result = seriesRepository.deleteByIdAndUserId(userId, seriesId);
 		if (result == FAIL) {
-			throw new IllegalArgumentException("exception.user.notExists");
+			throw new IllegalArgumentException(messageKey().exception().user().notExists().endKey());
 		}
 	}
 
 	private User getFindUserBy(Long userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	private Series buildSeries(String title, User owner) {

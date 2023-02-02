@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.roottag.model;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static javax.persistence.GenerationType.*;
 
 import java.util.HashSet;
@@ -47,8 +48,9 @@ public class RootTag {
 	}
 
 	private String validateRootTagName(String name) {
-		Assert.hasText(name, "exception.rootTag.name.text");
-		Assert.isTrue(name.length() <= NAME_MAX_LENGTH, "exception.rootTag.name.length");
+		Assert.hasText(name, messageKey().exception().rootTag().name().text().endKey());
+		Assert.isTrue(name.length() <= NAME_MAX_LENGTH,
+			messageKey().exception().rootTag().name().overLength().endKey());
 		return name;
 	}
 }

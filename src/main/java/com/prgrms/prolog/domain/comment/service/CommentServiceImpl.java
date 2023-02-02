@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.comment.service;
 
 import static com.prgrms.prolog.domain.comment.dto.CommentDto.*;
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 
 import java.util.Objects;
 
@@ -55,25 +56,26 @@ public class CommentServiceImpl implements CommentService {
 
 	private User getFindUserBy(Long userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	private Post getFindPostBy(Long postId) {
 		return postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().post().notExists().endKey()));
 	}
 
 	private void validateCommentNotNull(Comment comment) {
-		Assert.notNull(comment, "exception.comment.notExists");
+		Assert.notNull(comment, messageKey().exception().comment().notExists().endKey());
 	}
 
 	private void validateUserComment(User findUser, Comment findComment) {
 		Assert.isTrue(!Objects.equals(findComment.getUser().getId(), findUser.getId()),
-			"exception.comment.user.notSame");
+			messageKey().exception().comment().user().notSame().endKey());
 	}
+
 
 	private void validatePostComment(Post findPost, Comment findComment) {
 		Assert.isTrue(!Objects.equals(findPost.getId(), findComment.getPost().getId()),
-			"exception.comment.post.notSame");
+			messageKey().exception().comment().post().notSame().endKey());
 	}
 }

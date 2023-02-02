@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.post.model;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static com.prgrms.prolog.global.util.ValidateUtil.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
@@ -74,12 +75,13 @@ public class Post extends BaseEntity {
 	@Column(name = "like_count")
 	private int likeCount;
 
+
 	@Builder
 	public Post(String title, String content, boolean openStatus, User user) {
 		this.title = validateTitle(title);
 		this.content = validateContent(content);
 		this.openStatus = openStatus;
-		this.user = Objects.requireNonNull(user, "exception.post.user.require");
+		this.user = Objects.requireNonNull(user, messageKey().exception().post().user().require().endKey());
 	}
 
 	public void setSeries(Series series) {
@@ -103,15 +105,16 @@ public class Post extends BaseEntity {
 		this.openStatus = updateRequest.openStatus();
 	}
 
+
 	private String validateTitle(String title) {
-		checkText(title, "exception.post.title.notText");
-		checkOverLength(title, TITLE_MAX_SIZE, "exception.post.title.overLength");
+		checkText(title, messageKey().exception().post().title().notText().endKey());
+		checkOverLength(title, TITLE_MAX_SIZE, messageKey().post().title().overLength().endKey());
 		return title;
 	}
 
 	private String validateContent(String content) {
-		checkText(content, "exception.post.content.notText");
-		checkOverLength(content, CONTENT_MAX_SIZE, "exception.post.content.overLength");
+		checkText(content, messageKey().exception().post().content().notText().endKey());
+		checkOverLength(content, CONTENT_MAX_SIZE, messageKey().exception().post().content().overLength().endKey());
 		return content;
 	}
 }

@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.post.service;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -76,9 +78,9 @@ public class PostServiceImpl implements PostService {
 	@Override
 	public SinglePostResponse getSinglePost(Long userId, Long postId) {
 		Post post = postRepository.joinCommentFindByPostId(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().post().notExists().endKey()));
 		if (!post.isOpenStatus() && !post.getUser().checkSameUserId(userId)) { // 비공개 and 다른 사용자인 경우
-			throw new IllegalAccessPostException("exception.post.not.access");
+			throw new IllegalAccessPostException(messageKey().post().notAccess().endKey());
 		}
 		Set<PostTag> findPostTags = postTagRepository.joinRootTagFindByPostId(postId);
 		post.addPostTags(findPostTags);
@@ -95,10 +97,10 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	public SinglePostResponse updatePost(UpdatePostRequest updatePostRequest, Long userId, Long postId) {
 		Post findPost = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().post().notExists().endKey()));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalAccessPostException("exception.post.not.owner");
+			throw new IllegalArgumentException(messageKey().exception().post().notExists().endKey());
 		}
 
 		findPost.changePost(updatePostRequest);
@@ -113,10 +115,10 @@ public class PostServiceImpl implements PostService {
 	@Transactional
 	public void deletePost(Long userId, Long postId) {
 		Post findPost = postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.notExists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().post().notExists().endKey()));
 
 		if (!findPost.getUser().checkSameUserId(userId)) {
-			throw new IllegalAccessPostException("exception.post.not.owner");
+			throw new IllegalArgumentException(messageKey().exception().post().notOwner().endKey());
 		}
 
 		Set<RootTag> findRootTags = postTagRepository.joinRootTagFindByPostId(findPost.getId())

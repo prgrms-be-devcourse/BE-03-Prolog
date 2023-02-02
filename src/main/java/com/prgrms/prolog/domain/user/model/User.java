@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.user.model;
 
 import static com.prgrms.prolog.domain.user.dto.UserDto.*;
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -89,8 +90,8 @@ public class User extends BaseEntity {
 		this.nickName = validateNickName(nickName);
 		this.introduce = validateIntroduce(introduce);
 		this.prologName = validatePrologName(prologName);
-		this.provider = Objects.requireNonNull(provider, "exception.user.provider.null");
-		this.oauthId = Objects.requireNonNull(oauthId, "exception.user.oauthId.null");
+		this.provider = Objects.requireNonNull(provider, messageKey().exception().user().provider().isNull().endKey());
+		this.oauthId = Objects.requireNonNull(oauthId, messageKey().exception().user().oauthId().isNull().endKey());
 		this.profileImgUrl = profileImgUrl;
 	}
 
@@ -102,30 +103,30 @@ public class User extends BaseEntity {
 	}
 
 	public void changeProfileImgUrl(String profileImgUrl) {
-		Objects.requireNonNull(profileImgUrl, "exception.user.profile.imageUrl.null");
+		Objects.requireNonNull(profileImgUrl, messageKey().user().profile().imageUrl().isNull().endKey());
 	}
 
 	private String validatePrologName(String prologName) {
-		checkText(prologName, "exception.user.prologName.text");
-		checkOverLength(prologName, 100, "exception.user.prologName.length");
+		checkText(prologName, messageKey().user().prologName().text().endKey());
+		checkOverLength(prologName, 100, messageKey().user().prologName().overLength().endKey());
 		return prologName;
 	}
 
 	private String validateIntroduce(String introduce) {
-		checkOverLength(introduce, 100, "exception.user.introduce.length");
+		checkOverLength(introduce, 100, messageKey().exception().user().introduce().overLength().endKey());
 		return introduce;
 	}
 
 	private String validateNickName(String nickName) {
-		checkText(nickName, "exception.user.nickName.text");
-		checkOverLength(nickName, 100, "exception.user.nickName.length");
+		checkText(nickName, messageKey().exception().user().nickName().text().endKey());
+		checkOverLength(nickName, 100, messageKey().exception().user().nickName().overLength().endKey());
 		return nickName;
 	}
 
 	private String validateEmail(String email) {
-		checkText(email, "exception.user.email.text");
-		checkOverLength(email, 100, "exception.user.email.length");
-		checkPattern(email, emailPattern, "exception.user.email.pattern");
+		checkText(email, messageKey().exception().user().email().text().endKey());
+		checkOverLength(email, 100, messageKey().exception().user().email().overLength().endKey());
+		checkPattern(email, emailPattern, messageKey().exception().user().email().pattern().endKey());
 		return email;
 	}
 
