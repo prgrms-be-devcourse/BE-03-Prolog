@@ -32,4 +32,6 @@ public abstract class BaseEntity {
 	@CreatedBy
 	@Column(name = "created_by")
 	private String createdBy;
+
+	private boolean deleted;
 }

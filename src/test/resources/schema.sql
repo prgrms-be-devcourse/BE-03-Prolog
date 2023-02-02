@@ -33,6 +33,7 @@ CREATE TABLE series
     id         bigint       NOT NULL PRIMARY KEY AUTO_INCREMENT,
     title      varchar(200) NOT NULL,
     created_at datetime     NOT NULL DEFAULT now(),
+    created_by varchar(100) NULL,
     updated_at datetime     NOT NULL DEFAULT now(),
     deleted    boolean      NOT NULL DEFAULT false,
     user_id    bigint       NOT NULL,
