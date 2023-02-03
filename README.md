@@ -1,7 +1,6 @@
-
 # 🥚 Prolog
 
-   백엔드 알팀 velog 클론코딩 프로젝트
+백엔드 알팀 velog 클론코딩 프로젝트
 
 ## :peach: 프로젝트 목표
 
@@ -14,37 +13,84 @@
 | <img alt="img_3.png" height="100" src="https://avatars.githubusercontent.com/u/82203978?v=4" width="100"/> | <img alt="img.png" height="100" src="https://avatars.githubusercontent.com/u/53924962?v=4" width="100" /> | <img alt="img_1.png" height="100" src="https://avatars.githubusercontent.com/u/99165624?v=4" width="100"/> | <img alt="img_2.png" height="100" src="https://avatars.githubusercontent.com/u/59335077?v=4" width="100"/> | <img alt="img_4.png" height="100" src="https://avatars.githubusercontent.com/u/17922700?v=4" width="100"/> | <img alt="img_5.png" height="100" src="https://avatars.githubusercontent.com/u/41960243?v=4" width="100"/> |
 |                                                    박현서                                                     |                                                    복신영                                                    |                                                    권주성                                                     |                                                    최은비                                                     |                                                     알                                                      |                                                    김용철                                                     |
 
-
 ## 🍊 개발 언어 및 활용기술
+
 <!-- 요 링크에서 따오면 좋을 듯! https://github.com/Ileriayo/markdown-badges --> 
 
 ### Tech
 
-<img src="https://img.shields.io/badge/Java-FC4C02?style=flat-square&logo=java&logoColor=white"/> <img src="https://img.shields.io/badge/Spring boot-6DB33F?style=flat-square&logo=Spring boot&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?logo=gradle&logoWidth=25"/> <img src="https://img.shields.io/badge/Spring Data JPA-0078D4?style=flat-square&logo=Spring Data JPA&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-2AB1AC?style=flat-square&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Junit-25A162?style=flat-square&logo=Junit5&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=flat-square&logo=swagger&logoColor=white">
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
+
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+
+<img src="https://img.shields.io/badge/Spring Data Jpa-0078D4?style=for-the-badge&logo=&logoColor=white">
+
+<img src="https://img.shields.io/badge/Spring Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white">
+
+<img src="https://img.shields.io/badge/JWT-6DB33F?style=for-the-badge&logo=JsonWebTokens&logoColor=white">
+
+<img src="https://img.shields.io/badge/OAuth2.0-EB5424?style=for-the-badge&logo=&logoColor=white">
+
+<img src="https://img.shields.io/badge/MySQL-2AB1AC?style=for-the-badge&logo=MySQL&logoColor=white">
+
+<img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=Flyway&logoColor=white">
+
+<img src="https://img.shields.io/badge/Junit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">
+
+<img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white">
+
+<img src="https://img.shields.io/badge/RestDocs-8CA1AF?style=for-the-badge&logo=readthedocs&logoColor=white">
+
+<img src="https://img.shields.io/badge/Jacoco-E6502A?style=for-the-badge&logo=Jacoco&logoColor=white">
+
+<img src="https://img.shields.io/badge/Test Container-83DA77?style=for-the-badge&logo=Jacoco&logoColor=white">
+
+<img src="https://img.shields.io/badge/Actuator-83B81A?style=for-the-badge&logo=Jacoco&logoColor=white">
 
 ### Deploy
 
-<img src="https://img.shields.io/badge/Github Actions-2AB1AC?style=flat-square&logo=github&logoColor=black"/> <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=flat-square&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat-square&logo=amazon-aws&logoColor=white"/>
+<img src="https://img.shields.io/badge/Github Actions-2AB1AC?style=for-the-badge&logo=GithubActions&logoColor=white">
+
+<img src="https://img.shields.io/badge/Docker-%230db7ed.svg?style=for-the-badge&logo=Docker&logoColor=white">
+
+<img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=Nginx&logoColor=white">
+
+<img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=Ubuntu&logoColor=white">
+
+<img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=AmazonAws&logoColor=white">
+
+<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
+
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=AmazonEc2&logoColor=white">
 
 ### Tool
 
-<img src="https://img.shields.io/badge/IntelliJ IDEA-8A3391?style=flat-square&logo=IntelliJ IDEA&logoColor=black"/> <img src="https://img.shields.io/badge/Github-000000?style=flat-square&logo=Github&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-FFFFFF?style=flat-square&logo=Notion&logoColor=black"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=Slack&logoColor=white"/> 
+<img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=intellijIdea&logoColor=white">
 
+<img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white">
+
+<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+
+<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
 
 ## 🍎 설계 및 문서
 
 ### 프로젝트 구조
+
 (예정)
 
 ### ERD
+
 (예정)
 
 ### [Prolog API](https://www.notion.so/backend-devcourse/API-1-3785ae03912441e7a87e253fd069c200)
 
 ## 🍉 주요 기능
+
 (예정)
 
 ## 🍒 배포 주소
+
 ### [Docker Hub의 prolog](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
 ### [현재 접근 가능한 IP](43.200.173.123)
@@ -168,11 +214,10 @@
    CLIENT_SECRET=
    REDIRECT_URI=
    ```
-    
+
 4. docker-compose를 실행한다
 
    ```docker-compose -d up```
-
 
 ## 🫐 프로젝트 페이지
 
