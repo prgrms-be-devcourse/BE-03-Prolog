@@ -38,7 +38,7 @@
 
 ### ERD
 
-(예정)
+![Prolog ERD](https://user-images.githubusercontent.com/59335077/216544649-2558127e-60e8-42de-89b6-ac2616651abb.png)
 
 ### [Prolog API](https://www.notion.so/backend-devcourse/API-1-3785ae03912441e7a87e253fd069c200)
 
