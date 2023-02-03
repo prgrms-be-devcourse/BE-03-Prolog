@@ -1,0 +1,176 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+= /api/v1
+
+== User
+
+=== User 정보 조회하기
+
+==== /user/me
+
+.Request
+include::{snippets}/user-controller-test/user-page/http-request.adoc[]
+
+.Response
+include::{snippets}/user-controller-test/user-page/http-response.adoc[]
+include::{snippets}/user-controller-test/user-page/response-fields.adoc[]
+
+
+== Post
+
+=== Post 생성하기
+
+==== /posts
+
+.Request
+include::{snippets}/post-controller-test/save/http-request.adoc[]
+include::{snippets}/post-controller-test/save/request-fields.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/save/http-response.adoc[]
+
+//.Error Response
+// include::{snippets}/post-controller-test/validate-content-empty/http-response.adoc[]
+
+=== Series를 포함한 Post 생성하기
+
+==== /posts
+
+.Request
+include::{snippets}/post-controller-test/create-series/http-request.adoc[]
+//include::{snippets}/post-controller-test/create-series/request-fields.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/create-series/http-response.adoc[]
+
+
+=== Post 수정하기
+
+==== /posts/{post_id}
+
+.Request
+include::{snippets}/post-controller-test/update/http-request.adoc[]
+include::{snippets}/post-controller-test/update/request-fields.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/update/http-response.adoc[]
+include::{snippets}/post-controller-test/update/response-fields.adoc[]
+
+
+=== Post 삭제하기
+//post delete 지우기
+
+==== /posts/{post_id}
+
+.Request
+include::{snippets}/post-controller-test/remove/http-request.adoc[]
+include::{snippets}/post-delete/http-request.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/remove/http-response.adoc[]
+
+
+=== 단일 Post 조회하기
+
+==== /posts/{post_id}
+
+.Request
+include::{snippets}/post-controller-test/find-by-id/http-request.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/find-by-id/http-response.adoc[]
+include::{snippets}/post-controller-test/find-by-id/response-fields.adoc[]
+
+
+=== Post 전체 조회하기
+
+==== /posts?page={page}&size={size}
+
+.Request
+include::{snippets}/post-controller-test/find-all/http-request.adoc[]
+
+.Response
+include::{snippets}/post-controller-test/find-all/http-response.adoc[]
+include::{snippets}/post-controller-test/find-all/response-fields.adoc[]
+
+
+== Like (좋아요 기능)
+User는 Post에 like를 생성 또는 삭제할 수 있다
+
+=== Like 생성하기
+
+==== /like/{post_id}
+
+.Request
+include::{snippets}/like-controller-test/like-save-api-test/http-request.adoc[]
+//include::{snippets}/like-controller-test/like-save-api-test/request-fields.adoc[]
+
+.Response
+include::{snippets}/like-controller-test/like-save-api-test/http-response.adoc[]
+
+
+=== Like 삭제하기
+
+==== /like
+
+.Request
+include::{snippets}/like-controller-test/like-cancel-api-test/http-request.adoc[]
+//include::{snippets}/like-controller-test/like-save-api-test/request-fields.adoc[]
+
+.Response
+include::{snippets}/like-controller-test/like-cancel-api-test/http-response.adoc[]
+
+
+== Comment
+User는 Post에 comment를 생성, 수정 또는 삭제할 수 있다
+
+=== Comment 생성하기
+
+==== /posts/{post_id}/comments
+
+.Request
+include::{snippets}/comment-controller-test/comment-save-api-test/http-request.adoc[]
+include::{snippets}/comment-controller-test/comment-save-api-test/request-fields.adoc[]
+
+.Response
+include::{snippets}/comment-controller-test/comment-save-api-test/http-response.adoc[]
+
+=== Comment 수정하기
+
+==== /posts/{post_id}/comments/{comment_id}
+
+.Request
+include::{snippets}/comment-controller-test/comment-update-api-test/http-request.adoc[]
+include::{snippets}/comment-controller-test/comment-update-api-test/request-fields.adoc[]
+
+.Response
+include::{snippets}/comment-controller-test/comment-update-api-test/http-response.adoc[]
+
+
+=== Comment 삭제하기
+
+==== /posts/{post_id}/comments
+
+// .Request
+// include::{snippets}/comment-controller-test/comment-update-api-test/http-request.adoc[]
+// include::{snippets}/comment-controller-test/comment-update-api-test/request-fields.adoc[]
+//
+// .Response
+// include::{snippets}/comment-controller-test/comment-update-api-test/http-response.adoc[]
+
+
+== Series
+User는 Post에 series를 지정하고, series에 포함된 Post를 가져올 수 있다
+
+=== Series 제목으로 Post 전체 조회하기
+
+==== /series?title={series_title}
+
+.Request
+include::{snippets}/series-controller-test/find-series-by-title-test/http-request.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/find-series-by-title-test/http-response.adoc[]
+include::{snippets}/series-controller-test/find-series-by-title-test/response-fields.adoc[]
