@@ -1,5 +1,7 @@
 package com.prgrms.prolog.global.image.api;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import java.io.File;
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ public class ImageController {
 		String fileName = (originalFilename + id).replace(" ", "");
 
 		File tempTargetFile = fileManager.convertMultipartFileToFile(multipartFile)
-			.orElseThrow(() -> new IllegalArgumentException("exception.file.convert"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().file().convert().endKey()));
 		String fileUrl = uploadFileToS3.upload(tempTargetFile, FILE_PATH, fileName);
 
 		fileManager.removeFile(tempTargetFile);

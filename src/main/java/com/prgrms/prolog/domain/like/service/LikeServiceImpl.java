@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.like.service;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
@@ -32,7 +34,7 @@ public class LikeServiceImpl implements LikeService {
 
 		//TODO 이미 좋아요 되어있으면 에러 반환 -> 409 Conflict 오류로 변환
 		if (likeRepository.findByUserAndPost(user, post).isPresent()) {
-			throw new EntityNotFoundException("exception.like.already.exist");
+			throw new EntityNotFoundException(messageKey().exception().like().alreadyExists().endKey());
 		}
 
 		Like like = likeRequest.from(user, post);
@@ -48,7 +50,7 @@ public class LikeServiceImpl implements LikeService {
 		Post post = getFindPostBy(likeRequest.postId());
 
 		Like like = likeRepository.findByUserAndPost(user, post)
-			.orElseThrow(() -> new EntityNotFoundException("exception.like.not.exist"));
+			.orElseThrow(() -> new EntityNotFoundException(messageKey().like().notExists().endKey()));
 
 		likeRepository.delete(like);
 		postRepository.subLikeCountByPostId(post.getId());
@@ -56,11 +58,11 @@ public class LikeServiceImpl implements LikeService {
 
 	private User getFindUserBy(Long userId) {
 		return userRepository.findById(userId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.user.note.exists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	private Post getFindPostBy(Long postId) {
 		return postRepository.findById(postId)
-			.orElseThrow(() -> new IllegalArgumentException("exception.post.not.exists"));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 }

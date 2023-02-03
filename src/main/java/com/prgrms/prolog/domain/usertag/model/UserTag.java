@@ -1,5 +1,6 @@
 package com.prgrms.prolog.domain.usertag.model;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 
@@ -53,27 +54,27 @@ public class UserTag {
 	}
 
 	public void increaseCount(int count) {
-		Assert.isTrue(count >= 0, "exception.userTag.count.positive");
+		Assert.isTrue(count >= 0, messageKey().exception().userTag().count().positive().endKey());
 		this.count += count;
 	}
 
 	public void decreaseCount(int count) {
-		Assert.isTrue(count >= 0, "exception.userTag.count.positive");
+		Assert.isTrue(count >= 0, messageKey().exception().userTag().count().positive().endKey());
 		this.count -= count;
 	}
 
 	private RootTag validateRootTag(RootTag rootTag) {
-		Assert.notNull(rootTag, "exception.userTag.rootTag.null");
+		Assert.notNull(rootTag, messageKey().exception().userTag().rootTag().isNull().endKey());
 		return rootTag;
 	}
 
 	private User validateUser(User user) {
-		Assert.notNull(user, "exception.userTag.user.null");
+		Assert.notNull(user, messageKey().exception().userTag().user().isNull().endKey());
 		return user;
 	}
 
 	private Integer validateCount(Integer count) {
-		Assert.isTrue(count >= 0, "exception.userTag.count.positiveOrZero");
+		Assert.isTrue(count >= 0, messageKey().exception().userTag().count().positiveOrZero().endKey());
 		return count;
 	}
 

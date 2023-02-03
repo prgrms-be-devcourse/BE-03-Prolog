@@ -32,8 +32,7 @@ class JwtAuthenticationTest {
 	void validateTokenTest(String inputToken) {
 		//given & when & then
 		assertThatThrownBy(() -> new JwtAuthentication(inputToken, USER_ID))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("토큰");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@ParameterizedTest
@@ -43,7 +42,6 @@ class JwtAuthenticationTest {
 	void validateUserEmailTest(Long inputUserId) {
 		//given & when & then
 		assertThatThrownBy(() -> new JwtAuthentication(token, inputUserId))
-			.isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("ID");
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

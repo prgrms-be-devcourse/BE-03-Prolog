@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.series.model;
 
 import static com.prgrms.prolog.domain.series.dto.SeriesDto.*;
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 import static javax.persistence.FetchType.*;
 import static javax.persistence.GenerationType.*;
 import static lombok.AccessLevel.*;
@@ -55,7 +56,7 @@ public class Series extends BaseEntity {
 	@Builder
 	public Series(String title, User user, Post post) {
 		this.title = validateTitle(title);
-		this.user = Objects.requireNonNull(user, "exception.comment.user.require");
+		this.user = Objects.requireNonNull(user, messageKey().exception().comment().user().require().endKey());
 		addPost(post);
 	}
 
@@ -86,12 +87,12 @@ public class Series extends BaseEntity {
 	}
 
 	private void checkText(String text) {
-		Assert.hasText(text, "exception.comment.text");
+		Assert.hasText(text, messageKey().exception().comment().text().endKey());
 	}
 
 	private void checkOverLength(String text, int length) {
 		if (text.length() > length) {
-			throw new IllegalArgumentException("exception.post.text.overLength");
+			throw new IllegalArgumentException(messageKey().exception().post().text().overLength().endKey());
 		}
 	}
 }

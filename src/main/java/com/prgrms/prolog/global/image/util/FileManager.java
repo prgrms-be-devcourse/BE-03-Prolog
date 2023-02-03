@@ -1,5 +1,7 @@
 package com.prgrms.prolog.global.image.util;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,7 +29,7 @@ public class FileManager {
 				return Optional.of(newFile);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("exception.file.io");
+			throw new RuntimeException(messageKey().exception().file().io().endKey());
 		}
 		return Optional.empty();
 	}

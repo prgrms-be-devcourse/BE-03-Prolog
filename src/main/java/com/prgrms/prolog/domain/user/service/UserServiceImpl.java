@@ -1,6 +1,7 @@
 package com.prgrms.prolog.domain.user.service;
 
 import static com.prgrms.prolog.domain.user.dto.UserDto.*;
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +26,7 @@ public class UserServiceImpl implements UserService {
 	public UserResponse getUserProfile(Long userId) {
 		return userRepository.findById(userId)
 			.map(UserResponse::from)
-			.orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
 
 	/* [회원 가입] 등록된 사용자 인지 확인해서 맞는 경우 유저ID 제공, 아닌 경우 사용자 등록 */

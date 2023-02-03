@@ -1,9 +1,13 @@
 package com.prgrms.prolog.global.jwt;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import java.util.Collection;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+
+import com.prgrms.prolog.global.config.MessageKeyConfig;
 
 public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -45,7 +49,7 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
 	@Override
 	public void setAuthenticated(boolean isAuthenticated) {
 		if (isAuthenticated) {
-			throw new IllegalArgumentException("인증 정보를 확인할 수 없는 메서드 주입은 지원하지 않습니다. 생성자를 통해 생성해야 합니다.");
+			throw new IllegalArgumentException(messageKey().exception().jwtAuthentication().isAuthenticated().endKey());
 		}
 		super.setAuthenticated(false);
 	}

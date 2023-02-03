@@ -1,5 +1,7 @@
 package com.prgrms.prolog.global.jwt;
 
+import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
+
 import java.util.Objects;
 
 public record JwtAuthentication(String token, Long id) {
@@ -12,13 +14,13 @@ public record JwtAuthentication(String token, Long id) {
 
 	private void validateToken(String token) {
 		if (Objects.isNull(token) || token.isBlank()) {
-			throw new IllegalArgumentException("토큰이 없습니다.");
+			throw new IllegalArgumentException(messageKey().exception().jwtAuthentication().token().notExists().endKey());
 		}
 	}
 
 	private void validateId(Long userId) {
 		if (Objects.isNull(userId) || userId <= 0L) {
-			throw new IllegalArgumentException("유저의 ID가 없습니다.");
+			throw new IllegalArgumentException(messageKey().exception().jwtAuthentication().user().id().endKey());
 		}
 	}
 
