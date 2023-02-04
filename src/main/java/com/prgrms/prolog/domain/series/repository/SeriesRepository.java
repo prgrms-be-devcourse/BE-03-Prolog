@@ -18,7 +18,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 		JOIN FETCH s.posts
 		WHERE s.user.id = :userId
 		""")
-	List<Series> joinPostFindByUserId(Long userId);
+	List<Series> joinPostFindByUserId(@Param(value = "userId") Long userId);
 
 	@Query("""
 		SELECT s
@@ -27,7 +27,8 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 		WHERE s.user.id = :userId
 		AND s.id = :seriesId
 		""")
-	Optional<Series> joinPostFindByIdAndUserId(@Param(value = "userId") Long userId,
+	Optional<Series> joinPostFindByIdAndUserId(
+		@Param(value = "userId") Long userId,
 		@Param(value = "seriesId") Long seriesId);
 
 	@Modifying
@@ -37,5 +38,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 		WHERE s.user.id = :userId
 		AND s.id = :seriesId
 		""")
-	int deleteByIdAndUserId(@Param(value = "userId") Long userId, @Param(value = "seriesId") Long seriesId);
+	int deleteByIdAndUserId(
+		@Param(value = "userId") Long userId,
+		@Param(value = "seriesId") Long seriesId);
 }
