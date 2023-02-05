@@ -27,7 +27,7 @@ public interface SeriesRepository extends JpaRepository<Series, Long> {
 		WHERE s.user.id = :userId
 		AND s.id = :seriesId
 		""")
-	Optional<Series> joinPostFindByIdAndUserId(
+	Optional<Series> joinPostFindByUserIdAndSeriesId(
 		@Param(value = "userId") Long userId,
 		@Param(value = "seriesId") Long seriesId);
 

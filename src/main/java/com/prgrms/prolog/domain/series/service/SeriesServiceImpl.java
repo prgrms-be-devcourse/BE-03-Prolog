@@ -37,7 +37,7 @@ public class SeriesServiceImpl implements SeriesService {
 
 	@Override
 	public SeriesResponse getSeriesById(Long userId, Long seriesId) {
-		return seriesRepository.joinPostFindByIdAndUserId(userId, seriesId)
+		return seriesRepository.joinPostFindByUserIdAndSeriesId(userId, seriesId)
 			.map(SeriesResponse::from)
 			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
 	}
@@ -53,7 +53,7 @@ public class SeriesServiceImpl implements SeriesService {
 	@Override
 	@Transactional
 	public SeriesResponse updateSeries(@Valid UpdateSeriesRequest updateSeriesRequest, Long userId, Long seriesId) {
-		return seriesRepository.joinPostFindByIdAndUserId(userId, seriesId)
+		return seriesRepository.joinPostFindByUserIdAndSeriesId(userId, seriesId)
 			.map(series -> series.changeSeriesTitle(updateSeriesRequest))
 			.map(SeriesResponse::from)
 			.orElseThrow(() -> new IllegalArgumentException(messageKey().exception().user().notExists().endKey()));
