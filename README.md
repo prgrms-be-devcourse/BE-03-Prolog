@@ -42,7 +42,7 @@
 
 ### Prolog API
 
-(예정)
+- [GitHub Wiki](https://github.com/prgrms-be-devcourse/BE-03-Prolog/wiki/Restdocs)
 
 ## 🍒 배포 주소
 
