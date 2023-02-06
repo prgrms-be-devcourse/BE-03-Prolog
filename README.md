@@ -47,30 +47,31 @@
 ## 🍒 배포 주소
 
 ### 현재 접근 가능한 IP : 43.201.105.123
+
 ### [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
 ## 🍇 프로젝트 실행 방법
 
 프로젝트 실행 전 아래 항목을 확인해주세요
+
 - database(mysql)가 실행되고 있어야 합니다 (docker-compose 제외)
 - kakao OAuth를 서비스를 사용하고 있어야 합니다
 - 프로젝트에 필요한 환경 변수들을 지정해주어야 합니다
 
 ### 환경 변수
 
-|        environment         |        description        |
-|:--------------------------:|:-------------------------:|
-| SPRING_DATASOURCE_USERNAME | db에 접속할 수 있는 사용자 username |
-| SPRING_DATASOURCE_PASSWORD | db에 접속할 수 있는 사용자 password |
-|   SPRING_DATASOURCE_URL    |       접속하려는 db의 url       |
-|        REDIRECT_URI        |           테스트2            |
-|         JWT_ISSUER         |           테스트2            |
-|       JWT_SECRET_KEY       |           테스트2            |
-|         CLIENT_ID          |           테스트2            |
-|       CLIENT_SECRET        |           테스트2            |
-|       AWS_ACCESS_KEY       |           테스트2            |
-|       AWS_SECRET_KEY       |           테스트2            |
-
+|        environment         |           description            |
+|:--------------------------:|:--------------------------------:|
+| SPRING_DATASOURCE_USERNAME |    db에 접속할 수 있는 사용자 username     |
+| SPRING_DATASOURCE_PASSWORD |    db에 접속할 수 있는 사용자 password     |
+|   SPRING_DATASOURCE_URL    |          접속하려는 db의 url           |
+|         JWT_ISSUER         |             JWT 발행자              |
+|       JWT_SECRET_KEY       |          JWT 검증을 위한 비밀키          |
+|        REDIRECT_URI        | 카카오 로그인에서 사용할 OAuth Redirect URI |
+|         CLIENT_ID          |      Kakao 앱 키(REST API 키)       |
+|       CLIENT_SECRET        |     Kakao에서 보안을 위해 제공하는 비밀키      |
+|       AWS_ACCESS_KEY       |     AWS에 접근하기 위한 ACCESS_KEY      |
+|       AWS_SECRET_KEY       |     AWS에 접근하기 위한 SECRET_KEY      |
 
 ### using Github Project
 
@@ -137,7 +138,7 @@
          AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
          AWS_SECRET_KEY: ${AWS_SECRET_KEY}
    ```
-    
+
 3. docker-compose.yml과 같은 경로에 .env 파일을 만들고, docker-compose를 실행한다
 
    ```docker-compose -d up```
