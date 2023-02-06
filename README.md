@@ -44,7 +44,7 @@
 
 - [GitHub Wiki](https://github.com/prgrms-be-devcourse/BE-03-Prolog/wiki/Restdocs)
 
-<img width="1493" alt="image" src="https://user-images.githubusercontent.com/59335077/216901991-3a892dff-4371-490c-8fff-4b7be1aab31e.png">
+<img width="1488" alt="image" src="https://user-images.githubusercontent.com/59335077/216903253-883019b6-5431-4d5e-b277-2923d6b6129b.png">
 
 ## 🍒 배포 주소
 
