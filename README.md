@@ -48,11 +48,14 @@
 
 <img width="1488" alt="image" src="https://user-images.githubusercontent.com/59335077/216903253-883019b6-5431-4d5e-b277-2923d6b6129b.png">
 
-## 🍒 배포 주소
+### CI/CD
+<img width="1488" alt="image" src="https://user-images.githubusercontent.com/53924962/217017617-653b76e3-6c09-4ae9-ae7a-115e8bbb19ea.png">
 
-### 현재 접근 가능한 IP : 43.201.105.123
+## 🍒 배포
 
-### [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
+- 현재 접근 가능한 IP : 43.201.105.123
+
+- [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
 ## 🍇 프로젝트 실행 방법
 
