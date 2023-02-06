@@ -1,5 +1,11 @@
 ifndef::snippets[]
 :snippets: ./build/generated-snippets
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
 endif::[]
 
 = /api/v1
@@ -40,7 +46,7 @@ include::{snippets}/post-controller-test/save/http-response.adoc[]
 
 .Request
 include::{snippets}/post-controller-test/create-series/http-request.adoc[]
-//include::{snippets}/post-controller-test/create-series/request-fields.adoc[]
+// include::{snippets}/post-controller-test/create-series/request-fields.adoc[]
 
 .Response
 include::{snippets}/post-controller-test/create-series/http-response.adoc[]
@@ -66,7 +72,6 @@ include::{snippets}/post-controller-test/update/response-fields.adoc[]
 
 .Request
 include::{snippets}/post-controller-test/remove/http-request.adoc[]
-include::{snippets}/post-delete/http-request.adoc[]
 
 .Response
 include::{snippets}/post-controller-test/remove/http-response.adoc[]
@@ -105,7 +110,6 @@ User는 Post에 like를 생성 또는 삭제할 수 있다
 
 .Request
 include::{snippets}/like-controller-test/like-save-api-test/http-request.adoc[]
-//include::{snippets}/like-controller-test/like-save-api-test/request-fields.adoc[]
 
 .Response
 include::{snippets}/like-controller-test/like-save-api-test/http-response.adoc[]
@@ -117,10 +121,11 @@ include::{snippets}/like-controller-test/like-save-api-test/http-response.adoc[]
 
 .Request
 include::{snippets}/like-controller-test/like-cancel-api-test/http-request.adoc[]
-//include::{snippets}/like-controller-test/like-save-api-test/request-fields.adoc[]
 
 .Response
 include::{snippets}/like-controller-test/like-cancel-api-test/http-response.adoc[]
+
+
 
 
 == Comment
@@ -136,6 +141,7 @@ include::{snippets}/comment-controller-test/comment-save-api-test/request-fields
 
 .Response
 include::{snippets}/comment-controller-test/comment-save-api-test/http-response.adoc[]
+include::{snippets}/comment-controller-test/comment-save-api-test/response-fields.adoc[]
 
 === Comment 수정하기
 
@@ -147,30 +153,71 @@ include::{snippets}/comment-controller-test/comment-update-api-test/request-fiel
 
 .Response
 include::{snippets}/comment-controller-test/comment-update-api-test/http-response.adoc[]
-
-
-=== Comment 삭제하기
-
-==== /posts/{post_id}/comments
-
-// .Request
-// include::{snippets}/comment-controller-test/comment-update-api-test/http-request.adoc[]
-// include::{snippets}/comment-controller-test/comment-update-api-test/request-fields.adoc[]
-//
-// .Response
-// include::{snippets}/comment-controller-test/comment-update-api-test/http-response.adoc[]
-
+include::{snippets}/comment-controller-test/comment-update-api-test/response-fields.adoc[]
 
 == Series
 User는 Post에 series를 지정하고, series에 포함된 Post를 가져올 수 있다
 
+=== Series 생성하기
+
+==== /user/series
+
+.Request
+include::{snippets}/series-controller-test/create-new-series-test/http-request.adoc[]
+include::{snippets}/series-controller-test/create-new-series-test/request-fields.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/create-new-series-test/http-response.adoc[]
+
+=== Series 삭제하기
+
+==== /user/series/{series_id}
+
+.Request
+include::{snippets}/series-controller-test/delete-series-test/http-request.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/delete-series-test/http-response.adoc[]
+
 === Series 제목으로 Post 전체 조회하기
 
-==== /series?title={series_title}
+==== /user/series?title={series_title}
 
 .Request
 include::{snippets}/series-controller-test/find-series-by-title-test/http-request.adoc[]
 
 .Response
 include::{snippets}/series-controller-test/find-series-by-title-test/http-response.adoc[]
-include::{snippets}/series-controller-test/find-series-by-title-test/response-fields.adoc[]
+
+=== User id 번호로 모든 Series 조회하기
+
+==== /user/{user_id}/series
+
+.Request
+include::{snippets}/series-controller-test/get-all-series-test/http-request.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/get-all-series-test/http-response.adoc[]
+include::{snippets}/series-controller-test/get-all-series-test/response-fields.adoc[]
+
+=== User id 번호와 Series id 번호로 단건 조회하기
+
+==== /user/{user_id}/series/{series_id}
+
+.Request
+include::{snippets}/series-controller-test/get-single-series-test/http-request.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/get-single-series-test/http-response.adoc[]
+include::{snippets}/series-controller-test/get-single-series-test/response-fields.adoc[]
+
+=== Series id 번호로 Series 수정하기
+
+==== /user/series/{series_id}
+
+.Request
+include::{snippets}/series-controller-test/update-series-test/http-request.adoc[]
+
+.Response
+include::{snippets}/series-controller-test/update-series-test/http-response.adoc[]
+include::{snippets}/series-controller-test/update-series-test/response-fields.adoc[]
