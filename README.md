@@ -145,6 +145,14 @@
 
    ```docker-compose -d up```
 
+## 테스트 커버리지
+### Jacoco
+<img width="870" alt="스크린샷 2023-02-06 오후 3 56 15" src="https://user-images.githubusercontent.com/99165624/216906078-bdd526e6-4d35-4d6e-9d75-10944409e0de.png">
+
+### IntelliJ
+<img width="423" alt="스크린샷 2023-02-05 오후 10 30 09" src="https://user-images.githubusercontent.com/99165624/216905990-7f85224a-df40-41e7-baaa-d284391e527d.png">
+
+
 ## 🫐 프로젝트 페이지
 
 ### [프로젝트 문서](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
