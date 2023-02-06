@@ -34,7 +34,9 @@
 
 ### 프로젝트 구조
 
-(예정)
+![Prolog Entity Diagram](https://user-images.githubusercontent.com/82203978/216908084-fe33471e-8504-4a66-a1fc-677f4e0da63b.png)
+
+![Prolog Diagram](https://user-images.githubusercontent.com/82203978/216908199-611741cd-7f8a-4a76-b475-a686cf481ec8.png)
 
 ### ERD
 
