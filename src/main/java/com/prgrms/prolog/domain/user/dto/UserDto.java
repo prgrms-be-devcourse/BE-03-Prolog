@@ -1,5 +1,7 @@
 package com.prgrms.prolog.domain.user.dto;
 
+import javax.validation.constraints.NotBlank;
+
 import com.prgrms.prolog.domain.user.model.User;
 
 import lombok.Builder;
@@ -28,10 +30,10 @@ public class UserDto {
 	}
 
 	@Builder
-	public record UpdateUserRequest(String email,
-	                                String nickName,
-	                                String introduce,
-	                                String prologName
+	public record UpdateUserRequest(@NotBlank String email,
+	                                @NotBlank String nickName,
+	                                @NotBlank String introduce,
+	                                @NotBlank String prologName
 	) {
 	}
 

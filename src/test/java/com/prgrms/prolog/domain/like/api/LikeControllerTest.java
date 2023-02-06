@@ -59,8 +59,7 @@ class LikeControllerTest extends ControllerTest {
 	@Test
 	void likeCancelApiTest() throws Exception {
 		LikeDto.LikeRequest likeRequest = new LikeDto.LikeRequest(userId, postId);
-		Long likeId = likeService.save(likeRequest);
-		System.out.println("likeId : " + likeId);
+		likeService.save(likeRequest);
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/like/{postId}", postId)
 				.header(HttpHeaders.AUTHORIZATION, BEARER_TYPE + ACCESS_TOKEN)
 				.contentType(MediaType.APPLICATION_JSON))

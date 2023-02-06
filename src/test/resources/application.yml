@@ -13,5 +13,20 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:mysql:8.0.31:///test?TC_INITSCRIPT=schema.sql
 
+  jpa:
+    database: mysql
+    generate-ddl: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+        type:
+          descriptor:
+            sql=trace:
+    show-sql: true
+
 jwt:
   expiry-seconds: 2

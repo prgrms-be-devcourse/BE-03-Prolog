@@ -12,5 +12,10 @@ public interface UserService {
 	/* 사용자 프로필 조회 */
 	UserResponse getUserProfile(Long userId);
 
-}
+	/* 사용자 프로필 수정 */
+	UserResponse updateUserProfile(UpdateUserRequest updateUserRequest, Long userId);
 
+	/* 사용자 삭제 */
+	void deleteUser(Long userId);
+
+}

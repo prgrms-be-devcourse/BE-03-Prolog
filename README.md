@@ -1,7 +1,6 @@
-
 # 🥚 Prolog
 
-   백엔드 알팀 velog 클론코딩 프로젝트
+백엔드 알팀 velog 클론코딩 프로젝트
 
 ## :peach: 프로젝트 목표
 
@@ -14,45 +13,72 @@
 | <img alt="img_3.png" height="100" src="https://avatars.githubusercontent.com/u/82203978?v=4" width="100"/> | <img alt="img.png" height="100" src="https://avatars.githubusercontent.com/u/53924962?v=4" width="100" /> | <img alt="img_1.png" height="100" src="https://avatars.githubusercontent.com/u/99165624?v=4" width="100"/> | <img alt="img_2.png" height="100" src="https://avatars.githubusercontent.com/u/59335077?v=4" width="100"/> | <img alt="img_4.png" height="100" src="https://avatars.githubusercontent.com/u/17922700?v=4" width="100"/> | <img alt="img_5.png" height="100" src="https://avatars.githubusercontent.com/u/41960243?v=4" width="100"/> |
 |                                                    박현서                                                     |                                                    복신영                                                    |                                                    권주성                                                     |                                                    최은비                                                     |                                                     알                                                      |                                                    김용철                                                     |
 
-
 ## 🍊 개발 언어 및 활용기술
+
 <!-- 요 링크에서 따오면 좋을 듯! https://github.com/Ileriayo/markdown-badges --> 
 
 ### Tech
 
-<img src="https://img.shields.io/badge/Java-FC4C02?style=flat-square&logo=java&logoColor=white"/> <img src="https://img.shields.io/badge/Spring boot-6DB33F?style=flat-square&logo=Spring boot&logoColor=white"/> <img src="https://img.shields.io/badge/gradle-02303A?logo=gradle&logoWidth=25"/> <img src="https://img.shields.io/badge/Spring Data JPA-0078D4?style=flat-square&logo=Spring Data JPA&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-2AB1AC?style=flat-square&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Junit-25A162?style=flat-square&logo=Junit5&logoColor=white"/> <img src="https://img.shields.io/badge/-Swagger-%23Clojure?style=flat-square&logo=swagger&logoColor=white">
+<img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white"/> <img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white"/> <img src="https://img.shields.io/badge/Spring Data Jpa-0078D4?style=for-the-badge&logo=&logoColor=white"/>
+<img src="https://img.shields.io/badge/Spring Security-6DB33F ?style=for-the-badge&logo=SpringSecurity&logoColor=white"/> <img src="https://img.shields.io/badge/JWT-6DB33F?style=for-the-badge&logo=JsonWebTokens&logoColor=white"/> <img src="https://img.shields.io/badge/OAuth2.0-EB5424?style=for-the-badge&logo=&logoColor=white"/> <img src="https://img.shields.io/badge/MySQL-2AB1AC?style=for-the-badge&logo=MySQL&logoColor=white"/> <img src="https://img.shields.io/badge/Flyway-CC0200?style=for-the-badge&logo=Flyway&logoColor=white"/> <img src="https://img.shields.io/badge/Junit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white"/> <img src="https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white"/> <img src="https://img.shields.io/badge/RestDocs-8CA1AF?style=for-the-badge&logo=readthedocs&logoColor=white"/> <img src="https://img.shields.io/badge/Jacoco-E6502A?style=for-the-badge&logo=Jacoco&logoColor=white"/> <img src="https://img.shields.io/badge/Test Container-83DA77?style=for-the-badge&logo=Jacoco&logoColor=white"/> <img src="https://img.shields.io/badge/Actuator-83B81A?style=for-the-badge&logo=Jacoco&logoColor=white"/>
 
 ### Deploy
 
-<img src="https://img.shields.io/badge/Github Actions-2AB1AC?style=flat-square&logo=github&logoColor=black"/> <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=flat-square&logo=docker&logoColor=white"/> <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=flat-square&logo=amazon-aws&logoColor=white"/>
+<img src="https://img.shields.io/badge/Github Actions-2AB1AC?style=for-the-badge&logo=GithubActions&logoColor=white"/> <img src="https://img.shields.io/badge/Docker-%230db7ed.svg?style=for-the-badge&logo=Docker&logoColor=white"/> <img src="https://img.shields.io/badge/Nginx-009639?style=for-the-badge&logo=Nginx&logoColor=white"/> <img src="https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=Ubuntu&logoColor=white"/> <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=AmazonAws&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/> <img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=AmazonEc2&logoColor=white"/>
 
 ### Tool
 
-<img src="https://img.shields.io/badge/IntelliJ IDEA-8A3391?style=flat-square&logo=IntelliJ IDEA&logoColor=black"/> <img src="https://img.shields.io/badge/Github-000000?style=flat-square&logo=Github&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-FFFFFF?style=flat-square&logo=Notion&logoColor=black"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=Slack&logoColor=white"/> 
-
+<img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=intellijIdea&logoColor=white"/> <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white"/>
 
 ## 🍎 설계 및 문서
 
 ### 프로젝트 구조
-(예정)
+
+![Prolog Entity Diagram](https://user-images.githubusercontent.com/82203978/216908084-fe33471e-8504-4a66-a1fc-677f4e0da63b.png)
+
+![Prolog Diagram](https://user-images.githubusercontent.com/82203978/216908199-611741cd-7f8a-4a76-b475-a686cf481ec8.png)
 
 ### ERD
-(예정)
 
-### [Prolog API](https://www.notion.so/backend-devcourse/API-1-3785ae03912441e7a87e253fd069c200)
+![Prolog ERD](https://user-images.githubusercontent.com/59335077/216544649-2558127e-60e8-42de-89b6-ac2616651abb.png)
 
-## 🍉 주요 기능
-(예정)
+### Prolog API
 
-## 🍒 배포 주소
-### [Docker Hub의 prolog](https://hub.docker.com/repository/docker/fortune00/prolog/general)
+- [GitHub Wiki](https://github.com/prgrms-be-devcourse/BE-03-Prolog/wiki/Restdocs)
 
-### [현재 접근 가능한 IP](43.200.173.123)
+<img width="1488" alt="image" src="https://user-images.githubusercontent.com/59335077/216903253-883019b6-5431-4d5e-b277-2923d6b6129b.png">
+
+### CI/CD
+<img width="1488" alt="image" src="https://user-images.githubusercontent.com/53924962/217017617-653b76e3-6c09-4ae9-ae7a-115e8bbb19ea.png">
+
+## 🍒 배포
+
+- 현재 접근 가능한 IP : 43.201.105.123
+
+- [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
 ## 🍇 프로젝트 실행 방법
 
-- 프로젝트 실행 전 database(mysql)가 실행되고 있어야 하며(docker compose 제외), kakao OAuth를 서비스를 사용하고 있어야 합니다
-- 아래의 실행 과정은 .env 파일을 사용하는 방식으로 설명합니다
+프로젝트 실행 전 아래 항목을 확인해주세요
+
+- database(mysql)가 실행되고 있어야 합니다 (docker-compose 제외)
+- kakao OAuth를 서비스를 사용하고 있어야 합니다
+- 프로젝트에 필요한 환경 변수들을 지정해주어야 합니다
+
+### 환경 변수
+
+|        environment         |           description            |
+|:--------------------------:|:--------------------------------:|
+| SPRING_DATASOURCE_USERNAME |    db에 접속할 수 있는 사용자 username     |
+| SPRING_DATASOURCE_PASSWORD |    db에 접속할 수 있는 사용자 password     |
+|   SPRING_DATASOURCE_URL    |          접속하려는 db의 url           |
+|         JWT_ISSUER         |             JWT 발행자              |
+|       JWT_SECRET_KEY       |          JWT 검증을 위한 비밀키          |
+|        REDIRECT_URI        | 카카오 로그인에서 사용할 OAuth Redirect URI |
+|         CLIENT_ID          |      Kakao 앱 키(REST API 키)       |
+|       CLIENT_SECRET        |     Kakao에서 보안을 위해 제공하는 비밀키      |
+|       AWS_ACCESS_KEY       |     AWS에 접근하기 위한 ACCESS_KEY      |
+|       AWS_SECRET_KEY       |     AWS에 접근하기 위한 SECRET_KEY      |
 
 ### using Github Project
 
@@ -60,27 +86,12 @@
 
    ```git clone https://github.com/prgrms-be-devcourse/BE-03-Prolog```
 
-2. 프로젝트 root 경로에 .env 파일을 생성한다
-
-   ```
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-
+2. .env.example 파일을 보고, .env 파일을 생성하거나 환경 변수를 지정해준다
 3. build 후, jar 파일을 실행한다
 
     ```
     ./gradlew clean build
-    java -jar build/libs/prolog-1.0.0.jar
+    java -jar build/libs/{prolog}.jar
     ```
 
 ### using Docker Image
@@ -90,23 +101,7 @@
 
    ```docker pull fortune00/prolog```
 
-3. .env 파일을 생성한다
-
-   ```
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-
-4. .env 파일을 지정해, 컨테이너를 실행한다
+3. .env 파일을 만들고, 컨테이너를 실행한다
 
    ```docker run --env-file=.env -d fortune00/prolog```
 
@@ -147,31 +142,20 @@
          CLIENT_ID: ${CLIENT_ID}
          CLIENT_SECRET: ${CLIENT_SECRET}
          REDIRECT_URI: ${REDIRECT_URI}
+         AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+         AWS_SECRET_KEY: ${AWS_SECRET_KEY}
    ```
 
-3. docker-compose.yml과 같은 경로에 .env 파일을 만든다
-
-   ```
-   # database
-   MYSQL_ROOT_PASSWORD=
-   MYSQL_DATABASE=
-
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-    
-4. docker-compose를 실행한다
+3. docker-compose.yml과 같은 경로에 .env 파일을 만들고, docker-compose를 실행한다
 
    ```docker-compose -d up```
+
+## 테스트 커버리지
+### Jacoco
+<img width="870" alt="스크린샷 2023-02-06 오후 3 56 15" src="https://user-images.githubusercontent.com/99165624/216906078-bdd526e6-4d35-4d6e-9d75-10944409e0de.png">
+
+### IntelliJ
+<img width="423" alt="스크린샷 2023-02-05 오후 10 30 09" src="https://user-images.githubusercontent.com/99165624/216905990-7f85224a-df40-41e7-baaa-d284391e527d.png">
 
 
 ## 🫐 프로젝트 페이지

@@ -95,11 +95,12 @@ public class User extends BaseEntity {
 		this.profileImgUrl = profileImgUrl;
 	}
 
-	public void changeUserProfile(UpdateUserRequest updateUserRequest) {
+	public User changeUserProfile(UpdateUserRequest updateUserRequest) {
 		this.email = validateEmail(updateUserRequest.email());
 		this.nickName = validateNickName(updateUserRequest.nickName());
 		this.introduce = validateIntroduce(updateUserRequest.introduce());
 		this.prologName = validatePrologName(updateUserRequest.prologName());
+		return this;
 	}
 
 	public void changeProfileImgUrl(String profileImgUrl) {
