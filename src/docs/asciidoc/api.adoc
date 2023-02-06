@@ -23,7 +23,6 @@ include::{snippets}/user-controller-test/user-page/http-request.adoc[]
 include::{snippets}/user-controller-test/user-page/http-response.adoc[]
 include::{snippets}/user-controller-test/user-page/response-fields.adoc[]
 
-
 == Post
 
 === Post 생성하기
@@ -51,7 +50,6 @@ include::{snippets}/post-controller-test/create-series/http-request.adoc[]
 .Response
 include::{snippets}/post-controller-test/create-series/http-response.adoc[]
 
-
 === Post 수정하기
 
 ==== /posts/{post_id}
@@ -64,7 +62,6 @@ include::{snippets}/post-controller-test/update/request-fields.adoc[]
 include::{snippets}/post-controller-test/update/http-response.adoc[]
 include::{snippets}/post-controller-test/update/response-fields.adoc[]
 
-
 === Post 삭제하기
 //post delete 지우기
 
@@ -75,7 +72,6 @@ include::{snippets}/post-controller-test/remove/http-request.adoc[]
 
 .Response
 include::{snippets}/post-controller-test/remove/http-response.adoc[]
-
 
 === 단일 Post 조회하기
 
@@ -88,7 +84,6 @@ include::{snippets}/post-controller-test/find-by-id/http-request.adoc[]
 include::{snippets}/post-controller-test/find-by-id/http-response.adoc[]
 include::{snippets}/post-controller-test/find-by-id/response-fields.adoc[]
 
-
 === Post 전체 조회하기
 
 ==== /posts?page={page}&size={size}
@@ -100,8 +95,8 @@ include::{snippets}/post-controller-test/find-all/http-request.adoc[]
 include::{snippets}/post-controller-test/find-all/http-response.adoc[]
 include::{snippets}/post-controller-test/find-all/response-fields.adoc[]
 
-
 == Like (좋아요 기능)
+
 User는 Post에 like를 생성 또는 삭제할 수 있다
 
 === Like 생성하기
@@ -114,10 +109,9 @@ include::{snippets}/like-controller-test/like-save-api-test/http-request.adoc[]
 .Response
 include::{snippets}/like-controller-test/like-save-api-test/http-response.adoc[]
 
-
 === Like 삭제하기
 
-==== /like
+==== /like/{post_id}
 
 .Request
 include::{snippets}/like-controller-test/like-cancel-api-test/http-request.adoc[]
@@ -125,10 +119,8 @@ include::{snippets}/like-controller-test/like-cancel-api-test/http-request.adoc[
 .Response
 include::{snippets}/like-controller-test/like-cancel-api-test/http-response.adoc[]
 
-
-
-
 == Comment
+
 User는 Post에 comment를 생성, 수정 또는 삭제할 수 있다
 
 === Comment 생성하기
@@ -156,6 +148,7 @@ include::{snippets}/comment-controller-test/comment-update-api-test/http-respons
 include::{snippets}/comment-controller-test/comment-update-api-test/response-fields.adoc[]
 
 == Series
+
 User는 Post에 series를 지정하고, series에 포함된 Post를 가져올 수 있다
 
 === Series 생성하기
