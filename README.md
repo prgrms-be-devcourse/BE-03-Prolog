@@ -40,22 +40,37 @@
 
 ![Prolog ERD](https://user-images.githubusercontent.com/59335077/216544649-2558127e-60e8-42de-89b6-ac2616651abb.png)
 
-### [Prolog API](https://www.notion.so/backend-devcourse/API-1-3785ae03912441e7a87e253fd069c200)
-
-## 🍉 주요 기능
+### Prolog API
 
 (예정)
 
 ## 🍒 배포 주소
 
-### [Docker Hub의 prolog](https://hub.docker.com/repository/docker/fortune00/prolog/general)
-
-### [현재 접근 가능한 IP](43.200.173.123)
+### 현재 접근 가능한 IP : 43.201.105.123
+### [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
 ## 🍇 프로젝트 실행 방법
 
-- 프로젝트 실행 전 database(mysql)가 실행되고 있어야 하며(docker compose 제외), kakao OAuth를 서비스를 사용하고 있어야 합니다
-- 아래의 실행 과정은 .env 파일을 사용하는 방식으로 설명합니다
+프로젝트 실행 전 아래 항목을 확인해주세요
+- database(mysql)가 실행되고 있어야 합니다 (docker-compose 제외)
+- kakao OAuth를 서비스를 사용하고 있어야 합니다
+- 프로젝트에 필요한 환경 변수들을 지정해주어야 합니다
+
+### 환경 변수
+
+|        environment         |        description        |
+|:--------------------------:|:-------------------------:|
+| SPRING_DATASOURCE_USERNAME | db에 접속할 수 있는 사용자 username |
+| SPRING_DATASOURCE_PASSWORD | db에 접속할 수 있는 사용자 password |
+|   SPRING_DATASOURCE_URL    |       접속하려는 db의 url       |
+|        REDIRECT_URI        |           테스트2            |
+|         JWT_ISSUER         |           테스트2            |
+|       JWT_SECRET_KEY       |           테스트2            |
+|         CLIENT_ID          |           테스트2            |
+|       CLIENT_SECRET        |           테스트2            |
+|       AWS_ACCESS_KEY       |           테스트2            |
+|       AWS_SECRET_KEY       |           테스트2            |
+
 
 ### using Github Project
 
@@ -63,27 +78,12 @@
 
    ```git clone https://github.com/prgrms-be-devcourse/BE-03-Prolog```
 
-2. 프로젝트 root 경로에 .env 파일을 생성한다
-
-   ```
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-
+2. .env.example 파일을 보고, .env 파일을 생성하거나 환경 변수를 지정해준다
 3. build 후, jar 파일을 실행한다
 
     ```
     ./gradlew clean build
-    java -jar build/libs/prolog-1.0.0.jar
+    java -jar build/libs/{prolog}.jar
     ```
 
 ### using Docker Image
@@ -93,23 +93,7 @@
 
    ```docker pull fortune00/prolog```
 
-3. .env 파일을 생성한다
-
-   ```
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-
-4. .env 파일을 지정해, 컨테이너를 실행한다
+3. .env 파일을 만들고, 컨테이너를 실행한다
 
    ```docker run --env-file=.env -d fortune00/prolog```
 
@@ -150,29 +134,11 @@
          CLIENT_ID: ${CLIENT_ID}
          CLIENT_SECRET: ${CLIENT_SECRET}
          REDIRECT_URI: ${REDIRECT_URI}
+         AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+         AWS_SECRET_KEY: ${AWS_SECRET_KEY}
    ```
-
-3. docker-compose.yml과 같은 경로에 .env 파일을 만든다
-
-   ```
-   # database
-   MYSQL_ROOT_PASSWORD=
-   MYSQL_DATABASE=
-
-   #datasource
-   SPRING_DATASOURCE_USERNAME=
-   SPRING_DATASOURCE_PASSWORD=
-   SPRING_DATASOURCE_URL=
-
-   #security
-   JWT_ISSUER=
-   JWT_SECRET_KEY=
-   CLIENT_ID=
-   CLIENT_SECRET=
-   REDIRECT_URI=
-   ```
-
-4. docker-compose를 실행한다
+    
+3. docker-compose.yml과 같은 경로에 .env 파일을 만들고, docker-compose를 실행한다
 
    ```docker-compose -d up```
 
