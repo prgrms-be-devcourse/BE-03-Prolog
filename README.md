@@ -31,6 +31,8 @@
 <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=for-the-badge&logo=intellijIdea&logoColor=white"/> <img src="https://img.shields.io/badge/Github-181717?style=for-the-badge&logo=Github&logoColor=white"/> <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white"/> <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white"/>
 
 ## 🍎 설계 및 문서
+### 시스템 구조
+![image](https://user-images.githubusercontent.com/53924962/217161845-76e7a883-1a46-4615-b626-08ff45453c8f.png)
 
 ### 프로젝트 구조
 
