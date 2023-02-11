@@ -1,4 +1,4 @@
-package com.prgrms.prolog.global.image.api;
+package com.prgrms.prolog.global.file.api;
 
 import static com.prgrms.prolog.global.config.MessageKeyConfig.*;
 
@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.prgrms.prolog.global.image.dto.UploadFileResponse;
-import com.prgrms.prolog.global.image.util.FileManager;
-import com.prgrms.prolog.global.image.util.UploadFileToS3;
+import com.prgrms.prolog.global.file.dto.UploadFileResponse;
+import com.prgrms.prolog.global.file.util.FileManager;
+import com.prgrms.prolog.global.file.util.UploadFileToS3;
 
 import lombok.RequiredArgsConstructor;
 
 @Profile("!test")
 @RestController
 @RequiredArgsConstructor
-public class ImageController {
+public class FileController {
 
 	private static final String FILE_PATH = "posts";
 	private final FileManager fileManager;

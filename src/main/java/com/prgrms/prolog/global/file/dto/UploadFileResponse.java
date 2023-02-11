@@ -1,4 +1,4 @@
-package com.prgrms.prolog.global.image.dto;
+package com.prgrms.prolog.global.file.dto;
 
 public record UploadFileResponse(
         String originalFileName,
