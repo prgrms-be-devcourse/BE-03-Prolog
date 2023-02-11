@@ -1,4 +1,4 @@
-package com.prgrms.prolog.global.image.util;
+package com.prgrms.prolog.global.file.util;
 
 import java.io.File;
 
