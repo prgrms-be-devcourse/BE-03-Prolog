@@ -38,3 +38,4 @@ out/
 .vscode/
 /src/main/resources/properties/db.properties
 /.env
+logs
