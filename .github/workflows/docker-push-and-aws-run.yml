@@ -33,11 +33,11 @@ jobs:
           docker build -t fortune00/prolog .
           docker push fortune00/prolog:latest
 
-      - name: Access aws server and run the app
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.AWS_HOST }}
-          username: ${{ secrets.AWS_USERNAME }}
-          key: ${{ secrets.AWS_KEY }}
-          script: #docker-compose.yml ./.env ./nginx/default.conf ./deploy.sh 서버에 초기화
-            bash deploy.sh
+#      - name: Access aws server and run the app
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.AWS_HOST }}
+#          username: ${{ secrets.AWS_USERNAME }}
+#          key: ${{ secrets.AWS_KEY }}
+#          script: #docker-compose.yml ./.env ./nginx/default.conf ./deploy.sh 서버에 초기화
+#            bash deploy.sh
