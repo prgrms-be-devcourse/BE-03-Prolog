@@ -1,6 +1,7 @@
 # 🥚 Prolog
+**백엔드 알팀 velog 클론코딩 프로젝트**
 
-백엔드 알팀 velog 클론코딩 프로젝트
+![KakaoTalk_Photo_2023-02-12-17-39-02 001](https://user-images.githubusercontent.com/99165624/218303234-f622c76b-179c-44bb-b905-c7ded33f21ee.jpeg)
 
 ## :peach: 프로젝트 목표
 
@@ -162,8 +163,11 @@
 
 ## 🫐 프로젝트 페이지
 
-### [프로젝트 문서](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
+### [프로젝트 오버뷰](https://www.notion.so/backend-devcourse/overview-f09356adedf7471db50a76208fce7abc?pvs=4)
 
 ### [그라운드 룰](https://www.notion.so/backend-devcourse/7063f14625f147e291f45f371092d84a)
 
 ### [프로젝트 회고](https://www.notion.so/backend-devcourse/6a625fcd1af340b197cd24fba38f3c90)
+
+### [프로젝트 노션 페이지](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
+
