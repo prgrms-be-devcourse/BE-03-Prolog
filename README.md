@@ -1,6 +1,7 @@
 # 🥚 Prolog
+**백엔드 알팀 velog 클론코딩 프로젝트**
 
-백엔드 알팀 velog 클론코딩 프로젝트
+![KakaoTalk_Photo_2023-02-12-17-39-02 001](https://user-images.githubusercontent.com/99165624/218303234-f622c76b-179c-44bb-b905-c7ded33f21ee.jpeg)
 
 ## :peach: 프로젝트 목표
 
@@ -12,6 +13,7 @@
 |:----------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------:|
 | <img alt="img_3.png" height="100" src="https://avatars.githubusercontent.com/u/82203978?v=4" width="100"/> | <img alt="img.png" height="100" src="https://avatars.githubusercontent.com/u/53924962?v=4" width="100" /> | <img alt="img_1.png" height="100" src="https://avatars.githubusercontent.com/u/99165624?v=4" width="100"/> | <img alt="img_2.png" height="100" src="https://avatars.githubusercontent.com/u/59335077?v=4" width="100"/> | <img alt="img_4.png" height="100" src="https://avatars.githubusercontent.com/u/17922700?v=4" width="100"/> | <img alt="img_5.png" height="100" src="https://avatars.githubusercontent.com/u/41960243?v=4" width="100"/> |
 |                                                    박현서                                                     |                                                    복신영                                                    |                                                    권주성                                                     |                                                    최은비                                                     |                                                     알                                                      |                                                    김용철                                                     |
+|               SPRING 설정 파일 + 전역 예외 + 로그 관리 <br> POST의 TAG 기능 구현 <br> Restdocs to Swagger UI                |                         CI/CD <br> 무중단 배포 <br> AWS 서버 구축 <br> POST의 파일 업로드 기능 구현                          |                              SPRING SECURITY <br> User 관리 구현 <br> POST의 시리즈 기능 구현                              |                                                 주요 도메인 구현                                                  |                                                     -                                                      |                                                     -                                                      |
 
 ## 🍊 개발 언어 및 활용기술
 
@@ -55,7 +57,7 @@
 
 ## 🍒 배포
 
-- 현재 접근 가능한 IP : 43.201.105.123
+- ~~현재 접근 가능한 IP~~ (서버 지원 중단)
 
 - [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
@@ -162,8 +164,11 @@
 
 ## 🫐 프로젝트 페이지
 
-### [프로젝트 문서](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
+### [프로젝트 오버뷰](https://www.notion.so/backend-devcourse/overview-f09356adedf7471db50a76208fce7abc?pvs=4)
 
 ### [그라운드 룰](https://www.notion.so/backend-devcourse/7063f14625f147e291f45f371092d84a)
 
 ### [프로젝트 회고](https://www.notion.so/backend-devcourse/6a625fcd1af340b197cd24fba38f3c90)
+
+### [프로젝트 노션 페이지](https://www.notion.so/backend-devcourse/Prolog-a038a633c3fc496ba0489beb2b15ef6c)
+
