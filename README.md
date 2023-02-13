@@ -57,7 +57,7 @@
 
 ## 🍒 배포
 
-- 현재 접근 가능한 IP : 43.201.105.123
+- ~~현재 접근 가능한 IP~~ (서버 지원 중단)
 
 - [Docker Image](https://hub.docker.com/repository/docker/fortune00/prolog/general)
 
