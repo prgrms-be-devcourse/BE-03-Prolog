@@ -164,6 +164,9 @@
 
 ## 🫐 프로젝트 페이지
 
+### 깃 브랜치 전략
+![image](https://user-images.githubusercontent.com/53924962/218653176-55c5b01b-e637-4a8d-a217-1659be9ead95.png)
+
 ### [프로젝트 오버뷰](https://www.notion.so/backend-devcourse/overview-f09356adedf7471db50a76208fce7abc?pvs=4)
 
 ### [그라운드 룰](https://www.notion.so/backend-devcourse/7063f14625f147e291f45f371092d84a)
